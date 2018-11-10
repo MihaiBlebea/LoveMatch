@@ -14,7 +14,7 @@ use App\Infrastructure\Events\DomainEventPublisher;
 
 
 // Create the instance of DomainEventPublisher
-$publisher = new DomainEventPublisher();
+$publisher = DomainEventPublisher::instance();
 
 
 // Create the container

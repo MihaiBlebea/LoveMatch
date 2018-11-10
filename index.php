@@ -6,11 +6,11 @@ require_once __DIR__ . '/bootstrap.php';
 use Interceptor\Route;
 use App\Domain\User\{
     UserFactory,
-    LoginService,
-    Email\Email,
-    Password\password
+    UserLoginService,
+    UserLogoutService
 };
 use App\Infrastructure\User\UserRepo;
+use App\Application\UserLoginRequest;
 
 
 $router  = $container->get(Interceptor\Router::class);
@@ -18,13 +18,22 @@ $request = $container->get(Interceptor\Request::class);
 
 $router->add(new Route('login', function() use ($request, $container) {
     $user_repo = $container->get(App\Infrastructure\User\UserRepo::class);
-    $login_serv = new LoginService($user_repo);
+    $login_serv = new UserLoginService($user_repo);
 
-    $email    = new Email($request->retrive('email'));
-    $password = new Password($request->retrive('password'));
+    $email    = $request->retrive('email');
+    $password = $request->retrive('password');
 
-    $logged_user = $login_serv->execute($email, $password);
-    var_dump($logged_user);
+    try {
+        $logged_user = $login_serv->execute(new UserLoginRequest($email, $password));
+        var_dump($logged_user);
+    } catch(\Exception $e) {
+        var_dump($e->getMessage());
+    }
+}));
+
+$router->add(Route::get('logout', function() {
+    UserLogoutService::execute();
+    var_dump('User was logged out from the app');
 }));
 
 $router->add(new Route('register', function() use ($container) {
@@ -37,7 +46,7 @@ $router->add(new Route('register', function() use ($container) {
         'intrex');
 
     $user_repo->add($user);
-    var_dump($user);
+    var_dump($user_repo);
 }));
 
 try {
