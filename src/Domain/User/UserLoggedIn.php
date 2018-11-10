@@ -2,26 +2,30 @@
 
 namespace App\Domain\User;
 
-use App\Domain\User\{
-    Email\EmailInterface,
-    Name\NameInterface
-};
+use App\Domain\User\UserId\UserIdInterface;
 
 
-class UserLoggedIn
+class UserLoggedIn implements DomainEventInterface
 {
-    private $email;
+    private $user_id;
 
-    private $name;
-
-    private $occured_on;
+    private $ocurred_on;
 
 
-    public function __construct(Emailinterface $email, NameInterface $name)
+    public function __construct(UserIdInterface $user_id)
     {
-        $this->email      = $email;
-        $this->name       = $name;
-        $this->occured_on = new \DateTime();
+        $this->user_id    = $user_id;
+        $this->ocurred_on = new \DateTime();
+    }
+
+    public function getId()
+    {
+        return $this->user_id;
+    }
+
+    public function getBody()
+    {
+        return 'User is logged in the app';
     }
 
     public function ocurredOn()

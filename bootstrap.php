@@ -10,7 +10,7 @@ require_once __DIR__ . '/vendor/autoload.php';
 
 
 use League\Container\Container;
-use App\Infrastructure\Events\DomainEventPublisher;
+use App\Infrastructure\Event\DomainEventPublisher;
 
 
 // Create the instance of DomainEventPublisher
@@ -36,3 +36,10 @@ $container->add(Domino\Persistence::class)
 
 $container->add(App\Infrastructure\User\UserRepo::class)
           ->addArgument(Domino\Persistence::class);
+
+
+$container->add(App\Infrastructure\Event\EventStore::class)
+          ->addArgument(Domino\Persistence::class);
+
+$container->add(App\Infrastructure\Event\PersistDomainEventSubscriber::class)
+          ->addArgument(App\Infrastructure\Event\EventStore::class);

@@ -1,6 +1,8 @@
 <?php
 
-namespace App\Infrastructure\Events;
+namespace App\Infrastructure\Event;
+
+use App\Domain\User\DomainEventInterface;
 
 
 class DomainEventPublisher
@@ -29,12 +31,12 @@ class DomainEventPublisher
         throw new \BadMethodCallException('Clone is not supported');
     }
 
-    public function subscribe(DomainEventSubscriber $subscriber)
+    public function subscribe(DomainEventSubscriberInterface $subscriber)
     {
         $this->subscribers[] = $subscriber;
     }
 
-    public function publish(DomainEvent $event)
+    public function publish(DomainEventInterface $event)
     {
         foreach($this->subscribers as $subscriber)
         {
