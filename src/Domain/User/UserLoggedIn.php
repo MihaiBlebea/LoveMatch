@@ -25,7 +25,10 @@ class UserLoggedIn implements DomainEventInterface
 
     public function getBody()
     {
-        return 'User is logged in the app';
+        return [
+            'user_id' => $this->user_id->getId(),
+            'message' => 'User has been logged in the app'
+        ];
     }
 
     public function ocurredOn()

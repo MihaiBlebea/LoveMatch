@@ -77,6 +77,15 @@ $router->add(Route::get('test', function() use ($container, $publisher) {
 }));
 
 
+$router->add(Route::get('like'), function() {
+    var_dump('like');
+}));
+
+
+$router->add(Route::get('pass'), function() {
+    var_dump('pass');
+}));
+
 // Run the Router
 try {
     $router->run();
