@@ -110,16 +110,16 @@
         },
         {
             "name": "mihaiblebea/interceptor",
-            "version": "v1.0.0",
+            "version": "v1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/MihaiBlebea/Interceptor.git",
-                "reference": "5a8d6cf60cce48297ca2f8d6ed25b17bb26e357e"
+                "reference": "1cfe3538f981d444e938007421ec57bc44f21df7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/MihaiBlebea/Interceptor/zipball/5a8d6cf60cce48297ca2f8d6ed25b17bb26e357e",
-                "reference": "5a8d6cf60cce48297ca2f8d6ed25b17bb26e357e",
+                "url": "https://api.github.com/repos/MihaiBlebea/Interceptor/zipball/1cfe3538f981d444e938007421ec57bc44f21df7",
+                "reference": "1cfe3538f981d444e938007421ec57bc44f21df7",
                 "shasum": ""
             },
             "require": {
@@ -142,7 +142,7 @@
                 }
             ],
             "description": "Interceptor is a basic Router for PHP",
-            "time": "2018-11-09T21:23:55+00:00"
+            "time": "2018-11-11T23:28:32+00:00"
         },
         {
             "name": "paragonie/random_compat",

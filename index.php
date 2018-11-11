@@ -4,7 +4,10 @@ require_once __DIR__ . '/vendor/autoload.php';
 require_once __DIR__ . '/helpers.php';
 require_once __DIR__ . '/bootstrap.php';
 
-use Interceptor\Route;
+use Interceptor\{
+    Route,
+    Response
+};
 use App\Domain\User\{
     UserFactory,
     UserLoginService,
@@ -106,8 +109,7 @@ $router->add(Route::get('test', function() use ($container, $publisher) {
         'mihaiserban.blebea@gmail.com',
         'intrex');
 
-    echo $mihai->getBirthDate()->getAge();
-    echo json_encode($mihai);
+    Response::asJson($mihai);
 }));
 
 
