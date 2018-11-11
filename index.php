@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/helpers.php';
 require_once __DIR__ . '/bootstrap.php';
 
 use Interceptor\Route;
@@ -12,6 +13,7 @@ use App\Domain\User\{
 };
 use App\Infrastructure\User\UserRepo;
 use App\Application\UserLoginRequest;
+use App\Domain\Pass\Pass;
 
 
 $router  = $container->get(Interceptor\Router::class);
@@ -48,12 +50,13 @@ $router->add(new Route('register', function() use ($container) {
     $user = UserFactory::build(
         $user_repo->nextId(),
         'Mihai Blebea',
-        '07/11/1989',
+        '1989-11-07',
         'mihaiserban.blebea@gmail.com',
         'intrex');
 
     $user_repo->add($user);
-    var_dump($user_repo);
+    $saved_user = $user_repo->withEmail(new Email('mihaiserban.blebea@gmail.com'));
+    var_dump($saved_user);
 }));
 
 
@@ -77,13 +80,38 @@ $router->add(Route::get('test', function() use ($container, $publisher) {
 }));
 
 
-$router->add(Route::get('like'), function() {
+$router->add(Route::get('like', function() {
     var_dump('like');
 }));
 
 
-$router->add(Route::get('pass'), function() {
-    var_dump('pass');
+$router->add(Route::get('pass', function() use ($container) {
+    $user_repo = $container->get(App\Infrastructure\User\UserRepo::class);
+    $mihai = UserFactory::build(
+        $user_repo->nextId(),
+        'Mihai Blebea',
+        '1989-11-07',
+        'mihaiserban.blebea@gmail.com',
+        'intrex');
+    $user_repo->add($mihai);
+
+    $cristina = UserFactory::build(
+        $user_repo->nextId(),
+        'Cristina Aliman',
+        '1986-04-11',
+        'cristinaliman@gmail.com',
+        'intrex');
+    $user_repo->add($cristina);
+
+    $pass_repo = $container->get(App\Infrastructure\Pass\PassRepo::class);
+    $pass = new Pass(
+        $pass_repo->nextId(),
+        $mihai,
+        $cristina);
+    $pass_repo->add($pass);
+
+    $saved_pass = $pass_repo->withId($pass->getId());
+    dd($saved_pass);
 }));
 
 // Run the Router
