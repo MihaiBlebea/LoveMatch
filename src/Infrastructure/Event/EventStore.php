@@ -27,7 +27,7 @@ class EventStore
     {
         $this->persist->table('events')->create([
             'id'         => $this->nextId(),
-            'payload'    => $this->serialize($event),
+            'payload'    => json_encode($event),
             'occured_on' => $event->ocurredOn()->format('Y-m-d H:i:s')
         ]);
     }
@@ -35,16 +35,6 @@ class EventStore
     public function getSince()
     {
         // Get event that happened after a timestamp
-    }
-
-    private function serialize(DomainEventInterface $event)
-    {
-        $object = [
-            'name'       => get_class($event),
-            'body'       => $event->getBody(),
-            'occured_on' => $event->ocurredOn()->format('Y-m-d H:i:s')
-        ];
-        return json_encode($object);
     }
 
     private function deserialize()

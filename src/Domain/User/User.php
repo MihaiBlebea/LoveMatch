@@ -2,6 +2,7 @@
 
 namespace App\Domain\User;
 
+use JsonSerializable;
 use App\Domain\User\{
     UserId\UserIdInterface,
     Name\NameInterface,
@@ -11,7 +12,7 @@ use App\Domain\User\{
 };
 
 
-class User
+class User implements JsonSerializable
 {
     private $id;
 
@@ -61,5 +62,16 @@ class User
     public function getPassword()
     {
         return $this->password;
+    }
+
+    public function jsonSerialize()
+    {
+        return [
+            'id'         => (string) $this->getId(),
+            'name'       => (string) $this->getName(),
+            'birth_date' => (string) $this->getBirthDate(),
+            'email'      => (string) $this->getEmail(),
+            'password'   => (string) $this->getPassword()
+        ];
     }
 }
