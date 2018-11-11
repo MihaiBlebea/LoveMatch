@@ -69,7 +69,7 @@ class User implements JsonSerializable
         return [
             'id'         => (string) $this->getId(),
             'name'       => (string) $this->getName(),
-            'birth_date' => (string) $this->getBirthDate(),
+            'birth_date' => $this->getBirthDate(),
             'email'      => (string) $this->getEmail(),
             'password'   => (string) $this->getPassword()
         ];

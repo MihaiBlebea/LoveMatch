@@ -106,6 +106,7 @@ $router->add(Route::get('test', function() use ($container, $publisher) {
         'mihaiserban.blebea@gmail.com',
         'intrex');
 
+    echo $mihai->getBirthDate()->getAge();
     echo json_encode($mihai);
 }));
 

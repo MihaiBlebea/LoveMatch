@@ -2,8 +2,10 @@
 
 namespace App\Domain\User\BirthDate;
 
+use JsonSerializable;
 
-class BirthDate implements BirthDateInterface
+
+class BirthDate implements BirthDateInterface, JsonSerializable
 {
     private $date;
 
@@ -30,8 +32,24 @@ class BirthDate implements BirthDateInterface
         return $created_date && $created_date->format($this->format) === $date;
     }
 
+    public function getAge()
+    {
+        $now = new \DateTime();
+        $age = $now->diff($this->date);
+        return $age->y;
+    }
+
+    public function jsonSerialize()
+    {
+        return [
+            'date'   => (string) $this,
+            'format' => $this->format,
+            'age'    => $this->getAge()
+        ];
+    }
+
     public function __toString()
     {
-        return $this->getDate()->format('Y-m-d');
+        return $this->getDate()->format($this->format);
     }
 }
