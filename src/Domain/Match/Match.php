@@ -13,7 +13,7 @@ class Match
 
     private $conversation = [];
 
-    private $started_on;
+    private $created_on;
 
 
     public function __construct($id, $user_a, $user_b)
@@ -21,7 +21,7 @@ class Match
         $this->id         = $id;
         $this->users[]    = $user_a;
         $this->users[]    = $user_b;
-        $this->started_on = new \DateTime();;
+        $this->created_on = new \DateTime();;
     }
 
     public function getId()

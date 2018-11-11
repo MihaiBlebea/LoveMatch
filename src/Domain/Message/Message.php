@@ -2,6 +2,10 @@
 
 namespace App\Domain\Message;
 
+use App\Domain\User\User;
+use App\Domain\Message\MessageId\MessageIdInterface;
+use App\Domain\Message\Body\BodyInterface;
+
 
 class Message
 {
@@ -13,16 +17,26 @@ class Message
 
     private $body;
 
-    private $send_on;
+    private $sent_on;
 
 
-    public function __construct($id, $sender, $receiver, $body)
+    public function __construct(
+        MessageIdInterface $id,
+        User $sender,
+        User $receiver,
+        BodyInterface $body,
+        $sent_on = null)
     {
         $this->id       = $id;
         $this->sender   = $sender;
         $this->receiver = $receiver;
         $this->body     = $body;
-        $this->send_on  = new \DateTime();
+        if($sent_on === null)
+        {
+            $this->sent_on = new \DateTime();
+        } else {
+            $this->sent_on = $sent_on;
+        }
     }
 
     public function getId()
@@ -45,8 +59,8 @@ class Message
         return $this->body;
     }
 
-    public function getSendOn()
+    public function getSentOn()
     {
-        return $this->send_on;
+        return $this->sent_on;
     }
 }
