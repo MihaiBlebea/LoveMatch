@@ -9,7 +9,8 @@ use App\Domain\User\{
     UserFactory,
     UserLoginService,
     UserLogoutService,
-    Email\Email
+    Email\Email,
+    UserId\UserId
 };
 use App\Infrastructure\User\UserRepo;
 use App\Application\UserLoginRequest;
@@ -18,6 +19,18 @@ use App\Domain\Pass\{
     Pass
 };
 use App\Domain\Message\Message;
+
+
+// Init DomainEventPublisher
+// Get the publisher instance
+$publisher = App\Infrastructure\Event\DomainEventPublisher::instance();
+
+// Get the persist event listener
+$persist_listener = $container->get(App\Infrastructure\Event\PersistDomainEventSubscriber::class);
+
+// Subscribe the listener to the publisher
+$publisher->subscribe($persist_listener);
+
 
 
 $router  = $container->get(Interceptor\Router::class);
@@ -67,20 +80,23 @@ $router->add(new Route('register', function() use ($container) {
 // Test the domain event store
 $router->add(Route::get('test', function() use ($container, $publisher) {
 
-    // Get a random user from database
-    $user_repo = $container->get(App\Infrastructure\User\UserRepo::class);
-    $user = $user_repo->withEmail(new Email('mihaiserban.blebea@gmail.com'));
+    // // Get a random user from database
+    // $user_repo = $container->get(App\Infrastructure\User\UserRepo::class);
+    // $user = $user_repo->withEmail(new Email('mihaiserban.blebea@gmail.com'));
+    //
+    // // Get the the subscriber from the container, it can be any subscriber / listener
+    // $persist_listener = $container->get(App\Infrastructure\Event\PersistDomainEventSubscriber::class);
+    //
+    // // Subscribe the listener to the publisher
+    // $publisher->subscribe($persist_listener);
+    //
+    // // Publish the event
+    // $publisher->publish(new App\Domain\User\UserLoggedIn($user->getId()));
+    //
+    // var_dump($publisher);
 
-    // Get the the subscriber from the container, it can be any subscriber / listener
-    $persist_listener = $container->get(App\Infrastructure\Event\PersistDomainEventSubscriber::class);
-
-    // Subscribe the listener to the publisher
-    $publisher->subscribe($persist_listener);
-
-    // Publish the event
-    $publisher->publish(new App\Domain\User\UserLoggedIn($user->getId()));
-
-    var_dump($publisher);
+    // $publisher->publish(new App\Domain\User\UserLoggedIn(new UserId('7FC8643F-BEF8-4D78-BF9E-9FB89F124F12')));
+    // dd($publisher);
 }));
 
 
@@ -120,7 +136,7 @@ $router->add(Route::get('pass', function() use ($container) {
 
 
 $router->add(Route::get('message', function() {
-    
+
 }));
 
 // Run the Router

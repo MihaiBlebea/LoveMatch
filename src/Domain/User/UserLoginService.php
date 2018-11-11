@@ -3,6 +3,7 @@
 namespace App\Domain\User;
 
 use App\Application\UserLoginRequest;
+use App\Infrastructure\Event\DomainEventPublisher;
 
 
 class UserLoginService
@@ -25,6 +26,10 @@ class UserLoginService
         $user = $this->user_repo->withEmail($request->getEmail());
         if($user && $user->getPassword()->verifyPassword((string) $request->getPassword()))
         {
+            // Publish and event
+            $publisher = DomainEventPublisher::instance();
+            $publisher->publish(new UserLoggedIn($user->getId()));
+
             $_SESSION['auth'] = $user->getId();
             return $user;
         }

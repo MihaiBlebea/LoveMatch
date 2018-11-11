@@ -10,11 +10,7 @@ require_once __DIR__ . '/vendor/autoload.php';
 
 
 use League\Container\Container;
-use App\Infrastructure\Event\DomainEventPublisher;
 
-
-// Create the instance of DomainEventPublisher
-$publisher = DomainEventPublisher::instance();
 
 
 // Create the container
