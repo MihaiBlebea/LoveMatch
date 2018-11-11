@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Domain\Pass;
+namespace App\Domain\Like;
 
 use Domino\Interfaces\PersistenceInterface;
-use App\Domain\Pass\PassId\PassIdInterface;
+use App\Domain\Like\LikeId\LikeIdInterface;
 
 
-interface PassRepoInterface
+interface LikeRepoInterface
 {
     public function __construct(PersistenceInterface $persist);
 

@@ -16,7 +16,7 @@ $blueprint->table('users')
           ->add(Column::string('id')->primaryKey())
           ->add(Column::string('name')->notNull())
           ->add(Column::date('birth_date')->notNull())
-          ->add(Column::string('email')->notNull())
+          ->add(Column::string('email')->notNull()->isUnique())
           ->add(Column::string('password')->notNull())
           ->create();
 

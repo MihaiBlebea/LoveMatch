@@ -13,7 +13,10 @@ use App\Domain\User\{
 };
 use App\Infrastructure\User\UserRepo;
 use App\Application\UserLoginRequest;
-use App\Domain\Pass\Pass;
+use App\Domain\Pass\{
+    PassId\PassId,
+    Pass
+};
 
 
 $router  = $container->get(Interceptor\Router::class);
@@ -86,31 +89,34 @@ $router->add(Route::get('like', function() {
 
 
 $router->add(Route::get('pass', function() use ($container) {
-    $user_repo = $container->get(App\Infrastructure\User\UserRepo::class);
-    $mihai = UserFactory::build(
-        $user_repo->nextId(),
-        'Mihai Blebea',
-        '1989-11-07',
-        'mihaiserban.blebea@gmail.com',
-        'intrex');
-    $user_repo->add($mihai);
-
-    $cristina = UserFactory::build(
-        $user_repo->nextId(),
-        'Cristina Aliman',
-        '1986-04-11',
-        'cristinaliman@gmail.com',
-        'intrex');
-    $user_repo->add($cristina);
-
+    // $user_repo = $container->get(App\Infrastructure\User\UserRepo::class);
+    // $mihai = UserFactory::build(
+    //     $user_repo->nextId(),
+    //     'Mihai Blebea',
+    //     '1989-11-07',
+    //     'mihaiserban.blebea@gmail.com',
+    //     'intrex');
+    // $user_repo->add($mihai);
+    //
+    // $cristina = UserFactory::build(
+    //     $user_repo->nextId(),
+    //     'Cristina Aliman',
+    //     '1986-04-11',
+    //     'cristinaliman@gmail.com',
+    //     'intrex');
+    // $user_repo->add($cristina);
+    //
     $pass_repo = $container->get(App\Infrastructure\Pass\PassRepo::class);
-    $pass = new Pass(
-        $pass_repo->nextId(),
-        $mihai,
-        $cristina);
-    $pass_repo->add($pass);
+    // $pass = new Pass(
+    //     $pass_repo->nextId(),
+    //     $mihai,
+    //     $cristina);
+    // $pass_repo->add($pass);
+    //
+    // $saved_pass = $pass_repo->withId($pass->getId());
 
-    $saved_pass = $pass_repo->withId($pass->getId());
+    $passes = $pass_repo->withOwnerId(new PassId('7FC8643F-BEF8-4D78-BF9E-9FB89F124F12'));
+    dd($passes);
     dd($saved_pass);
 }));
 

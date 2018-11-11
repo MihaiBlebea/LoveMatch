@@ -19,9 +19,9 @@ class Pass
 
     public function __construct(PassIdInterface $id, User $owner, User $receiver, $created_on = null)
     {
-        $this->id         = $id;
-        $this->owner      = $owner;
-        $this->receiver   = $receiver;
+        $this->id       = $id;
+        $this->owner    = $owner;
+        $this->receiver = $receiver;
         if($created_on === null)
         {
             $this->created_on = new \DateTime();

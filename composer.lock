@@ -74,16 +74,16 @@
         },
         {
             "name": "mihaiblebea/domino",
-            "version": "v1.0.4",
+            "version": "v1.0.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/MihaiBlebea/Domino.git",
-                "reference": "e085b60372f9363dd11ed0b4d13199481398b66f"
+                "reference": "dedf4aa9d6d1016489ec66d13b6967e22ab9c35a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/MihaiBlebea/Domino/zipball/e085b60372f9363dd11ed0b4d13199481398b66f",
-                "reference": "e085b60372f9363dd11ed0b4d13199481398b66f",
+                "url": "https://api.github.com/repos/MihaiBlebea/Domino/zipball/dedf4aa9d6d1016489ec66d13b6967e22ab9c35a",
+                "reference": "dedf4aa9d6d1016489ec66d13b6967e22ab9c35a",
                 "shasum": ""
             },
             "require": {
@@ -106,7 +106,7 @@
                 }
             ],
             "description": "Domino is a basic ORM for PHP using mysql PDO",
-            "time": "2018-11-11T15:40:18+00:00"
+            "time": "2018-11-11T18:13:29+00:00"
         },
         {
             "name": "mihaiblebea/interceptor",
