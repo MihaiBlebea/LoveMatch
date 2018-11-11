@@ -24,15 +24,6 @@ class UserLoggedIn implements DomainEventInterface, JsonSerializable
         return $this->user_id;
     }
 
-    // public function getBody()
-    // {
-    //     return [
-    //         'user_id'    => $this->user_id->getId(),
-    //         'message'    => 'User has been logged in the app',
-    //         'occured_on' =>
-    //     ];
-    // }
-
     public function jsonSerialize()
     {
         return [
