@@ -19,6 +19,8 @@ class Message
 
     private $sent_on;
 
+    private $date_format = 'Y-m-d H:m:s';
+
 
     public function __construct(
         MessageIdInterface $id,
@@ -35,7 +37,7 @@ class Message
         {
             $this->sent_on = new \DateTime();
         } else {
-            $this->sent_on = $sent_on;
+            $this->sent_on = \DateTime::createFromFormat($this->date_format, $sent_on);
         }
     }
 
@@ -61,6 +63,6 @@ class Message
 
     public function getSentOn()
     {
-        return $this->sent_on;
+        return $this->sent_on->format($this->date_format);
     }
 }

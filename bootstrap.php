@@ -36,6 +36,12 @@ $container->add(App\Infrastructure\User\UserRepo::class)
 $container->add(App\Infrastructure\Pass\PassRepo::class)
           ->addArgument(Domino\Persistence::class);
 
+$container->add(App\Infrastructure\Like\LikeRepo::class)
+          ->addArgument(Domino\Persistence::class);
+
+$container->add(App\Infrastructure\Message\MessageRepo::class)
+          ->addArgument(Domino\Persistence::class);
+
 $container->add(App\Infrastructure\Event\EventStore::class)
           ->addArgument(Domino\Persistence::class);
 

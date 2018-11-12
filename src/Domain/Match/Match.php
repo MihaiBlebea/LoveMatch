@@ -2,6 +2,9 @@
 
 namespace App\Domain\Match;
 
+use App\Domain\Match\MatchId\MatchIdInterface;
+use App\Domain\User\User;
+
 
 class Match
 {
@@ -15,13 +18,24 @@ class Match
 
     private $created_on;
 
+    private $date_format = 'Y-m-d H:m:s';
 
-    public function __construct($id, $user_a, $user_b)
+
+    public function __construct(
+        MatchIdInterface $id,
+        User $user_a,
+        User $user_b,
+        $created_on = null)
     {
         $this->id         = $id;
         $this->users[]    = $user_a;
         $this->users[]    = $user_b;
-        $this->created_on = new \DateTime();;
+        if($created_on === null)
+        {
+            $this->created_on = new \DateTime();
+        } else {
+            $this->created_on = \DateTime::createFromFormat($this->date_format, $created_on);
+        }
     }
 
     public function getId()
@@ -39,9 +53,9 @@ class Match
         return $this->conversation;
     }
 
-    public function getStartedOn()
+    public function getCreatedOn()
     {
-        return $this->started_on;
+        return $this->created_on->format($this->date_format);
     }
 
     public function isActive()

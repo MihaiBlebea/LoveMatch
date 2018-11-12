@@ -21,7 +21,10 @@ use App\Domain\Pass\{
     PassId\PassId,
     Pass
 };
-use App\Domain\Message\Message;
+use App\Domain\Message\{
+    Body\Body,
+    Message
+};
 
 
 // Init DomainEventPublisher
@@ -50,7 +53,7 @@ $router->add(new Route('login', function() use ($request, $container) {
 
     try {
         $logged_user = $login_serv->execute(new UserLoginRequest($email, $password));
-        var_dump($logged_user);
+        Response::asJson($logged_user);
     } catch(\Exception $e) {
         var_dump($e->getMessage());
     }
@@ -71,12 +74,12 @@ $router->add(new Route('register', function() use ($container) {
         $user_repo->nextId(),
         'Mihai Blebea',
         '1989-11-07',
-        'mihaiserban.blebea@gmail.com',
+        'mihaiserban.blebea2@gmail.com',
         'intrex');
 
     $user_repo->add($user);
     $saved_user = $user_repo->withEmail(new Email('mihaiserban.blebea@gmail.com'));
-    var_dump($saved_user);
+    Response::asJson($saved_user);
 }));
 
 
@@ -148,9 +151,23 @@ $router->add(Route::get('pass', function() use ($container) {
 }));
 
 
-$router->add(Route::get('message', function() {
+$router->add(Route::get('message', function() use ($container) {
+    $user_repo = $container->get(App\Infrastructure\User\UserRepo::class);
+    $mihai = $user_repo->withEmail(new Email('mihaiserban.blebea@gmail.com'));
+    $cristina = $user_repo->withEmail(new Email('cristinaliman@gmail.com'));
 
+    $message_repo = $container->get(App\Infrastructure\Message\MessageRepo::class);
+
+    $message = new Message(
+        $message_repo->nextId(),
+        $mihai,
+        $cristina,
+        new Body('Ce mai faci Cristina?'));
+
+    $message_repo->add($message);
+    dd($message);
 }));
+
 
 // Run the Router
 try {

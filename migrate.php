@@ -32,3 +32,11 @@ $blueprint->table('passes')
           ->add(Column::string('receiver')->notNull())
           ->add(Column::datetime('created_on')->notNull())
           ->create();
+
+$blueprint->table('messages')
+          ->add(Column::string('id')->primaryKey())
+          ->add(Column::string('sender')->notNull())
+          ->add(Column::string('receiver')->notNull())
+          ->add(Column::text('body')->notNull())
+          ->add(Column::datetime('sent_on'))
+          ->create();

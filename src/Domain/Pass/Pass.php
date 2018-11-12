@@ -16,6 +16,8 @@ class Pass
 
     private $created_on;
 
+    private $date_format = 'Y-m-d H:m:s';
+
 
     public function __construct(PassIdInterface $id, User $owner, User $receiver, $created_on = null)
     {
@@ -26,7 +28,7 @@ class Pass
         {
             $this->created_on = new \DateTime();
         } else {
-            $this->created_on = $created_on;
+            $this->created_on = \DateTime::createFromFormat($this->date_format, $created_on);
         }
     }
 
@@ -47,6 +49,6 @@ class Pass
 
     public function getCreatedOn()
     {
-        return $this->created_on->format('Y-m-d');
+        return $this->created_on->format($this->date_format);
     }
 }

@@ -15,8 +15,14 @@ class Like
 
     private $date_time;
 
+    private $date_format = 'Y-m-d H:m:s';
 
-    public function __construct(LikeIdInterface $id, User $owner, User $receiver, $created_on = null)
+
+    public function __construct(
+        LikeIdInterface $id,
+        User $owner,
+        User $receiver,
+        $created_on = null)
     {
         $this->id       = $id;
         $this->owner    = $owner;
@@ -25,7 +31,7 @@ class Like
         {
             $this->created_on = new \DateTime();
         } else {
-            $this->created_on = $created_on;
+            $this->created_on = \DateTime::createFromFormat($this->date_format, $created_on);
         }
     }
 
@@ -46,6 +52,6 @@ class Like
 
     public function getCreatedOn()
     {
-        return $this->created_on->format('Y-m-d');
+        return $this->created_on->format($this->date_format);
     }
 }
