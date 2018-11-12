@@ -3,6 +3,7 @@
 namespace App\Domain\User;
 
 use JsonSerializable;
+use App\Domain\DomainEventInterface;
 use App\Domain\User\UserId\UserIdInterface;
 
 

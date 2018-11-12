@@ -2,11 +2,12 @@
 
 namespace App\Infrastructure\Event;
 
-use App\Domain\User\DomainEventInterface;
+use App\Domain\DomainEventInterface;
+use App\Domain\EventStoreInterface;
 use Ramsey\Uuid\Uuid;
 
 
-class EventStore
+class EventStore implements EventStoreInterface
 {
     private $events = [];
 

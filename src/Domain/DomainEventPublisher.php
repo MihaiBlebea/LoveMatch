@@ -1,8 +1,6 @@
 <?php
 
-namespace App\Infrastructure\Event;
-
-use App\Domain\User\DomainEventInterface;
+namespace App\Domain;
 
 
 class DomainEventPublisher

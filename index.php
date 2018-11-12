@@ -29,10 +29,10 @@ use App\Domain\Message\{
 
 // Init DomainEventPublisher
 // Get the publisher instance
-$publisher = App\Infrastructure\Event\DomainEventPublisher::instance();
+$publisher = App\Domain\DomainEventPublisher::instance();
 
 // Get the persist event listener
-$persist_listener = $container->get(App\Infrastructure\Event\PersistDomainEventSubscriber::class);
+$persist_listener = $container->get(App\Domain\PersistDomainEventSubscriber::class);
 
 // Subscribe the listener to the publisher
 $publisher->subscribe($persist_listener);

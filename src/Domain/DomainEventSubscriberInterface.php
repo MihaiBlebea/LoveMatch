@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Infrastructure\Event;
+namespace App\Domain;
 
 
 interface DomainEventSubscriberInterface

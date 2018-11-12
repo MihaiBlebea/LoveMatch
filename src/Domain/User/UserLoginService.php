@@ -3,7 +3,7 @@
 namespace App\Domain\User;
 
 use App\Application\UserLoginRequest;
-use App\Infrastructure\Event\DomainEventPublisher;
+use App\Domain\DomainEventPublisher;
 
 
 class UserLoginService

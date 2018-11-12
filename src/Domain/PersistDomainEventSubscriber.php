@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Infrastructure\Event;
+namespace App\Domain;
 
 
 class PersistDomainEventSubscriber implements DomainEventSubscriberInterface
@@ -8,7 +8,7 @@ class PersistDomainEventSubscriber implements DomainEventSubscriberInterface
     private $event_store;
 
 
-    public function __construct(EventStore $event_store)
+    public function __construct(EventStoreInterface $event_store)
     {
         $this->event_store = $event_store;
     }

@@ -45,5 +45,5 @@ $container->add(App\Infrastructure\Message\MessageRepo::class)
 $container->add(App\Infrastructure\Event\EventStore::class)
           ->addArgument(Domino\Persistence::class);
 
-$container->add(App\Infrastructure\Event\PersistDomainEventSubscriber::class)
+$container->add(App\Domain\PersistDomainEventSubscriber::class)
           ->addArgument(App\Infrastructure\Event\EventStore::class);
