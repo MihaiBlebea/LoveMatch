@@ -1,14 +1,9 @@
 <?php
 
-namespace App\Application;
-
-use App\Domain\User\{
-    Email\Email,
-    Password\Password
-};
+namespace App\Application\User;
 
 
-class UserLoginRequest
+class UserLoginRequest implements UserLoginRequestInterface
 {
     private $email;
 
@@ -23,11 +18,11 @@ class UserLoginRequest
 
     public function getEmail()
     {
-        return new Email($this->email);
+        return $this->email;
     }
 
     public function getPassword()
     {
-        return new Password($this->password);
+        return $this->password;
     }
 }

@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Domain\User;
+namespace App\Application;
 
 
-class UserLogoutService
+class LogoutService
 {
     public static function execute()
     {

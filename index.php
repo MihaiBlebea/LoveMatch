@@ -11,16 +11,16 @@ use Interceptor\{
 use App\Domain\User\{
     UserFactory,
     UserLoginService,
-    UserLogoutService,
     Email\Email,
     UserId\UserId
 };
 use App\Infrastructure\User\UserRepo;
-use App\Application\UserLoginRequest;
-use App\Domain\Pass\{
-    PassId\PassId,
-    Pass
-};
+use App\Application\User\UserLoginRequest;
+use App\Application\User\UserRegisterRequest;
+use App\Application\LogoutService;
+use App\Application\Pass\PassUserRequest;
+use App\Domain\Pass\PassUserService;
+
 use App\Domain\Message\{
     Body\Body,
     Message
@@ -45,14 +45,13 @@ $request = $container->get(Interceptor\Request::class);
 
 // Route for User login
 $router->add(new Route('login', function() use ($request, $container) {
-    $user_repo = $container->get(App\Infrastructure\User\UserRepo::class);
-    $login_serv = new UserLoginService($user_repo);
-
-    $email    = $request->retrive('email');
-    $password = $request->retrive('password');
+    $login_serv = $container->get(App\Domain\User\UserLoginService::class);
 
     try {
-        $logged_user = $login_serv->execute(new UserLoginRequest($email, $password));
+        $logged_user = $login_serv->execute(new UserLoginRequest(
+            $request->retrive('email'),
+            $request->retrive('password')
+        ));
         Response::asJson($logged_user);
     } catch(\Exception $e) {
         var_dump($e->getMessage());
@@ -62,24 +61,21 @@ $router->add(new Route('login', function() use ($request, $container) {
 
 // Route for User logout
 $router->add(Route::get('logout', function() {
-    UserLogoutService::execute();
+    LogoutService::execute();
     var_dump('User was logged out from the app');
 }));
 
 
 // Route for User register
-$router->add(new Route('register', function() use ($container) {
-    $user_repo = $container->get(App\Infrastructure\User\UserRepo::class);
-    $user = UserFactory::build(
-        $user_repo->nextId(),
-        'Mihai Blebea',
-        '1989-11-07',
-        'mihaiserban.blebea2@gmail.com',
-        'intrex');
-
-    $user_repo->add($user);
-    $saved_user = $user_repo->withEmail(new Email('mihaiserban.blebea@gmail.com'));
-    Response::asJson($saved_user);
+$router->add(Route::post('register', function($request) use ($container) {
+    $register_serv = $container->get(App\Domain\User\UserRegisterService::class);
+    $register_serv->execute(new UserRegisterRequest(
+        $request->dump()->name,
+        $request->dump()->birth_date,
+        $request->dump()->email,
+        $request->dump()->password
+    ));
+    Response::asJson([ 'result' => 'Job done' ]);
 }));
 
 
@@ -121,33 +117,12 @@ $router->add(Route::get('like', function() {
 }));
 
 
-$router->add(Route::get('pass', function() use ($container) {
-    $user_repo = $container->get(App\Infrastructure\User\UserRepo::class);
-    $mihai = UserFactory::build(
-        $user_repo->nextId(),
-        'Mihai Blebea',
-        '1989-11-07',
-        'mihaiserban.blebea@gmail.com',
-        'intrex');
-    $user_repo->add($mihai);
-
-    $cristina = UserFactory::build(
-        $user_repo->nextId(),
-        'Cristina Aliman',
-        '1986-04-11',
-        'cristinaliman@gmail.com',
-        'intrex');
-    $user_repo->add($cristina);
-
-    $pass_repo = $container->get(App\Infrastructure\Pass\PassRepo::class);
-    $pass = new Pass(
-        $pass_repo->nextId(),
-        $mihai,
-        $cristina);
-    $pass_repo->add($pass);
-
-    $saved_pass = $pass_repo->withId($pass->getId());
-    dd($saved_pass);
+$router->add(Route::post('pass', function($request) use ($container) {
+    $pass_user_srv = $container->get(App\Domain\Pass\PassUserService::class);
+    $pass_user_srv->execute(new PassUserRequest(
+        $request->dump()->owner,
+        $request->dump()->receiver
+    ));
 }));
 
 

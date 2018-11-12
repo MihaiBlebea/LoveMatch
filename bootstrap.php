@@ -47,3 +47,14 @@ $container->add(App\Infrastructure\Event\EventStore::class)
 
 $container->add(App\Domain\PersistDomainEventSubscriber::class)
           ->addArgument(App\Infrastructure\Event\EventStore::class);
+
+
+$container->add(App\Domain\User\UserLoginService::class)
+          ->addArgument(App\Infrastructure\User\UserRepo::class);
+
+$container->add(App\Domain\User\UserRegisterService::class)
+          ->addArgument(App\Infrastructure\User\UserRepo::class);
+
+$container->add(App\Domain\Pass\PassUserService::class)
+          ->addArgument(App\Infrastructure\User\UserRepo::class)
+          ->addArgument(App\Infrastructure\Pass\PassRepo::class);
