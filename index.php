@@ -8,12 +8,12 @@ use Interceptor\{
     Route,
     Response
 };
-use App\Domain\User\{
-    UserFactory,
-    UserLoginService,
-    Email\Email,
-    UserId\UserId
-};
+// use App\Domain\User\{
+//     UserFactory,
+//     UserLoginService,
+//     Email\Email,
+//     UserId\UserId
+// };
 use App\Infrastructure\User\UserRepo;
 use App\Application\User\UserLoginRequest;
 use App\Application\User\UserRegisterRequest;
@@ -111,15 +111,15 @@ $router->add(Route::get('test', function() use ($container, $publisher) {
     // $publisher->publish(new App\Domain\User\UserLoggedIn(new UserId('7FC8643F-BEF8-4D78-BF9E-9FB89F124F12')));
     // dd($publisher);
 
-    $user_repo = $container->get(App\Infrastructure\User\UserRepo::class);
-    $mihai = UserFactory::build(
-        $user_repo->nextId(),
-        'Mihai Blebea',
-        '1989-11-07',
-        'mihaiserban.blebea@gmail.com',
-        'intrex');
-
-    Response::asJson($mihai);
+    // $user_repo = $container->get(App\Infrastructure\User\UserRepo::class);
+    // $mihai = UserFactory::build(
+    //     $user_repo->nextId(),
+    //     'Mihai Blebea',
+    //     '1989-11-07',
+    //     'mihaiserban.blebea@gmail.com',
+    //     'intrex');
+    //
+    // Response::asJson($mihai);
 }));
 
 
