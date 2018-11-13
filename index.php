@@ -22,10 +22,8 @@ use App\Application\Pass\PassUserRequest;
 use App\Application\Like\LikeUserRequest;
 use App\Domain\Pass\PassUserService;
 
-use App\Domain\Message\{
-    Body\Body,
-    Message
-};
+use App\Application\Message\SendMessageRequest;
+use App\Domain\Message\SendMessageService;
 
 use App\Domain\Like\LikeId\LikeId;
 use App\Domain\Match\Match;
@@ -66,21 +64,29 @@ $router->add(new Route('login', function() use ($request, $container) {
 
 // Route for User logout
 $router->add(Route::get('logout', function() {
-    LogoutService::execute();
-    var_dump('User was logged out from the app');
+    try {
+        LogoutService::execute();
+        dd('User was logged out from the app');
+    } catch(\Exception $e) {
+        dd($e->getMessage());
+    }
 }));
 
 
 // Route for User register
 $router->add(Route::post('register', function($request) use ($container) {
     $register_serv = $container->get(App\Domain\User\UserRegisterService::class);
-    $register_serv->execute(new UserRegisterRequest(
-        $request->dump()->name,
-        $request->dump()->birth_date,
-        $request->dump()->email,
-        $request->dump()->password
-    ));
-    Response::asJson([ 'result' => 'Job done' ]);
+    try {
+        $register_serv->execute(new UserRegisterRequest(
+            $request->dump()->name,
+            $request->dump()->birth_date,
+            $request->dump()->email,
+            $request->dump()->password
+        ));
+        Response::asJson([ 'result' => 'Job done' ]);
+    } catch(\Exception $e) {
+        dd($e->getMessage());
+    }
 }));
 
 
@@ -148,19 +154,18 @@ $router->add(Route::post('message', function($request) use ($container) {
     $match_repo   = $container->get(App\Infrastructure\Match\MatchRepo::class);
     $message_repo = $container->get(App\Infrastructure\Message\MessageRepo::class);
 
-    $match = $match_repo->withId(new MatchId($request->dump()->match));
-    $mihai = $user_repo->withEmail(new Email('mihaiserban.blebea@gmail.com'));
-    $cristina = $user_repo->withEmail(new Email('cristinaliman@gmail.com'));
-
-    $message = new Message(
-        $message_repo->nextId(),
-        $mihai,
-        $cristina,
-        new Body('Ce mai faci Cristina?'),
-        $match);
-
-    $message_repo->add($message);
-    dd($message);
+    try {
+        $send_message_srv = new SendMessageService($message_repo, $user_repo, $match_repo);
+        $send_message_srv->execute(new SendMessageRequest(
+            $request->dump()->sender_id,
+            $request->dump()->receiver_id,
+            $request->dump()->match_id,
+            $request->dump()->body
+        ));
+        Response::asJson([ 'result' => 'Message was sent' ]);
+    } catch(\Exception $e) {
+        dd($e->getMessage());
+    }
 }));
 
 

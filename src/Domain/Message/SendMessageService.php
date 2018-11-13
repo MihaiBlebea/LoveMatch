@@ -2,7 +2,14 @@
 
 namespace App\Domain\Message;
 
+use App\Domain\Match\MatchId\MatchId;
+use App\Domain\Message\Message;
+use App\Domain\Message\Body\Body;
+use App\Domain\Message\MessageRepoInterface;
 use App\Domain\User\UserRepoInterface;
+use App\Domain\Match\MatchRepoInterface;
+use App\Domain\User\UserId\UserId;
+use App\Application\Message\SendMessageRequestInterface;
 
 
 class SendMessageService
@@ -21,22 +28,22 @@ class SendMessageService
     {
         $this->message_repo = $message_repo;
         $this->user_repo    = $user_repo;
+        $this->match_repo   = $match_repo;
     }
 
-    public function execute($match_id, )
+    public function execute(SendMessageRequestInterface $request)
     {
-        $user_repo = $container->get(App\Infrastructure\User\UserRepo::class);
-        $mihai = $user_repo->withEmail(new Email('mihaiserban.blebea@gmail.com'));
-        $cristina = $user_repo->withEmail(new Email('cristinaliman@gmail.com'));
-
-        $message_repo = $container->get(App\Infrastructure\Message\MessageRepo::class);
+        $match    = $this->match_repo->withId(new MatchId($request->getMatchId()));
+        $sender   = $this->user_repo->withId(new UserId($request->getSenderId()));
+        $receiver = $this->user_repo->withId(new UserId($request->getReceiverId()));
 
         $message = new Message(
-            $message_repo->nextId(),
-            $mihai,
-            $cristina,
-            new Body('Ce mai faci Cristina?'));
+            $this->message_repo->nextId(),
+            $sender,
+            $receiver,
+            new Body($request->getMessageBody()),
+            $match);
 
-        $message_repo->add($message);
+        $this->message_repo->add($message);
     }
 }
