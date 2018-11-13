@@ -19,12 +19,17 @@ use App\Application\User\UserLoginRequest;
 use App\Application\User\UserRegisterRequest;
 use App\Application\LogoutService;
 use App\Application\Pass\PassUserRequest;
+use App\Application\Like\LikeUserRequest;
 use App\Domain\Pass\PassUserService;
 
 use App\Domain\Message\{
     Body\Body,
     Message
 };
+
+use App\Domain\Like\LikeId\LikeId;
+use App\Domain\Match\Match;
+use App\Domain\MAtch\MatchId\MatchId;
 
 
 // Init DomainEventPublisher
@@ -112,35 +117,67 @@ $router->add(Route::get('test', function() use ($container, $publisher) {
 }));
 
 
-$router->add(Route::get('like', function() {
-    var_dump('like');
+$router->add(Route::post('like', function($request) use ($container) {
+    $like_user_srv = $container->get(App\Domain\Like\LikeUserService::class);
+    try {
+        $like_user_srv->execute(new LikeUserRequest(
+            $request->dump()->owner,
+            $request->dump()->receiver
+        ));
+    } catch(\Exception $e) {
+        dd($e->getMessage());
+    }
 }));
 
 
 $router->add(Route::post('pass', function($request) use ($container) {
     $pass_user_srv = $container->get(App\Domain\Pass\PassUserService::class);
-    $pass_user_srv->execute(new PassUserRequest(
-        $request->dump()->owner,
-        $request->dump()->receiver
-    ));
+    try {
+        $pass_user_srv->execute(new PassUserRequest(
+            $request->dump()->owner,
+            $request->dump()->receiver
+        ));
+    } catch(\Exception $e) {
+        dd($e->getMessage());
+    }
 }));
 
 
-$router->add(Route::get('message', function() use ($container) {
-    $user_repo = $container->get(App\Infrastructure\User\UserRepo::class);
+$router->add(Route::post('message', function($request) use ($container) {
+    $user_repo    = $container->get(App\Infrastructure\User\UserRepo::class);
+    $match_repo   = $container->get(App\Infrastructure\Match\MatchRepo::class);
+    $message_repo = $container->get(App\Infrastructure\Message\MessageRepo::class);
+
+    $match = $match_repo->withId(new MatchId($request->dump()->match));
     $mihai = $user_repo->withEmail(new Email('mihaiserban.blebea@gmail.com'));
     $cristina = $user_repo->withEmail(new Email('cristinaliman@gmail.com'));
-
-    $message_repo = $container->get(App\Infrastructure\Message\MessageRepo::class);
 
     $message = new Message(
         $message_repo->nextId(),
         $mihai,
         $cristina,
-        new Body('Ce mai faci Cristina?'));
+        new Body('Ce mai faci Cristina?'),
+        $match);
 
     $message_repo->add($message);
     dd($message);
+}));
+
+
+$router->add(Route::post('match', function($request) use ($container) {
+    $like_repo  = $container->get(App\Infrastructure\Like\LikeRepo::class);
+    $match_repo = $container->get(App\Infrastructure\Match\MatchRepo::class);
+
+    $like_a = $like_repo->withId(new LikeId($request->dump()->like_a));
+    $like_b = $like_repo->withId(new LikeId($request->dump()->like_b));
+
+    $match = new Match(
+        $match_repo->nextId(),
+        $like_a,
+        $like_b);
+
+    $match_repo->add($match);
+    dd($match);
 }));
 
 

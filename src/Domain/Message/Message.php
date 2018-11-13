@@ -5,6 +5,7 @@ namespace App\Domain\Message;
 use App\Domain\User\User;
 use App\Domain\Message\MessageId\MessageIdInterface;
 use App\Domain\Message\Body\BodyInterface;
+use App\Domain\Match\Match;
 
 
 class Message
@@ -17,6 +18,8 @@ class Message
 
     private $body;
 
+    private $match;
+
     private $sent_on;
 
     private $date_format = 'Y-m-d H:m:s';
@@ -27,12 +30,14 @@ class Message
         User $sender,
         User $receiver,
         BodyInterface $body,
+        Match $match,
         $sent_on = null)
     {
         $this->id       = $id;
         $this->sender   = $sender;
         $this->receiver = $receiver;
         $this->body     = $body;
+        $this->match    = $match;
         if($sent_on === null)
         {
             $this->sent_on = new \DateTime();
@@ -59,6 +64,11 @@ class Message
     public function getBody()
     {
         return $this->body;
+    }
+
+    public function getMatch()
+    {
+        return $this->match;
     }
 
     public function getSentOn()

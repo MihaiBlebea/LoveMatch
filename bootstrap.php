@@ -19,7 +19,8 @@ $container = new Container();
 // Add dependencies in the container
 $container->add(Interceptor\Request::class);
 
-$container->add(Interceptor\Router::class)->addArgument(Interceptor\Request::class);
+$container->add(Interceptor\Router::class)
+          ->addArgument(Interceptor\Request::class);
 
 $container->add(Domino\Connector::class)
           ->addArgument('mysql')
@@ -42,6 +43,9 @@ $container->add(App\Infrastructure\Like\LikeRepo::class)
 $container->add(App\Infrastructure\Message\MessageRepo::class)
           ->addArgument(Domino\Persistence::class);
 
+$container->add(App\Infrastructure\Match\MatchRepo::class)
+          ->addArgument(Domino\Persistence::class);
+
 $container->add(App\Infrastructure\Event\EventStore::class)
           ->addArgument(Domino\Persistence::class);
 
@@ -58,3 +62,7 @@ $container->add(App\Domain\User\UserRegisterService::class)
 $container->add(App\Domain\Pass\PassUserService::class)
           ->addArgument(App\Infrastructure\User\UserRepo::class)
           ->addArgument(App\Infrastructure\Pass\PassRepo::class);
+
+$container->add(App\Domain\Like\LikeUserService::class)
+          ->addArgument(App\Infrastructure\User\UserRepo::class)
+          ->addArgument(App\Infrastructure\Like\LikeRepo::class);

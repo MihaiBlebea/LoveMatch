@@ -12,6 +12,7 @@ use App\Domain\Like\{
 };
 use App\Infrastructure\User\UserRepo;
 use App\Domain\User\UserId\UserId;
+use App\Domain\User\UserId\UserIdInterface;
 
 
 class LikeRepo implements LikeRepoInterface
@@ -33,7 +34,7 @@ class LikeRepo implements LikeRepoInterface
 
     public function add(Like $like)
     {
-        $this->persist->table('Likees')->create([
+        $this->persist->table('likes')->create([
             'id'         => $like->getId(),
             'owner'      => $like->getOwner()->getId(),
             'receiver'   => $like->getReceiver()->getId(),
@@ -51,7 +52,7 @@ class LikeRepo implements LikeRepoInterface
 
     public function remove(Like $like)
     {
-        $this->persist->table('Likees')->where('id', (string) $like->getId())->delete();
+        $this->persist->table('likes')->where('id', (string) $like->getId())->delete();
     }
 
     public function removeAll(Array $likes)
@@ -64,7 +65,7 @@ class LikeRepo implements LikeRepoInterface
 
     public function withId(LikeIdInterface $id)
     {
-        $like = $this->persist->table('Likees')->where('id', $id)->selectOne();
+        $like = $this->persist->table('likes')->where('id', $id)->selectOne();
         if($like)
         {
             $user_repo = new UserRepo($this->persist);
@@ -80,21 +81,41 @@ class LikeRepo implements LikeRepoInterface
 
     public function withOwnerId(LikeIdInterface $id)
     {
-        $likes = $this->persist->table('Likees')->where('owner', (string) $id->getId())->select();
+        $likes = $this->persist->table('likes')->where('owner', (string) $id->getId())->select();
 
         if(count($likes) > 0)
         {
             $user_repo = new UserRepo($this->persist);
             foreach($likes as $like)
             {
-                $this->Likees[] = new Like(
+                $this->likes[] = new Like(
                     new LikeId($like['id']),
                     $user_repo->withId(new UserId($like['owner'])),
                     $user_repo->withId(new UserId($like['receiver'])),
                     $like['created_on']
                 );
             }
-            return $this->Likees;
+            return $this->likes;
+        }
+        return null;
+    }
+
+    public function withUserIds(UserIdInterface $user_a_id, UserIdInterface $user_b_id)
+    {
+        $like = $this->persist->table('likes')
+                              ->where('owner', (string) $user_a_id->getId())
+                              ->where('receiver', (string) $user_b_id->getId())
+                              ->selectOne();
+
+        if($like)
+        {
+            $user_repo = new UserRepo($this->persist);
+            return new Like(
+                new LikeId($like['id']),
+                $user_repo->withId(new UserId($like['owner'])),
+                $user_repo->withId(new UserId($like['receiver'])),
+                $like['created_on']
+            );
         }
         return null;
     }

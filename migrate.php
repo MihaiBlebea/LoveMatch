@@ -33,10 +33,25 @@ $blueprint->table('passes')
           ->add(Column::datetime('created_on')->notNull())
           ->create();
 
+$blueprint->table('likes')
+          ->add(Column::string('id')->primaryKey())
+          ->add(Column::string('owner')->notNull())
+          ->add(Column::string('receiver')->notNull())
+          ->add(Column::datetime('created_on')->notNull())
+          ->create();
+
 $blueprint->table('messages')
           ->add(Column::string('id')->primaryKey())
           ->add(Column::string('sender')->notNull())
           ->add(Column::string('receiver')->notNull())
           ->add(Column::text('body')->notNull())
+          ->add(Column::string('match_id')->notNull())
           ->add(Column::datetime('sent_on'))
+          ->create();
+
+$blueprint->table('matches')
+          ->add(Column::string('id')->primaryKey())
+          ->add(Column::string('user_a')->notNull())
+          ->add(Column::string('user_b')->notNull())
+          ->add(Column::datetime('created_on'))
           ->create();

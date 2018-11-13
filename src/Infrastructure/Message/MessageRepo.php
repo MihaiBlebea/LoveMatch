@@ -33,6 +33,7 @@ class MessageRepo implements MessageRepoInterface
             'sender'   => (string) $message->getSender()->getId(),
             'receiver' => (string) $message->getReceiver()->getId(),
             'body'     => (string) $message->getBody(),
+            'match_id' => (string) $message->getMatch()->getId(),
             'sent_on'  => (string) $message->getSentOn()
         ]);
     }

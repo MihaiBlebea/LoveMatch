@@ -3,7 +3,7 @@
 namespace App\Domain\Match;
 
 use App\Domain\Match\MatchId\MatchIdInterface;
-use App\Domain\User\User;
+use App\Domain\Like\Like;
 
 
 class Match
@@ -12,7 +12,7 @@ class Match
 
     private $active = true;
 
-    private $users = []
+    private $users = [];
 
     private $conversation = [];
 
@@ -23,18 +23,38 @@ class Match
 
     public function __construct(
         MatchIdInterface $id,
-        User $user_a,
-        User $user_b,
+        Like $like_a,
+        Like $like_b,
         $created_on = null)
     {
+        if(!$this->assertUsersMatch($like_a, $like_b))
+        {
+            throw new \Exception('Users doesn\'t match', 1);
+        }
         $this->id         = $id;
-        $this->users[]    = $user_a;
-        $this->users[]    = $user_b;
+        $this->users[]    = (string) $like_a->getOwner()->getId();
+        $this->users[]    = (string) $like_b->getOwner()->getId();
         if($created_on === null)
         {
             $this->created_on = new \DateTime();
         } else {
             $this->created_on = \DateTime::createFromFormat($this->date_format, $created_on);
+        }
+    }
+
+    private function assertUsersMatch(Like $like_a, Like $like_b)
+    {
+        $like_a_owner_id    = (string) $like_a->getOwner()->getId();
+        $like_a_receiver_id = (string) $like_a->getReceiver()->getId();
+
+        $like_b_owner_id    = (string) $like_b->getOwner()->getId();
+        $like_b_receiver_id = (string) $like_b->getReceiver()->getId();
+
+        if($like_a_owner_id === $like_b_receiver_id && $like_a_receiver_id == $like_b_owner_id)
+        {
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -69,7 +89,7 @@ class Match
         {
             throw new \Exception('Message does not belong to the match users', 1);
         }
-        $this->conversation[] = $message
+        $this->conversation[] = $message;
     }
 
     private function validateMessage($message)
