@@ -25,20 +25,6 @@ $blueprint->table('events')
           ->add(Column::text('payload')->notNull())
           ->add(Column::datetime('occured_on')->notNull())
           ->create();
-//
-// $blueprint->table('passes')
-//           ->add(Column::string('id')->primaryKey())
-//           ->add(Column::string('owner')->notNull())
-//           ->add(Column::string('receiver')->notNull())
-//           ->add(Column::datetime('created_on')->notNull())
-//           ->create();
-//
-// $blueprint->table('likes')
-//           ->add(Column::string('id')->primaryKey())
-//           ->add(Column::string('owner')->notNull())
-//           ->add(Column::string('receiver')->notNull())
-//           ->add(Column::datetime('created_on')->notNull())
-//           ->create();
 
 $blueprint->table('actions')
           ->add(Column::string('id')->primaryKey())
