@@ -13,17 +13,9 @@ use App\Infrastructure\User\UserRepo;
 use App\Application\User\UserLoginRequest;
 use App\Application\User\UserRegisterRequest;
 use App\Application\LogoutService;
-use App\Application\Pass\PassUserRequest;
-use App\Application\Like\LikeUserRequest;
 use App\Application\Match\NewMatchRequest;
 use App\Application\Message\SendMessageRequest;
-
-// use App\Domain\CreatedOn\CreatedOn;
-// use App\Domain\Action\Action;
-// use App\Domain\Action\ActionId\ActionId;
-// use App\Domain\Action\Type\Type;
-// use App\Domain\User\UserId\UserId;
-use App\Domain\Action\ActionFactory;
+use App\Application\Action\CreateActionRequest;
 
 
 // Init DomainEventPublisher
@@ -114,57 +106,18 @@ $router->add(Route::get('test', function($request) use ($container, $publisher) 
     //
     // $publisher->publish(new App\Domain\User\UserLoggedIn(new UserId('7FC8643F-BEF8-4D78-BF9E-9FB89F124F12')));
     // dd($publisher);
+}));
 
-    $mihai_id    = 'BEA33193-ABA1-4C81-A26C-0E6FBCA1B7A3';
-    $cristina_id = 'F5027A89-3E1E-4828-B31C-E18D1020352F';
 
+$router->add(Route::post('action', function($request) use ($container) {
+    $create_action_serv = $container->get(App\Application\Action\CreateActionService::class);
     try {
-        // $action = new Action(
-        //     new ActionId('F5027A89-3E1E-4828-B31C-E18D1020352F'),
-        //     Type::like(),
-        //     new UserId($mihai_id),
-        //     new UserId($cristina_id),
-        //     new CreatedOn()
-        // );
-        $action = ActionFactory::build(
-            'F5027A89-3E1E-4828-B31C-E18D1020352F',
-            'pass',
-            $mihai_id,
-            $cristina_id);
-        // $action->setType( Type::pass(), new CreatedOn() );
+        $action = $create_action_serv->execute(new CreateActionRequest(
+            $request->dump()->type,
+            $request->dump()->sender_id,
+            $request->dump()->receiver_id
+        ));
         Response::asJson($action);
-    } catch(\Exception $e) {
-        dd($e->getMessage());
-    }
-    // try {
-    //     $created_on = new CreatedOn('1989-11-07 7:20');
-    //     dd($created_on->getDate());
-    // } catch(\Exception $e) {
-    //     dd($e->getMessage());
-    // }
-}));
-
-
-$router->add(Route::post('like', function($request) use ($container) {
-    $like_user_srv = $container->get(App\Application\Like\LikeUserService::class);
-    try {
-        $like_user_srv->execute(new LikeUserRequest(
-            $request->dump()->owner,
-            $request->dump()->receiver
-        ));
-    } catch(\Exception $e) {
-        dd($e->getMessage());
-    }
-}));
-
-
-$router->add(Route::post('pass', function($request) use ($container) {
-    $pass_user_srv = $container->get(App\Application\Pass\PassUserService::class);
-    try {
-        $pass_user_srv->execute(new PassUserRequest(
-            $request->dump()->owner,
-            $request->dump()->receiver
-        ));
     } catch(\Exception $e) {
         dd($e->getMessage());
     }

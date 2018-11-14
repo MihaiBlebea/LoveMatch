@@ -13,8 +13,8 @@ interface ActionInterface
     public function __construct(
         ActionIdInterface $id,
         TypeInterface $type,
-        UserIdInterface $sender,
-        UserIdInterface $receiver,
+        UserIdInterface $sender_id,
+        UserIdInterface $receiver_id,
         CreatedOnInterface $created_on);
 
     public function getId();
@@ -25,9 +25,9 @@ interface ActionInterface
         TypeInterface $type,
         CreatedOnInterface $created_on);
 
-    public function getSender();
+    public function getSenderId();
 
-    public function getReceiver();
+    public function getReceiverId();
 
     public function getCreatedOn();
 

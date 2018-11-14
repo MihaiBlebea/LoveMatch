@@ -14,13 +14,13 @@ class ActionFactory
     public static function build(
         String $id,
         String $type,
-        String $owner_id,
+        String $sender_id,
         String $receiver_id)
     {
         return new Action(
             new ActionId($id),
             new Type($type),
-            new UserId($owner_id),
+            new UserId($sender_id),
             new UserId($receiver_id),
             new CreatedOn());
     }

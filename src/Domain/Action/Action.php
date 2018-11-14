@@ -16,9 +16,9 @@ class Action implements ActionInterface, JsonSerializable
 
     private $type;
 
-    private $sender;
+    private $sender_id;
 
-    private $receiver;
+    private $receiver_id;
 
     private $created_on;
 
@@ -26,15 +26,15 @@ class Action implements ActionInterface, JsonSerializable
     public function __construct(
         ActionIdInterface $id,
         TypeInterface $type,
-        UserIdInterface $sender,
-        UserIdInterface $receiver,
+        UserIdInterface $sender_id,
+        UserIdInterface $receiver_id,
         CreatedOnInterface $created_on)
     {
-        $this->id         = $id;
-        $this->type       = $type;
-        $this->sender     = $sender;
-        $this->receiver   = $receiver;
-        $this->created_on = $created_on;
+        $this->id          = $id;
+        $this->type        = $type;
+        $this->sender_id   = $sender_id;
+        $this->receiver_id = $receiver_id;
+        $this->created_on  = $created_on;
     }
 
     public function getId()
@@ -55,14 +55,14 @@ class Action implements ActionInterface, JsonSerializable
         $this->created_on = $created_on;
     }
 
-    public function getSender()
+    public function getSenderId()
     {
-        return $this->sender;
+        return $this->sender_id;
     }
 
-    public function getReceiver()
+    public function getReceiverId()
     {
-        return $this->receiver;
+        return $this->receiver_id;
     }
 
     public function getCreatedOn()
@@ -76,8 +76,8 @@ class Action implements ActionInterface, JsonSerializable
             'id'    => (string) $this->getId(),
             'type'  => (string) $this->getType(),
             'users' => [
-                'sender'   => (string) $this->getSender(),
-                'receiver' => (string) $this->getReceiver()
+                'sender'   => (string) $this->getSenderId(),
+                'receiver' => (string) $this->getReceiverId()
             ],
             'created_on' => (string) $this->getCreatedOn()
         ];
