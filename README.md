@@ -7,3 +7,5 @@
 - Interesting ted talk: "https://www.youtube.com/watch?v=ajhqScWECMo"
 
 - Domain schema: "https://docs.google.com/drawings/d/1B1_yl7bXzm5XdUvsaoNCmPVi7DAMwaAHpmem-DPGtnY/edit"
+
+- Patterns of Enterprise Application Architecture: "file:///Users/mihai.blebea/Downloads/Patterns%20of%20Enterprise%20Application%20Architecture%20-%20Martin%20Fowler.pdf"

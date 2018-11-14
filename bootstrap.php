@@ -10,7 +10,14 @@ require_once __DIR__ . '/vendor/autoload.php';
 
 
 use League\Container\Container;
+use Whoops\Run;
+use Whoops\Handler\PrettyPageHandler;
 
+
+// Bootstrap Whoops debug
+$whoops = new Run();
+$whoops->pushHandler(new PrettyPageHandler());
+$whoops->register();
 
 
 // Create the container
