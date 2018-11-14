@@ -18,6 +18,12 @@ use App\Application\Like\LikeUserRequest;
 use App\Application\Match\NewMatchRequest;
 use App\Application\Message\SendMessageRequest;
 
+use App\Domain\CreatedOn\CreatedOn;
+use App\Domain\Action\Action;
+use App\Domain\Action\ActionId\ActionId;
+use App\Domain\Action\Type\Type;
+use App\Domain\User\UserId\UserId;
+
 
 // Init DomainEventPublisher
 // Get the publisher instance
@@ -88,7 +94,7 @@ $router->add(Route::get('users', function($request) use ($container) {
 
 
 // Test the domain event store
-$router->add(Route::get('test', function() use ($container, $publisher) {
+$router->add(Route::get('test', function($request) use ($container, $publisher) {
 
     // // Get a random user from database
     // $user_repo = $container->get(App\Infrastructure\User\UserRepo::class);
@@ -107,6 +113,29 @@ $router->add(Route::get('test', function() use ($container, $publisher) {
     //
     // $publisher->publish(new App\Domain\User\UserLoggedIn(new UserId('7FC8643F-BEF8-4D78-BF9E-9FB89F124F12')));
     // dd($publisher);
+
+    $mihai_id    = 'BEA33193-ABA1-4C81-A26C-0E6FBCA1B7A3';
+    $cristina_id = 'F5027A89-3E1E-4828-B31C-E18D1020352F';
+
+    try {
+        $action = new Action(
+            new ActionId('F5027A89-3E1E-4828-B31C-E18D1020352F'),
+            Type::like(),
+            new UserId($mihai_id),
+            new UserId($cristina_id),
+            new CreatedOn()
+        );
+        $action->setType( Type::pass(), new CreatedOn() );
+        Response::asJson($action);
+    } catch(\Exception $e) {
+        dd($e->getMessage());
+    }
+    // try {
+    //     $created_on = new CreatedOn('1989-11-07 7:20');
+    //     dd($created_on->getDate());
+    // } catch(\Exception $e) {
+    //     dd($e->getMessage());
+    // }
 }));
 
 
