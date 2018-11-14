@@ -16,6 +16,7 @@ use App\Application\LogoutService;
 use App\Application\Pass\PassUserRequest;
 use App\Application\Like\LikeUserRequest;
 use App\Application\Match\NewMatchRequest;
+use App\Application\Message\SendMessageRequest;
 
 
 // Init DomainEventPublisher

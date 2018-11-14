@@ -33,6 +33,11 @@ class Message
         Match $match,
         $sent_on = null)
     {
+        if(!$this->assertUsersAreMatched($sender, $receiver, $match))
+        {
+            throw new \Exception('Users are not matched', 1);
+        }
+
         $this->id       = $id;
         $this->sender   = $sender;
         $this->receiver = $receiver;
@@ -44,6 +49,15 @@ class Message
         } else {
             $this->sent_on = \DateTime::createFromFormat($this->date_format, $sent_on);
         }
+    }
+
+    private function assertUsersAreMatched(
+        User $sender,
+        User $receiver,
+        Match $match)
+    {
+        return in_array((string) $sender->getId(), $match->getUsers()) &&
+                in_array((string) $receiver->getId(), $match->getUsers());
     }
 
     public function getId()
