@@ -96,9 +96,16 @@ class UserRepo implements UserRepoInterface
         return null;
     }
 
-    public function all()
+    public function all(Int $count = null)
     {
-        $users = $this->persist->table('users')->selectAll();
+        $query = $this->persist->table('users');
+        if($count === null)
+        {
+            $users = $query->selectAll();
+        } else {
+            $users = $query->limit($count)->select();
+        }
+
         if($users)
         {
             foreach($users as $user)
