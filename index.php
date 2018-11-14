@@ -13,10 +13,9 @@ use App\Infrastructure\User\UserRepo;
 use App\Application\User\UserLoginRequest;
 use App\Application\User\UserRegisterRequest;
 use App\Application\LogoutService;
-use App\Application\Pass\PassUserRequest;
-use App\Application\Like\LikeUserRequest;
 use App\Application\Match\NewMatchRequest;
 use App\Application\Message\SendMessageRequest;
+use App\Application\Action\CreateActionRequest;
 
 
 // Init DomainEventPublisher
@@ -88,7 +87,7 @@ $router->add(Route::get('users', function($request) use ($container) {
 
 
 // Test the domain event store
-$router->add(Route::get('test', function() use ($container, $publisher) {
+$router->add(Route::get('test', function($request) use ($container, $publisher) {
 
     // // Get a random user from database
     // $user_repo = $container->get(App\Infrastructure\User\UserRepo::class);
@@ -110,26 +109,15 @@ $router->add(Route::get('test', function() use ($container, $publisher) {
 }));
 
 
-$router->add(Route::post('like', function($request) use ($container) {
-    $like_user_srv = $container->get(App\Application\Like\LikeUserService::class);
+$router->add(Route::post('action', function($request) use ($container) {
+    $create_action_serv = $container->get(App\Application\Action\CreateActionService::class);
     try {
-        $like_user_srv->execute(new LikeUserRequest(
-            $request->dump()->owner,
-            $request->dump()->receiver
+        $action = $create_action_serv->execute(new CreateActionRequest(
+            $request->dump()->type,
+            $request->dump()->sender_id,
+            $request->dump()->receiver_id
         ));
-    } catch(\Exception $e) {
-        dd($e->getMessage());
-    }
-}));
-
-
-$router->add(Route::post('pass', function($request) use ($container) {
-    $pass_user_srv = $container->get(App\Application\Pass\PassUserService::class);
-    try {
-        $pass_user_srv->execute(new PassUserRequest(
-            $request->dump()->owner,
-            $request->dump()->receiver
-        ));
+        Response::asJson($action);
     } catch(\Exception $e) {
         dd($e->getMessage());
     }

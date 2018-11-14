@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Domain\Pass\PassId;
+namespace App\Domain\Action\ActionId;
 
 
-interface PassIdInterface
+interface ActionIdInterface
 {
     public function __construct($id);
 

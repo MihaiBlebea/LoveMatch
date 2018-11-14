@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Domain\Pass\PassId;
+namespace App\Domain\Action\ActionId;
 
 
-class PassId implements PassIdInterface
+class ActionId implements ActionIdInterface
 {
     private $id;
 

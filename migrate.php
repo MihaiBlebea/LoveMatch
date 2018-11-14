@@ -26,17 +26,11 @@ $blueprint->table('events')
           ->add(Column::datetime('occured_on')->notNull())
           ->create();
 
-$blueprint->table('passes')
+$blueprint->table('actions')
           ->add(Column::string('id')->primaryKey())
-          ->add(Column::string('owner')->notNull())
-          ->add(Column::string('receiver')->notNull())
-          ->add(Column::datetime('created_on')->notNull())
-          ->create();
-
-$blueprint->table('likes')
-          ->add(Column::string('id')->primaryKey())
-          ->add(Column::string('owner')->notNull())
-          ->add(Column::string('receiver')->notNull())
+          ->add(Column::string('type')->notNull())
+          ->add(Column::string('sender_id')->notNull())
+          ->add(Column::string('receiver_id')->notNull())
           ->add(Column::datetime('created_on')->notNull())
           ->create();
 

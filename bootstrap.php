@@ -41,10 +41,7 @@ $container->add(Domino\Persistence::class)
 $container->add(App\Infrastructure\User\UserRepo::class)
           ->addArgument(Domino\Persistence::class);
 
-$container->add(App\Infrastructure\Pass\PassRepo::class)
-          ->addArgument(Domino\Persistence::class);
-
-$container->add(App\Infrastructure\Like\LikeRepo::class)
+$container->add(App\Infrastructure\Action\ActionRepo::class)
           ->addArgument(Domino\Persistence::class);
 
 $container->add(App\Infrastructure\Message\MessageRepo::class)
@@ -66,13 +63,8 @@ $container->add(App\Domain\User\UserLoginService::class)
 $container->add(App\Application\User\UserRegisterService::class)
           ->addArgument(App\Infrastructure\User\UserRepo::class);
 
-$container->add(App\Application\Pass\PassUserService::class)
-          ->addArgument(App\Infrastructure\User\UserRepo::class)
-          ->addArgument(App\Infrastructure\Pass\PassRepo::class);
-
-$container->add(App\Application\Like\LikeUserService::class)
-          ->addArgument(App\Infrastructure\User\UserRepo::class)
-          ->addArgument(App\Infrastructure\Like\LikeRepo::class);
+$container->add(App\Application\Action\CreateActionService::class)
+          ->addArgument(App\Infrastructure\Action\ActionRepo::class);
 
 $container->add(App\Application\Message\SendMessageService::class)
           ->addArgument(App\Infrastructure\Message\MessageRepo::class)
