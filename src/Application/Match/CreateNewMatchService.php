@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Match;
+namespace App\Application\Match;
 
 use App\Domain\Match\MatchRepoInterface;
 use App\Domain\Match\Match;
@@ -35,5 +35,6 @@ class CreateNewMatchService
             $like_b);
 
         $this->match_repo->add($match);
+        return $match;
     }
 }

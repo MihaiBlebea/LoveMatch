@@ -95,4 +95,24 @@ class UserRepo implements UserRepoInterface
         }
         return null;
     }
+
+    public function all()
+    {
+        $users = $this->persist->table('users')->selectAll();
+        if($users)
+        {
+            foreach($users as $user)
+            {
+                $this->users[] = UserFactory::build(
+                    $user['id'],
+                    $user['name'],
+                    $user['birth_date'],
+                    $user['email'],
+                    $user['password']
+                );
+            }
+            return $this->users;
+        }
+        return null;
+    }
 }

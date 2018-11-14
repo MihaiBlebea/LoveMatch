@@ -1,34 +1,35 @@
 <?php
 
-namespace App\Domain\Like;
+namespace App\Application\Pass;
 
 use App\Domain\User\UserRepoInterface;
 use App\Domain\User\UserId\UserId;
-use App\Application\Like\LikeUserRequestInterface;
+use App\Domain\Pass\Pass;
+use App\Domain\Pass\PassRepoInterface;
 
 
-class LikeUserService
+class PassUserService
 {
-    private $like_repo;
+    private $pass_repo;
 
     private $user_repo;
 
 
     public function __construct(
         UserRepoInterface $user_repo,
-        LikeRepoInterface $like_repo)
+        PassRepoInterface $pass_repo)
     {
         $this->user_repo = $user_repo;
-        $this->like_repo = $like_repo;
+        $this->pass_repo = $pass_repo;
     }
 
-    public function execute(LikeUserRequestInterface $request)
+    public function execute(PassUserRequestInterface $request)
     {
-        $like = new Like(
-            $this->like_repo->nextId(),
+        $pass = new Pass(
+            $this->pass_repo->nextId(),
             $this->user_repo->withId(new UserId($request->getOwnerId())),
             $this->user_repo->withId(new UserId($request->getReceiverId()))
         );
-        $this->like_repo->add($like);
+        $this->pass_repo->add($pass);
     }
 }

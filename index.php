@@ -8,26 +8,14 @@ use Interceptor\{
     Route,
     Response
 };
-// use App\Domain\User\{
-//     UserFactory,
-//     UserLoginService,
-//     Email\Email,
-//     UserId\UserId
-// };
+
 use App\Infrastructure\User\UserRepo;
 use App\Application\User\UserLoginRequest;
 use App\Application\User\UserRegisterRequest;
 use App\Application\LogoutService;
 use App\Application\Pass\PassUserRequest;
 use App\Application\Like\LikeUserRequest;
-use App\Domain\Pass\PassUserService;
-
-use App\Application\Message\SendMessageRequest;
-use App\Domain\Message\SendMessageService;
-
-use App\Domain\Like\LikeId\LikeId;
-use App\Domain\Match\Match;
-use App\Domain\MAtch\MatchId\MatchId;
+use App\Application\Match\NewMatchRequest;
 
 
 // Init DomainEventPublisher
@@ -51,13 +39,13 @@ $router->add(new Route('login', function() use ($request, $container) {
     $login_serv = $container->get(App\Domain\User\UserLoginService::class);
 
     try {
-        $logged_user = $login_serv->execute(new UserLoginRequest(
+        $user = $login_serv->execute(new UserLoginRequest(
             $request->retrive('email'),
             $request->retrive('password')
         ));
-        Response::asJson($logged_user);
+        Response::asJson($user);
     } catch(\Exception $e) {
-        var_dump($e->getMessage());
+        dd($e->getMessage());
     }
 }));
 
@@ -66,7 +54,7 @@ $router->add(new Route('login', function() use ($request, $container) {
 $router->add(Route::get('logout', function() {
     try {
         LogoutService::execute();
-        dd('User was logged out from the app');
+        Response::asJson([ 'result' => 'User was logged out from the app' ]);
     } catch(\Exception $e) {
         dd($e->getMessage());
     }
@@ -75,18 +63,26 @@ $router->add(Route::get('logout', function() {
 
 // Route for User register
 $router->add(Route::post('register', function($request) use ($container) {
-    $register_serv = $container->get(App\Domain\User\UserRegisterService::class);
+    $register_serv = $container->get(App\Application\User\UserRegisterService::class);
     try {
-        $register_serv->execute(new UserRegisterRequest(
+        $user = $register_serv->execute(new UserRegisterRequest(
             $request->dump()->name,
             $request->dump()->birth_date,
             $request->dump()->email,
             $request->dump()->password
         ));
-        Response::asJson([ 'result' => 'Job done' ]);
+        Response::asJson($user);
     } catch(\Exception $e) {
         dd($e->getMessage());
     }
+}));
+
+
+// Get all users
+$router->add(Route::get('users', function($request) use ($container) {
+    $get_users_serv = $container->get(App\Application\User\GetUsersService::class);
+    $users = $get_users_serv->execute();
+    Response::asJson($users);
 }));
 
 
@@ -110,21 +106,11 @@ $router->add(Route::get('test', function() use ($container, $publisher) {
     //
     // $publisher->publish(new App\Domain\User\UserLoggedIn(new UserId('7FC8643F-BEF8-4D78-BF9E-9FB89F124F12')));
     // dd($publisher);
-
-    // $user_repo = $container->get(App\Infrastructure\User\UserRepo::class);
-    // $mihai = UserFactory::build(
-    //     $user_repo->nextId(),
-    //     'Mihai Blebea',
-    //     '1989-11-07',
-    //     'mihaiserban.blebea@gmail.com',
-    //     'intrex');
-    //
-    // Response::asJson($mihai);
 }));
 
 
 $router->add(Route::post('like', function($request) use ($container) {
-    $like_user_srv = $container->get(App\Domain\Like\LikeUserService::class);
+    $like_user_srv = $container->get(App\Application\Like\LikeUserService::class);
     try {
         $like_user_srv->execute(new LikeUserRequest(
             $request->dump()->owner,
@@ -137,7 +123,7 @@ $router->add(Route::post('like', function($request) use ($container) {
 
 
 $router->add(Route::post('pass', function($request) use ($container) {
-    $pass_user_srv = $container->get(App\Domain\Pass\PassUserService::class);
+    $pass_user_srv = $container->get(App\Application\Pass\PassUserService::class);
     try {
         $pass_user_srv->execute(new PassUserRequest(
             $request->dump()->owner,
@@ -150,12 +136,9 @@ $router->add(Route::post('pass', function($request) use ($container) {
 
 
 $router->add(Route::post('message', function($request) use ($container) {
-    $user_repo    = $container->get(App\Infrastructure\User\UserRepo::class);
-    $match_repo   = $container->get(App\Infrastructure\Match\MatchRepo::class);
-    $message_repo = $container->get(App\Infrastructure\Message\MessageRepo::class);
+    $send_message_srv = $container->get(App\Application\Message\SendMessageService::class);
 
     try {
-        $send_message_srv = new SendMessageService($message_repo, $user_repo, $match_repo);
         $send_message_srv->execute(new SendMessageRequest(
             $request->dump()->sender_id,
             $request->dump()->receiver_id,
@@ -170,19 +153,16 @@ $router->add(Route::post('message', function($request) use ($container) {
 
 
 $router->add(Route::post('match', function($request) use ($container) {
-    $like_repo  = $container->get(App\Infrastructure\Like\LikeRepo::class);
-    $match_repo = $container->get(App\Infrastructure\Match\MatchRepo::class);
-
-    $like_a = $like_repo->withId(new LikeId($request->dump()->like_a));
-    $like_b = $like_repo->withId(new LikeId($request->dump()->like_b));
-
-    $match = new Match(
-        $match_repo->nextId(),
-        $like_a,
-        $like_b);
-
-    $match_repo->add($match);
-    dd($match);
+    $create_match_serv = $container->get(App\Application\Match\CreateNewMatchService::class);
+    try {
+        $match = $create_match_serv->execute(new NewMatchRequest(
+            $request->dump()->like_a,
+            $request->dump()->like_b
+        ));
+        Response::asJson($match);
+    } catch(\Exception $e) {
+        dd($e->getMessage());
+    }
 }));
 
 

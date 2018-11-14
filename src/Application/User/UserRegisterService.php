@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Domain\User;
+namespace App\Application\User;
 
 use App\Domain\User\UserRepoInterface;
 use App\Domain\RequestInterface;
 use App\Domain\DomainEventPublisher;
-use App\Application\User\UserRegisterRequestInterface;
+use App\Domain\User\UserRegistered;
+use App\Domain\User\UserFactory;
 
 
 class UserRegisterService
@@ -28,8 +29,10 @@ class UserRegisterService
             $request->getPassword()
         );
         $this->user_repo->add($user);
-        
+
         $publisher = DomainEventPublisher::instance();
         $publisher->publish(new UserRegistered($user->getId()));
+
+        return $user;
     }
 }

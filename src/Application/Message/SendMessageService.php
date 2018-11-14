@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Message;
+namespace App\Application\Message;
 
 use App\Domain\Match\MatchId\MatchId;
 use App\Domain\Message\Message;
@@ -9,7 +9,7 @@ use App\Domain\Message\MessageRepoInterface;
 use App\Domain\User\UserRepoInterface;
 use App\Domain\Match\MatchRepoInterface;
 use App\Domain\User\UserId\UserId;
-use App\Application\Message\SendMessageRequestInterface;
+
 
 
 class SendMessageService

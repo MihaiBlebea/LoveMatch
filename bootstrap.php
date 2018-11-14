@@ -56,13 +56,25 @@ $container->add(App\Domain\PersistDomainEventSubscriber::class)
 $container->add(App\Domain\User\UserLoginService::class)
           ->addArgument(App\Infrastructure\User\UserRepo::class);
 
-$container->add(App\Domain\User\UserRegisterService::class)
+$container->add(App\Application\User\UserRegisterService::class)
           ->addArgument(App\Infrastructure\User\UserRepo::class);
 
-$container->add(App\Domain\Pass\PassUserService::class)
+$container->add(App\Application\Pass\PassUserService::class)
           ->addArgument(App\Infrastructure\User\UserRepo::class)
           ->addArgument(App\Infrastructure\Pass\PassRepo::class);
 
-$container->add(App\Domain\Like\LikeUserService::class)
+$container->add(App\Application\Like\LikeUserService::class)
           ->addArgument(App\Infrastructure\User\UserRepo::class)
           ->addArgument(App\Infrastructure\Like\LikeRepo::class);
+
+$container->add(App\Application\Message\SendMessageService::class)
+          ->addArgument(App\Infrastructure\Message\MessageRepo::class)
+          ->addArgument(App\Infrastructure\User\UserRepo::class)
+          ->addArgument(App\Infrastructure\Match\MatchRepo::class);
+
+$container->add(App\Application\Match\CreateNewMatchService::class)
+          ->addArgument(App\Infrastructure\Match\MatchRepo::class)
+          ->addArgument(App\Infrastructure\Like\LikeRepo::class);
+
+$container->add(App\Application\User\GetUsersService::class)
+          ->addArgument(App\Infrastructure\User\UserRepo::class);

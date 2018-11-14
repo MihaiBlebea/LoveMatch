@@ -2,11 +2,12 @@
 
 namespace App\Domain\Match;
 
+use JsonSerializable;
 use App\Domain\Match\MatchId\MatchIdInterface;
 use App\Domain\Like\Like;
 
 
-class Match
+class Match implements JsonSerializable
 {
     private $id;
 
@@ -90,6 +91,15 @@ class Match
             throw new \Exception('Message does not belong to the match users', 1);
         }
         $this->conversation[] = $message;
+    }
+
+    public function jsonSerialize()
+    {
+        return [
+            'id'         => (string) $this->getId(),
+            'users'      => $this->getUsers(),
+            'created_on' => $this->getCreatedOn()
+        ];
     }
 
     private function validateMessage($message)
