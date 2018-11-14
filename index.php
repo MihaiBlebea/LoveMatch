@@ -18,11 +18,12 @@ use App\Application\Like\LikeUserRequest;
 use App\Application\Match\NewMatchRequest;
 use App\Application\Message\SendMessageRequest;
 
-use App\Domain\CreatedOn\CreatedOn;
-use App\Domain\Action\Action;
-use App\Domain\Action\ActionId\ActionId;
-use App\Domain\Action\Type\Type;
-use App\Domain\User\UserId\UserId;
+// use App\Domain\CreatedOn\CreatedOn;
+// use App\Domain\Action\Action;
+// use App\Domain\Action\ActionId\ActionId;
+// use App\Domain\Action\Type\Type;
+// use App\Domain\User\UserId\UserId;
+use App\Domain\Action\ActionFactory;
 
 
 // Init DomainEventPublisher
@@ -118,14 +119,19 @@ $router->add(Route::get('test', function($request) use ($container, $publisher) 
     $cristina_id = 'F5027A89-3E1E-4828-B31C-E18D1020352F';
 
     try {
-        $action = new Action(
-            new ActionId('F5027A89-3E1E-4828-B31C-E18D1020352F'),
-            Type::like(),
-            new UserId($mihai_id),
-            new UserId($cristina_id),
-            new CreatedOn()
-        );
-        $action->setType( Type::pass(), new CreatedOn() );
+        // $action = new Action(
+        //     new ActionId('F5027A89-3E1E-4828-B31C-E18D1020352F'),
+        //     Type::like(),
+        //     new UserId($mihai_id),
+        //     new UserId($cristina_id),
+        //     new CreatedOn()
+        // );
+        $action = ActionFactory::build(
+            'F5027A89-3E1E-4828-B31C-E18D1020352F',
+            'pass',
+            $mihai_id,
+            $cristina_id);
+        // $action->setType( Type::pass(), new CreatedOn() );
         Response::asJson($action);
     } catch(\Exception $e) {
         dd($e->getMessage());
