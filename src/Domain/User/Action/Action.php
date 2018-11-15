@@ -70,6 +70,16 @@ class Action implements ActionInterface, JsonSerializable
         return $this->created_on;
     }
 
+    public function isLike()
+    {
+        return strtoupper((string) $this->getType()) === 'LIKE';
+    }
+
+    public function isPass()
+    {
+        return strtoupper((string) $this->getType()) === 'PASS';
+    }
+
     public function JsonSerialize()
     {
         return [

@@ -3,16 +3,17 @@
 namespace App\Domain\User;
 
 use JsonSerializable;
-use App\Domain\User\{
-    UserId\UserIdInterface,
-    Name\NameInterface,
-    BirthDate\BirthDateInterface,
-    Email\EmailInterface,
-    Password\PasswordInterface
-};
+use App\Domain\User\UserId\UserIdInterface;
+use App\Domain\User\Name\NameInterface;
+use App\Domain\User\BirthDate\BirthDateInterface;
+use App\Domain\User\Gender\GenderInterface;
+use App\Domain\User\Email\EmailInterface;
+use App\Domain\User\Password\PasswordInterface;
+use App\Domain\User\Action\ActionInterface;
+use App\Domain\CreatedOn\CreatedOnInterface;
 
 
-class User implements JsonSerializable
+class User implements UserInterface, JsonSerializable
 {
     private $id;
 
@@ -20,23 +21,33 @@ class User implements JsonSerializable
 
     private $birth_date;
 
+    private $gender;
+
     private $email;
 
     private $password;
+
+    private $actions = [];
+
+    private $created_on;
 
 
     public function __construct(
         UserIdInterface $id,
         NameInterface $name,
         BirthDateInterface $birth_date,
+        GenderInterface $gender,
         EmailInterface $email,
-        PasswordInterface $password)
+        PasswordInterface $password,
+        CreatedOnInterface $created_on)
     {
         $this->id         = $id;
         $this->name       = $name;
         $this->birth_date = $birth_date;
+        $this->gender     = $gender;
         $this->email      = $email;
         $this->password   = $password;
+        $this->created_on = $created_on;
     }
 
     public function getId()
@@ -49,9 +60,19 @@ class User implements JsonSerializable
         return $this->name;
     }
 
+    public function setName(NameInterface $name)
+    {
+        $this->name = $name;
+    }
+
     public function getBirthDate()
     {
         return $this->birth_date;
+    }
+
+    public function setBirthDate(BirthDateInterface $birth_date)
+    {
+        $this->birth_date = $birth_date;
     }
 
     public function getEmail()
@@ -59,9 +80,60 @@ class User implements JsonSerializable
         return $this->email;
     }
 
+    public function setEmail(EmailInterface $email)
+    {
+        $this->email = $email;
+    }
+
     public function getPassword()
     {
         return $this->password;
+    }
+
+    public function setPassword(PasswordInterface $password)
+    {
+        $this->password = $password;
+    }
+
+    public function getCreatdOn()
+    {
+        return $this->created_on;
+    }
+
+    public function addAction(ActionInterface $action)
+    {
+        $this->actions = [];
+    }
+
+    public function getActions()
+    {
+        return $this->actions;
+    }
+
+    public function getLikes()
+    {
+        $likes = [];
+        foreach($this->getActions() as $action)
+        {
+            if($action->isLike())
+            {
+                $likes[] = $action;
+            }
+        }
+        return $likes;
+    }
+
+    public function getPasses()
+    {
+        $passes = [];
+        foreach($this->getActions() as $action)
+        {
+            if($action->isPass())
+            {
+                $passes[] = $action;
+            }
+        }
+        return $passes;
     }
 
     public function jsonSerialize()
@@ -70,8 +142,12 @@ class User implements JsonSerializable
             'id'         => (string) $this->getId(),
             'name'       => (string) $this->getName(),
             'birth_date' => $this->getBirthDate(),
+            'gender'     => (string) $this->getGender(),
             'email'      => (string) $this->getEmail(),
-            'password'   => (string) $this->getPassword()
+            'password'   => (string) $this->getPassword(),
+            'likes'      => $this->getLikes(),
+            'passes'     => $this->getPasses(),
+            'created_on' => (string) $this->getCreatedOn()
         ];
     }
 }

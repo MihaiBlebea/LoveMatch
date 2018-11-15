@@ -31,5 +31,9 @@ interface ActionInterface
 
     public function getCreatedOn();
 
+    public function isLike();
+
+    public function isPass();
+
     public function JsonSerialize();
 }
