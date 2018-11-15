@@ -17,6 +17,11 @@ use App\Application\Match\NewMatchRequest;
 use App\Application\Message\SendMessageRequest;
 use App\Application\Action\CreateActionRequest;
 
+use App\Domain\Match\MatchId\MatchId;
+use App\Domain\Match\Match;
+use App\Domain\CreatedOn\CreatedOn;
+use App\Domain\Action\ActionId\ActionId;
+
 
 // Init DomainEventPublisher
 // Get the publisher instance
@@ -87,25 +92,17 @@ $router->add(Route::get('users', function($request) use ($container) {
 
 
 // Test the domain event store
-$router->add(Route::get('test', function($request) use ($container, $publisher) {
+$router->add(Route::get('test', function($request) use ($container) {
+    $match_repo  = $container->get(App\Infrastructure\Match\MatchRepo::class);
+    $action_repo = $container->get(App\Infrastructure\Action\ActionRepo::class);
 
-    // // Get a random user from database
-    // $user_repo = $container->get(App\Infrastructure\User\UserRepo::class);
-    // $user = $user_repo->withEmail(new Email('mihaiserban.blebea@gmail.com'));
-    //
-    // // Get the the subscriber from the container, it can be any subscriber / listener
-    // $persist_listener = $container->get(App\Infrastructure\Event\PersistDomainEventSubscriber::class);
-    //
-    // // Subscribe the listener to the publisher
-    // $publisher->subscribe($persist_listener);
-    //
-    // // Publish the event
-    // $publisher->publish(new App\Domain\User\UserLoggedIn($user->getId()));
-    //
-    // var_dump($publisher);
-    //
-    // $publisher->publish(new App\Domain\User\UserLoggedIn(new UserId('7FC8643F-BEF8-4D78-BF9E-9FB89F124F12')));
-    // dd($publisher);
+    $match = new Match(
+        new MatchId($match_repo->nextId()),
+        $action_repo->withId(new ActionId('ABDCF14D-F17D-4C16-8DBE-F106E447AEEA')),
+        $action_repo->withId(new ActionId('ABDCF14D-F17D-4C16-8DBE-F106E4B7AEEA')),
+        new CreatedOn()
+    );
+    dd($match);
 }));
 
 

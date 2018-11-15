@@ -73,7 +73,7 @@ $container->add(App\Application\Message\SendMessageService::class)
 
 $container->add(App\Application\Match\CreateNewMatchService::class)
           ->addArgument(App\Infrastructure\Match\MatchRepo::class)
-          ->addArgument(App\Infrastructure\Like\LikeRepo::class);
+          ->addArgument(App\Infrastructure\Action\ActionRepo::class);
 
 $container->add(App\Application\User\GetUsersService::class)
           ->addArgument(App\Infrastructure\User\UserRepo::class);

@@ -45,7 +45,7 @@ $blueprint->table('messages')
 
 $blueprint->table('matches')
           ->add(Column::string('id')->primaryKey())
-          ->add(Column::string('user_a')->notNull())
-          ->add(Column::string('user_b')->notNull())
+          ->add(Column::string('action_a_id')->notNull())
+          ->add(Column::string('action_b_id')->notNull())
           ->add(Column::datetime('created_on'))
           ->create();

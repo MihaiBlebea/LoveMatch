@@ -4,60 +4,67 @@ namespace App\Domain\Match;
 
 use JsonSerializable;
 use App\Domain\Match\MatchId\MatchIdInterface;
-use App\Domain\Like\Like;
+use App\Domain\Action\ActionInterface;
+use App\Domain\CreatedOn\CreatedOnInterface;
 
 
-class Match implements JsonSerializable
+class Match implements MatchInterface, JsonSerializable
 {
     private $id;
 
-    private $active = true;
-
     private $users = [];
 
-    private $conversation = [];
+    private $messages = [];
 
     private $created_on;
-
-    private $date_format = 'Y-m-d H:m:s';
 
 
     public function __construct(
         MatchIdInterface $id,
-        Like $like_a,
-        Like $like_b,
-        $created_on = null)
+        ActionInterface $action_a,
+        ActionInterface $action_b,
+        CreatedOnInterface $created_on)
     {
-        if(!$this->assertUsersMatch($like_a, $like_b))
+        if(!$this->assertActionIsLike($action_a) &&
+            !$this->assertActionIsLike($action_b))
+        {
+            throw new \Exception('Action is not LIKE', 1);
+        }
+
+        if(!$this->assertUsersMatch($action_a, $action_b))
         {
             throw new \Exception('Users doesn\'t match', 1);
         }
         $this->id         = $id;
-        $this->users[]    = (string) $like_a->getOwner()->getId();
-        $this->users[]    = (string) $like_b->getOwner()->getId();
-        if($created_on === null)
-        {
-            $this->created_on = new \DateTime();
-        } else {
-            $this->created_on = \DateTime::createFromFormat($this->date_format, $created_on);
-        }
+        $this->users[]    = (string) $action_a->getSenderId()->getId();
+        $this->users[]    = (string) $action_b->getSenderId()->getId();
+        $this->created_on = $created_on;
     }
 
-    private function assertUsersMatch(Like $like_a, Like $like_b)
+    private function assertUsersMatch(
+        ActionInterface $action_a,
+        ActionInterface $action_b)
     {
-        $like_a_owner_id    = (string) $like_a->getOwner()->getId();
-        $like_a_receiver_id = (string) $like_a->getReceiver()->getId();
+        $action_a_sender_id   = (string) $action_a->getSenderId()->getId();
+        $action_a_receiver_id = (string) $action_a->getReceiverId()->getId();
 
-        $like_b_owner_id    = (string) $like_b->getOwner()->getId();
-        $like_b_receiver_id = (string) $like_b->getReceiver()->getId();
+        $action_b_sender_id   = (string) $action_b->getSenderId()->getId();
+        $action_b_receiver_id = (string) $action_b->getReceiverId()->getId();
 
-        if($like_a_owner_id === $like_b_receiver_id && $like_a_receiver_id == $like_b_owner_id)
+        if($action_a_sender_id === $action_b_receiver_id &&
+            $action_a_receiver_id === $action_b_sender_id)
         {
             return true;
         } else {
             return false;
         }
     }
+
+    private function assertActionIsLike(ActionInterface $action)
+    {
+        return (string) $action->getType() === 'LIKE';
+    }
+
 
     public function getId()
     {
@@ -69,28 +76,19 @@ class Match implements JsonSerializable
         return $this->users;
     }
 
-    public function getConversation()
-    {
-        return $this->conversation;
-    }
-
     public function getCreatedOn()
     {
-        return $this->created_on->format($this->date_format);
-    }
-
-    public function isActive()
-    {
-        return $this->active;
+        return $this->created_on;
     }
 
     public function addMessage($message)
     {
-        if(!$this->validateMessage())
-        {
-            throw new \Exception('Message does not belong to the match users', 1);
-        }
-        $this->conversation[] = $message;
+        $this->messages[] = $message;
+    }
+
+    public function getMessages()
+    {
+        return $this->messages;
     }
 
     public function jsonSerialize()
@@ -98,23 +96,7 @@ class Match implements JsonSerializable
         return [
             'id'         => (string) $this->getId(),
             'users'      => $this->getUsers(),
-            'created_on' => $this->getCreatedOn()
+            'created_on' => (string) $this->getCreatedOn()
         ];
-    }
-
-    private function validateMessage($message)
-    {
-        $sender_id = $message->getSender()->getId();
-        $receiver_id = $message->getReceiver()->getId();
-        $users_id = [];
-        foreach($users as $user)
-        {
-            $users_id[] = (string) $user->getId();
-        }
-        if(in_array($sender_id, $users_id) && in_array($receiver_id, $users_id))
-        {
-            return true;
-        }
-        return false;
     }
 }

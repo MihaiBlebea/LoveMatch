@@ -8,7 +8,8 @@ use App\Domain\Match\Match;
 use App\Domain\Match\MatchId\MatchId;
 use App\Domain\Match\MatchId\MatchIdInterface;
 use App\Domain\Match\MatchRepoInterface;
-use App\Infrastructure\Like\LikeRepo;
+use App\Domain\Action\ActionId\ActionId;
+use App\Infrastructure\Action\ActionRepo;
 use App\Domain\User\UserId\UserId;
 
 
@@ -32,10 +33,10 @@ class MatchRepo implements MatchRepoInterface
     public function add(Match $match)
     {
         $this->persist->table('matches')->create([
-            'id'         => (string) $match->getId(),
-            'user_a'     => $match->getUsers()[0],
-            'user_b'     => $match->getUsers()[1],
-            'created_on' => $match->getCreatedOn()
+            'id'          => (string) $match->getId(),
+            'action_a_id' => $match->getUsers()[0],
+            'action_b_id' => $match->getUsers()[1],
+            'created_on'  => $match->getCreatedOn()
         ]);
     }
 
@@ -49,7 +50,9 @@ class MatchRepo implements MatchRepoInterface
 
     public function remove(Match $match)
     {
-        $this->persist->table('matches')->where('id', (string) $match->getId())->delete();
+        $this->persist->table('matches')
+                      ->where('id', (string) $match->getId())
+                      ->delete();
     }
 
     public function removeAll(Array $matches)
@@ -62,28 +65,25 @@ class MatchRepo implements MatchRepoInterface
 
     public function withId(MatchIdInterface $id)
     {
-        $match = $this->persist->table('matches')->where('id', (string) $id->getId())->selectOne();
+        $match = $this->persist->table('matches')
+                               ->where('id', (string) $id->getId())
+                               ->selectOne();
         if($match)
         {
-            $like_repo = new LikeRepo($this->persist);
-            $like_a = $like_repo->withUserIds(
-                new UserId($match['user_a']),
-                new UserId($match['user_b'])
-            );
-            $like_b = $like_repo->withUserIds(
-                new UserId($match['user_b']),
-                new UserId($match['user_a'])
-            );
-
-            if($like_b !== null && $like_b !== null)
+            $action_repo = new ActionRepo($this->persist);
+            $action_a = $action_repo->withId(new ActionId($match['action_a_id']));
+            $action_b = $action_repo->withId(new ActionId($match['action_b_id']));
+            dd($$action_a);
+            if($action_a && $action_b)
             {
                 return new Match(
                     new MatchId($match['id']),
-                    $like_a,
-                    $like_b,
-                    $match['created_on']
-                );
+                    $action_a,
+                    $action_b,
+                    $match['created_on']);
             }
+            return null;
         }
+        return null;
     }
 }
