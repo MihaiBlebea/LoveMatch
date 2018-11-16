@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Action\Type;
+namespace App\Domain\User\Action\Type;
 
 
 class Type implements TypeInterface

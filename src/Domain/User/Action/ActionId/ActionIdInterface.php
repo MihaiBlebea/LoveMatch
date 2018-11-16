@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Action\ActionId;
+namespace App\Domain\User\Action\ActionId;
 
 
 interface ActionIdInterface

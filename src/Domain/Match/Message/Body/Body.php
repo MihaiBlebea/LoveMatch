@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Message\Body;
+namespace App\Domain\Match\Message\Body;
 
 
 class Body implements BodyInterface

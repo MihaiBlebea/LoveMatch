@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Message\MessageId;
+namespace App\Domain\Match\Message\MessageId;
 
 
 class MessageId implements MessageIdInterface

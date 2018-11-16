@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Domain\Action;
+namespace App\Domain\User\Action;
 
 use Domino\Interfaces\PersistenceInterface;
-use App\Domain\Action\ActionId\ActionIdInterface;
-use App\Domain\Action\ActionInterface;
+use App\Domain\User\Action\ActionId\ActionIdInterface;
+use App\Domain\User\Action\ActionInterface;
 use App\Domain\User\UserId\UserIdInterface;
 
 

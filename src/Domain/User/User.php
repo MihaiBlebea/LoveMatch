@@ -102,7 +102,15 @@ class User implements UserInterface, JsonSerializable
 
     public function addAction(ActionInterface $action)
     {
-        $this->actions = [];
+        $this->actions[] = $action;
+    }
+
+    public function addActions(Array $actions)
+    {
+        foreach($actions as $action)
+        {
+            $this->addAction($action);
+        }
     }
 
     public function getActions()

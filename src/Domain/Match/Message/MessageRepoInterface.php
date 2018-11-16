@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Message;
+namespace App\Domain\Match\Message;
 
 use Domino\Interfaces\PersistenceInterface;
 

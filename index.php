@@ -17,10 +17,24 @@ use App\Application\Match\NewMatchRequest;
 use App\Application\Message\SendMessageRequest;
 use App\Application\Action\CreateActionRequest;
 
-use App\Domain\Match\MatchId\MatchId;
-use App\Domain\Match\Match;
+// Dependencies for testing the User Aggregate
+use App\Domain\User\User;
+use App\Domain\User\UserId\UserId;
+use App\Domain\User\Name\Name;
+use App\Domain\User\BirthDate\BirthDate;
+use App\Domain\User\Gender\Gender;
+use App\Domain\User\Email\Email;
+use App\Domain\User\Password\Password;
 use App\Domain\CreatedOn\CreatedOn;
-use App\Domain\Action\ActionId\ActionId;
+use App\Domain\User\Action\Action;
+use App\Domain\User\Action\ActionId\ActionId;
+use App\Domain\User\Action\Type\Type;
+
+
+// Dependencies for testing Match Aggregate
+use App\Domain\Match\Match;
+use App\Domain\Match\Message\Message;
+use App\Domain\Match\Message\Body\Body;
 
 
 // Init DomainEventPublisher
@@ -93,16 +107,69 @@ $router->add(Route::get('users', function($request) use ($container) {
 
 // Test the domain event store
 $router->add(Route::get('test', function($request) use ($container) {
-    $match_repo  = $container->get(App\Infrastructure\Match\MatchRepo::class);
-    $action_repo = $container->get(App\Infrastructure\Action\ActionRepo::class);
+    $user_repo    = $container->get(App\Infrastructure\User\UserRepo::class);
+    $action_repo  = $container->get(App\Infrastructure\Action\ActionRepo::class);
+    $match_repo   = $container->get(App\Infrastructure\Match\MatchRepo::class);
+    $message_repo = $container->get(App\Infrastructure\Message\MessageRepo::class);
 
-    $match = new Match(
-        new MatchId($match_repo->nextId()),
-        $action_repo->withId(new ActionId('ABDCF14D-F17D-4C16-8DBE-F106E447AEEA')),
-        $action_repo->withId(new ActionId('ABDCF14D-F17D-4C16-8DBE-F106E4B7AEEA')),
+    $mihai = new User(
+        $user_repo->nextId(),
+        new Name('Mihai Blebea'),
+        new BirthDate('1989-11-07'),
+        new Gender('male'),
+        new Email('serbantrnor@gmail.com'),
+        new Password('intrex'),
         new CreatedOn()
     );
+
+    $cristina = new User(
+        $user_repo->nextId(),
+        new Name('Cristina Aliman'),
+        new BirthDate('1986-04-11'),
+        new Gender('female'),
+        new Email('cristinaliman@gmail.com'),
+        new Password('intrex'),
+        new CreatedOn()
+    );
+
+    $like = new Action(
+        $action_repo->nextId(),
+        new Type('like'),
+        $mihai->getId(),
+        $cristina->getId(),
+        new CreatedOn()
+    );
+
+    $pass = new Action(
+        $action_repo->nextId(),
+        new Type('pass'),
+        $mihai->getId(),
+        $cristina->getId(),
+        new CreatedOn()
+    );
+
+    $mihai->addActions([$like, $pass]);
+
+
+    $match = new Match(
+        $match_repo->nextId(),
+        $cristina,
+        $mihai,
+        new CreatedOn()
+    );
+
+    $message = new Message(
+        $message_repo->nextId(),
+        $mihai,
+        $cristina,
+        new Body('Ce faci Cristina? Esti bine?'),
+        new CreatedOn()
+    );
+
+    $match->addMessage($message);
+
     dd($match);
+
 }));
 
 

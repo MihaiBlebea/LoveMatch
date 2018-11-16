@@ -4,9 +4,9 @@ namespace App\Infrastructure\Message;
 
 use Ramsey\Uuid\Uuid;
 use Domino\Interfaces\PersistenceInterface;
-use App\Domain\Message\MessageId\MessageId;
-use App\Domain\Message\MessageRepoInterface;
-use App\Domain\Message\Message;
+use App\Domain\Match\Message\MessageId\MessageId;
+use App\Domain\Match\Message\MessageRepoInterface;
+use App\Domain\Match\Message\Message;
 
 
 class MessageRepo implements MessageRepoInterface

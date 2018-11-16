@@ -4,11 +4,11 @@ namespace App\Infrastructure\Action;
 
 use Ramsey\Uuid\Uuid;
 use Domino\Interfaces\PersistenceInterface;
-use App\Domain\Action\ActionId\ActionId;
-use App\Domain\Action\ActionId\ActionIdInterface;
-use App\Domain\Action\ActionInterface;
-use App\Domain\Action\ActionRepoInterface;
-use App\Domain\Action\ActionFactory;
+use App\Domain\User\Action\ActionId\ActionId;
+use App\Domain\User\Action\ActionId\ActionIdInterface;
+use App\Domain\User\Action\ActionInterface;
+use App\Domain\User\Action\ActionRepoInterface;
+use App\Domain\User\Action\ActionFactory;
 use App\Domain\User\UserId\UserIdInterface;
 
 

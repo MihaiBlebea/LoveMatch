@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Domain\Action;
+namespace App\Domain\User\Action;
 
 use App\Domain\CreatedOn\CreatedOnInterface;
-use App\Domain\Action\ActionId\ActionIdInterface;
-use App\Domain\Action\Type\TypeInterface;
+use App\Domain\User\Action\ActionId\ActionIdInterface;
+use App\Domain\User\Action\Type\TypeInterface;
 use App\Domain\User\UserId\UserIdInterface;
 
 

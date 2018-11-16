@@ -3,8 +3,10 @@
 namespace App\Domain\Match;
 
 use JsonSerializable;
+use App\Domain\User\UserInterface;
+use App\Domain\User\UserId\UserIdInterface;
 use App\Domain\Match\MatchId\MatchIdInterface;
-use App\Domain\Action\ActionInterface;
+use App\Domain\Match\Message\MessageInterface;
 use App\Domain\CreatedOn\CreatedOnInterface;
 
 
@@ -21,48 +23,14 @@ class Match implements MatchInterface, JsonSerializable
 
     public function __construct(
         MatchIdInterface $id,
-        ActionInterface $action_a,
-        ActionInterface $action_b,
+        UserInterface $first_user,
+        UserInterface $second_user,
         CreatedOnInterface $created_on)
     {
-        if(!$this->assertActionIsLike($action_a) &&
-            !$this->assertActionIsLike($action_b))
-        {
-            throw new \Exception('Action is not LIKE', 1);
-        }
-
-        if(!$this->assertUsersMatch($action_a, $action_b))
-        {
-            throw new \Exception('Users doesn\'t match', 1);
-        }
         $this->id         = $id;
-        $this->users[]    = (string) $action_a->getSenderId()->getId();
-        $this->users[]    = (string) $action_b->getSenderId()->getId();
+        $this->users[]    = (string) $first_user->getId();
+        $this->users[]    = (string) $second_user->getId();
         $this->created_on = $created_on;
-    }
-
-    private function assertUsersMatch(
-        ActionInterface $action_a,
-        ActionInterface $action_b)
-    {
-        $action_a_sender_id   = (string) $action_a->getSenderId()->getId();
-        $action_a_receiver_id = (string) $action_a->getReceiverId()->getId();
-
-        $action_b_sender_id   = (string) $action_b->getSenderId()->getId();
-        $action_b_receiver_id = (string) $action_b->getReceiverId()->getId();
-
-        if($action_a_sender_id === $action_b_receiver_id &&
-            $action_a_receiver_id === $action_b_sender_id)
-        {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    private function assertActionIsLike(ActionInterface $action)
-    {
-        return (string) $action->getType() === 'LIKE';
     }
 
 
@@ -81,7 +49,7 @@ class Match implements MatchInterface, JsonSerializable
         return $this->created_on;
     }
 
-    public function addMessage($message)
+    public function addMessage(MessageInterface $message)
     {
         $this->messages[] = $message;
     }
@@ -91,11 +59,38 @@ class Match implements MatchInterface, JsonSerializable
         return $this->messages;
     }
 
+    public function getSenderMessages(UserIdInterface $owner_id)
+    {
+        $messages = [];
+        foreach($this->getMessages() as $message)
+        {
+            if((string) $message->getSender()->getId() === $owner_id)
+            {
+                $messages[] = $message;
+            }
+        }
+        return $messages;
+    }
+
+    public function getReceiverMessages(UserIdInterface $owner_id)
+    {
+        $messages = [];
+        foreach($this->getMessages() as $message)
+        {
+            if((string) $message->getReceiver()->getId() === $owner_id)
+            {
+                $messages[] = $message;
+            }
+        }
+        return $messages;
+    }
+
     public function jsonSerialize()
     {
         return [
             'id'         => (string) $this->getId(),
             'users'      => $this->getUsers(),
+            'messages'   => $this->getMessages(),
             'created_on' => (string) $this->getCreatedOn()
         ];
     }
