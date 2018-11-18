@@ -5,12 +5,17 @@ namespace App\Infrastructure\Match;
 use Ramsey\Uuid\Uuid;
 use Domino\Interfaces\PersistenceInterface;
 use App\Domain\User\UserId\UserId;
+use App\Domain\User\UserId\UserIdInterface;
+use App\Domain\User\UserRepoInterface;
 use App\Domain\Match\Match;
 use App\Domain\Match\MatchInterface;
+use App\Domain\Match\MatchFactory;
 use App\Domain\Match\MatchId\MatchId;
 use App\Domain\Match\MatchId\MatchIdInterface;
 use App\Domain\Match\MatchRepoInterface;
+use App\Domain\Match\Message\MessageRepoInterface;
 use App\Infrastructure\Message\MessageRepo;
+use App\Infrastructure\User\UserRepo;
 
 
 class MatchRepo implements MatchRepoInterface
@@ -88,20 +93,48 @@ class MatchRepo implements MatchRepoInterface
                                ->selectOne();
         if($match)
         {
-            // $action_repo = new ActionRepo($this->persist);
-            // $action_a = $action_repo->withId(new ActionId($match['action_a_id']));
-            // $action_b = $action_repo->withId(new ActionId($match['action_b_id']));
-            // dd($$action_a);
-            // if($action_a && $action_b)
-            // {
-            //     return new Match(
-            //         new MatchId($match['id']),
-            //         $action_a,
-            //         $action_b,
-            //         $match['created_on']);
-            // }
-            // return null;
+            return $this->buildMatch($match);
         }
         return null;
+    }
+
+    public function withUserId(UserIdInterface $id)
+    {
+        $matches = $this->persist->table('matches')
+                                 ->where('first_user_id', (string) $id->getId())
+                                 ->orWhere('second_user_id', (string) $id->getId())
+                                 ->select();
+
+        if($matches && count($matches) > 0)
+        {
+            $user_repo = new UserRepo($this->persist);
+            $message_repo = new MessageRepo($this->persist);
+            foreach($matches as $row)
+            {
+                $this->matches[] = $this->buildMatch($row, $user_repo, $message_repo);;
+            }
+            return $this->matches;
+        }
+        return null;
+    }
+
+    private function buildMatch(
+        Array $row,
+        UserRepoInterface $user_repo,
+        MessageRepoInterface $message_repo)
+    {
+        $match = MatchFactory::build(
+            $row['id'],
+            $user_repo->withId(new UserId($row['first_user_id'])),
+            $user_repo->withId(new UserId($row['second_user_id'])),
+            $row['created_on']
+        );
+
+        $messages = $message_repo->withMatchId(new MatchId($row['id']));
+        if($messages && count($messages) > 0)
+        {
+            $match->addMessages($messages);
+        }
+        return $match;
     }
 }

@@ -1,12 +1,11 @@
 <?php
 
-namespace App\Application\Match;
+namespace App\Application\Match\CreateMatch;
 
 use App\Domain\Match\MatchRepoInterface;
 use App\Domain\Match\MatchFactory;
 use App\Domain\User\UserId\UserId;
 use App\Domain\User\UserRepoInterface;
-use App\Application\Match\CreateMatchRequestInterface;
 
 
 class CreateMatchService

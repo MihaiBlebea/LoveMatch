@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Domain\User;
+namespace App\Application\User\UserLogin;
 
-use App\Application\User\UserLoginRequestInterface;
 use App\Domain\DomainEventPublisher;
+use App\Domain\User\UserRepoInterface;
 use App\Domain\User\Email\Email;
 use App\Domain\User\Password\Password;
+use App\Domain\User\UserLoggedIn;
 
 
 class UserLoginService
@@ -20,7 +21,7 @@ class UserLoginService
 
     public function execute(UserLoginRequestInterface $request)
     {
-        if($_SESSION['auth'] !== null)
+        if(isset($_SESSION['auth']) && !empty($_SESSION['auth']))
         {
             throw new \Exception('This user or another user is already logged in. Logout first', 1);
         }

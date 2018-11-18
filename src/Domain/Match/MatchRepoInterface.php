@@ -4,6 +4,7 @@ namespace App\Domain\Match;
 
 use Domino\Interfaces\PersistenceInterface;
 use App\Domain\Match\MatchInterface;
+use App\Domain\User\UserId\UserIdInterface;
 use App\Domain\Match\MatchId\MatchIdInterface;
 
 
@@ -22,4 +23,6 @@ interface MatchRepoInterface
     public function removeAll(Array $matches);
 
     public function withId(MatchIdInterface $id);
+
+    public function withUserId(UserIdInterface $id);
 }

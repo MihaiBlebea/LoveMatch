@@ -4,6 +4,7 @@ namespace App\Domain\Match;
 
 use App\Domain\User\UserInterface;
 use App\Domain\Match\MatchId\MatchIdInterface;
+use App\Domain\Match\Message\MessageInterface;
 use App\Domain\User\UserId\UserIdInterface;
 use App\Domain\CreatedOn\CreatedOnInterface;
 
@@ -22,7 +23,9 @@ interface MatchInterface
 
     public function getCreatedOn();
 
-    public function addMessage(Array $message_components);
+    public function addMessage(MessageInterface $message);
+
+    public function addMessages(Array $messages);
 
     public function getMessages();
 

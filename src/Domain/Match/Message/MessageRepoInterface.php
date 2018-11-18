@@ -3,6 +3,7 @@
 namespace App\Domain\Match\Message;
 
 use Domino\Interfaces\PersistenceInterface;
+use App\Domain\Match\MatchId\MatchIdInterface;
 use App\Domain\Match\Message\MessageInterface;
 use App\Domain\Match\Message\MessageId\MessageIdInterface;
 
@@ -22,4 +23,6 @@ interface MessageRepoInterface
     public function removeAll(Array $messages);
 
     public function withId(MessageIdInterface $id);
+
+    public function withMatchId(MatchIdInterface $id);
 }

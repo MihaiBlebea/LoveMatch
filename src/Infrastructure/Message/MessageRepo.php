@@ -4,11 +4,14 @@ namespace App\Infrastructure\Message;
 
 use Ramsey\Uuid\Uuid;
 use Domino\Interfaces\PersistenceInterface;
+use App\Domain\Match\MatchId\MatchIdInterface;
 use App\Domain\Match\Message\MessageInterface;
 use App\Domain\Match\Message\MessageId\MessageId;
 use App\Domain\Match\Message\MessageId\MessageIdInterface;
 use App\Domain\Match\Message\MessageRepoInterface;
-use App\Domain\Match\Message\Message;
+use App\Domain\Match\Message\MessageFactory;
+use App\Domain\User\UserId\UserId;
+use App\Infrastructure\User\UserRepo;
 
 
 class MessageRepo implements MessageRepoInterface
@@ -79,15 +82,39 @@ class MessageRepo implements MessageRepoInterface
                                  ->selectOne();
         if($message)
         {
-            return new Message(
-                $message['id'],
-                $message['match_id'],
-                $message['sender'],
-                $message['receiver'],
-                $message['body'],
-                $message['created_on']
-            );
+            return $this->buildMessage($message);
         }
         return null;
+    }
+
+    public function withMatchId(MatchIdInterface $id)
+    {
+        $messages = $this->persist->table('messages')
+                                  ->where('match_id', (string) $id->getId())
+                                  ->select();
+
+        if($messages && count($messages) > 0)
+        {
+            foreach($messages as $message)
+            {
+                $this->messages[] = $this->buildMessage($message);
+            }
+            return $this->messages;
+        }
+        return null;
+    }
+
+    private function buildMessage(Array $message)
+    {
+        $user_repo = new UserRepo($this->persist);
+
+        return MessageFactory::build(
+            $message['id'],
+            $message['match_id'],
+            $user_repo->withId(new UserId($message['sender'])),
+            $user_repo->withId(new UserId($message['receiver'])),
+            $message['body'],
+            $message['created_on']
+        );
     }
 }

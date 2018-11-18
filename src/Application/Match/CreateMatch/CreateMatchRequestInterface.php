@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Application\Match;
+namespace App\Application\Match\CreateMatch;
 
 
 interface CreateMatchRequestInterface

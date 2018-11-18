@@ -6,6 +6,7 @@ use JsonSerializable;
 use App\Domain\User\UserInterface;
 use App\Domain\User\UserId\UserIdInterface;
 use App\Domain\Match\Message\Message;
+use App\Domain\Match\Message\MessageInterface;
 use App\Domain\Match\MatchId\MatchIdInterface;
 use App\Domain\CreatedOn\CreatedOn;
 use App\Domain\CreatedOn\CreatedOnInterface;
@@ -78,18 +79,17 @@ class Match implements MatchInterface, JsonSerializable
         return $this->created_on;
     }
 
-    public function addMessage(Array $components)
+    public function addMessage(MessageInterface $message)
     {
-        $this->assertArrayKeysExist($components, ['id', 'sender', 'receiver', 'body']);
+        $this->messages[] = $message;
+    }
 
-        $this->messages[] = new Message(
-            $components['id'],
-            $this->getId(),
-            $components['sender'],
-            $components['receiver'],
-            $components['body'],
-            new CreatedOn()
-        );
+    public function addMessages(Array $messages)
+    {
+        foreach($messages as $message)
+        {
+            $this->addMessage($message);
+        }
     }
 
     public function getMessages()
