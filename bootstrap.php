@@ -64,16 +64,17 @@ $container->add(App\Application\User\UserRegisterService::class)
           ->addArgument(App\Infrastructure\User\UserRepo::class);
 
 $container->add(App\Application\Action\CreateActionService::class)
-          ->addArgument(App\Infrastructure\Action\ActionRepo::class);
+          ->addArgument(App\Infrastructure\Action\ActionRepo::class)
+          ->addArgument(App\Infrastructure\User\UserRepo::class);
 
 $container->add(App\Application\Message\SendMessageService::class)
           ->addArgument(App\Infrastructure\Message\MessageRepo::class)
           ->addArgument(App\Infrastructure\User\UserRepo::class)
           ->addArgument(App\Infrastructure\Match\MatchRepo::class);
 
-$container->add(App\Application\Match\CreateNewMatchService::class)
+$container->add(App\Application\Match\CreateMatchService::class)
           ->addArgument(App\Infrastructure\Match\MatchRepo::class)
-          ->addArgument(App\Infrastructure\Action\ActionRepo::class);
+          ->addArgument(App\Infrastructure\User\UserRepo::class);
 
 $container->add(App\Application\User\GetUsersService::class)
           ->addArgument(App\Infrastructure\User\UserRepo::class);

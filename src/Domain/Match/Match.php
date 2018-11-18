@@ -7,9 +7,10 @@ use App\Domain\User\UserInterface;
 use App\Domain\User\UserId\UserIdInterface;
 use App\Domain\Match\Message\Message;
 use App\Domain\Match\MatchId\MatchIdInterface;
+use App\Domain\CreatedOn\CreatedOn;
 use App\Domain\CreatedOn\CreatedOnInterface;
 use App\Domain\Match\Exceptions\InvalidUsersMatchException;
-use App\Domain\CreatedOn\CreatedOn;
+use App\Domain\Match\Exceptions\MissingKeyException;
 
 
 class Match implements MatchInterface, JsonSerializable
@@ -57,10 +58,9 @@ class Match implements MatchInterface, JsonSerializable
         {
             if(!array_key_exists($key, $array))
             {
-                return false;
+                throw new MissingKeyException($key, 1);
             }
         }
-        return true;
     }
 
     public function getId()
@@ -78,19 +78,16 @@ class Match implements MatchInterface, JsonSerializable
         return $this->created_on;
     }
 
-    public function addMessage(Array $message_components)
+    public function addMessage(Array $components)
     {
-        if(!$this->assertArrayKeysExist())
-        {
-            throw new \Exception('Message components doesn\'t have all required keys', 1);
-        }
-        // Assert that the Array contains all the components
+        $this->assertArrayKeysExist($components, ['id', 'sender', 'receiver', 'body']);
+
         $this->messages[] = new Message(
-            $message_components['id'],
+            $components['id'],
             $this->getId(),
-            $message_components['sender'],
-            $message_components['receiver'],
-            $message_components['body'],
+            $components['sender'],
+            $components['receiver'],
+            $components['body'],
             new CreatedOn()
         );
     }

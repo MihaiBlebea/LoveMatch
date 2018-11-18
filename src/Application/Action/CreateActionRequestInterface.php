@@ -9,10 +9,4 @@ interface CreateActionRequestInterface
         String $type,
         String $owner_id,
         String $receiver_id);
-
-    public function getActionType();
-
-    public function getSenderId();
-
-    public function getReceiverId();
 }

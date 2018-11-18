@@ -8,7 +8,7 @@ use App\Domain\User\BirthDate\BirthDate;
 use App\Domain\User\Gender\Gender;
 use App\Domain\User\Email\Email;
 use App\Domain\User\Password\Password;
-use App\Domain\User\CreatedOn\CreatedOn;
+use App\Domain\CreatedOn\CreatedOn;
 
 
 class UserFactory

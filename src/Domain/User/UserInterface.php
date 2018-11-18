@@ -49,6 +49,8 @@ interface UserInterface
 
     public function addAction(ActionInterface $action);
 
+    public function addActions(Array $actions);
+
     public function getActions();
 
     public function getLikes();

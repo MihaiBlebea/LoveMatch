@@ -2,14 +2,11 @@
 
 namespace App\Application\Message;
 
-use App\Domain\Match\MatchId\MatchId;
-use App\Domain\Message\Message;
-use App\Domain\Message\Body\Body;
-use App\Domain\Message\MessageRepoInterface;
+use App\Domain\Match\Message\MessageFactory;
+use App\Domain\Match\Message\MessageRepoInterface;
+use App\Domain\User\UserId\UserId;
 use App\Domain\User\UserRepoInterface;
 use App\Domain\Match\MatchRepoInterface;
-use App\Domain\User\UserId\UserId;
-
 
 
 class SendMessageService
@@ -33,16 +30,16 @@ class SendMessageService
 
     public function execute(SendMessageRequestInterface $request)
     {
-        $match    = $this->match_repo->withId(new MatchId($request->getMatchId()));
-        $sender   = $this->user_repo->withId(new UserId($request->getSenderId()));
-        $receiver = $this->user_repo->withId(new UserId($request->getReceiverId()));
+        $sender   = $this->user_repo->withId(new UserId($request->sender_id));
+        $receiver = $this->user_repo->withId(new UserId($request->receiver_id));
 
-        $message = new Message(
+        $message = MessageFactory::build(
             $this->message_repo->nextId(),
+            $request->match_id,
             $sender,
             $receiver,
-            new Body($request->getMessageBody()),
-            $match);
+            $request->body
+        );
 
         $this->message_repo->add($message);
     }

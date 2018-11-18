@@ -31,13 +31,24 @@ class ActionRepo implements ActionRepoInterface
 
     public function add(ActionInterface $action)
     {
-        $this->persist->table('actions')->create([
-            'id'          => (string) $action->getId(),
-            'type'        => (string) $action->getType(),
-            'sender_id'   => (string) $action->getSenderId()->getId(),
-            'receiver_id' => (string) $action->getReceiverId()->getId(),
-            'created_on'  => (string) $action->getCreatedOn()
-        ]);
+        $saved_action = $this->withId($action->getId());
+
+        if($saved_action)
+        {
+            $this->persist->table('actions')->where('id', (string) $saved_action->getId())->update([
+                'type'        => (string) $action->getType(),
+                'sender_id'   => (string) $action->getSenderId()->getId(),
+                'receiver_id' => (string) $action->getReceiverId()->getId()
+            ]);
+        } else {
+            $this->persist->table('actions')->create([
+                'id'          => (string) $action->getId(),
+                'type'        => (string) $action->getType(),
+                'sender_id'   => (string) $action->getSenderId()->getId(),
+                'receiver_id' => (string) $action->getReceiverId()->getId(),
+                'created_on'  => (string) $action->getCreatedOn()
+            ]);
+        }
     }
 
     public function addAll(Array $actions)
@@ -53,11 +64,11 @@ class ActionRepo implements ActionRepoInterface
         $this->persist->table('actions')->where('id', (string) $like->getId())->delete();
     }
 
-    public function removeAll(Array $likes)
+    public function removeAll(Array $actions)
     {
-        foreach($likes as $like)
+        foreach($actions as $action)
         {
-            $this->remove($like);
+            $this->remove($action);
         }
     }
 
@@ -87,9 +98,9 @@ class ActionRepo implements ActionRepoInterface
 
         if(count($actions) > 0)
         {
-            foreach($likes as $like)
+            foreach($actions as $action)
             {
-                $this->likes[] = ActionFactory::build(
+                $this->actions[] = ActionFactory::build(
                     $action['id'],
                     $action['type'],
                     $action['sender_id'],
@@ -97,19 +108,19 @@ class ActionRepo implements ActionRepoInterface
                     $action['created_on']
                 );
             }
-            return $this->likes;
+            return $this->actions;
         }
         return null;
     }
 
-    public function withUserIds(UserIdInterface $owner_id, UserIdInterface $receiver_id)
+    public function withUserIds(UserIdInterface $sender_id, UserIdInterface $receiver_id)
     {
-        $like = $this->persist->table('actions')
-                              ->where('sender_id', (string) $owner_id->getId())
+        $action = $this->persist->table('actions')
+                              ->where('sender_id', (string) $sender_id->getId())
                               ->where('receiver_id', (string) $receiver_id->getId())
                               ->selectOne();
 
-        if($like)
+        if($action)
         {
             return ActionFactory::build(
                 $action['id'],

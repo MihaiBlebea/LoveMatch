@@ -32,12 +32,21 @@ class MatchRepo implements MatchRepoInterface
 
     public function add(MatchInterface $match)
     {
-        $this->persist->table('matches')->create([
-            'id'             => (string) $match->getId(),
-            'first_user_id'  => $match->getUsers()[0],
-            'second_user_id' => $match->getUsers()[1],
-            'created_on'     => $match->getCreatedOn()
-        ]);
+        $saved_match = $this->withId($match->getId());
+        if($saved_match)
+        {
+            $this->persist->table('matches')->where('id', (string) $match->getId())->update([
+                'first_user_id'  => $match->getUsers()[0],
+                'second_user_id' => $match->getUsers()[1],
+            ]);
+        } else {
+            $this->persist->table('matches')->create([
+                'id'             => (string) $match->getId(),
+                'first_user_id'  => $match->getUsers()[0],
+                'second_user_id' => $match->getUsers()[1],
+                'created_on'     => $match->getCreatedOn()
+            ]);
+        }
 
         if($match->getMessageCount() > 0)
         {

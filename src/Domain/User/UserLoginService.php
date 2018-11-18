@@ -25,8 +25,8 @@ class UserLoginService
             throw new \Exception('This user or another user is already logged in. Logout first', 1);
         }
 
-        $user = $this->user_repo->withEmail(new Email($request->getEmail()));
-        if($user && $user->getPassword()->verifyPassword(new Password($request->getPassword())))
+        $user = $this->user_repo->withEmail(new Email($request->email));
+        if($user && $user->getPassword()->verifyPassword(new Password($request->password)))
         {
             // Publish and event
             $publisher = DomainEventPublisher::instance();

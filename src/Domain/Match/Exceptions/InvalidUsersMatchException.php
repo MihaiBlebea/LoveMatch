@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\User\Exceptions;
+namespace App\Domain\Match\Exceptions;
 
 use Exception;
 

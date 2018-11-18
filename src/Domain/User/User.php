@@ -10,6 +10,7 @@ use App\Domain\User\Gender\GenderInterface;
 use App\Domain\User\Email\EmailInterface;
 use App\Domain\User\Password\PasswordInterface;
 use App\Domain\User\Action\ActionInterface;
+use App\Domain\CreatedOn\CreatedOn;
 use App\Domain\CreatedOn\CreatedOnInterface;
 
 
@@ -48,6 +49,14 @@ class User implements UserInterface, JsonSerializable
         $this->email      = $email;
         $this->password   = $password;
         $this->created_on = $created_on;
+    }
+
+    private function assertActionSenderMatchUser(ActionInterface $action)
+    {
+        if(!(string) $action->getSenderId() === (string) $this->getId())
+        {
+            throw new \Exception('Action sender must be the parent user', 1);
+        }
     }
 
     public function getId()
@@ -112,6 +121,8 @@ class User implements UserInterface, JsonSerializable
 
     public function addAction(ActionInterface $action)
     {
+        $this->assertActionSenderMatchUser($action);
+        
         $this->actions[] = $action;
     }
 

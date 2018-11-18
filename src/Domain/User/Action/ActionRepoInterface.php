@@ -27,6 +27,6 @@ interface ActionRepoInterface
     public function withSenderId(UserIdInterface $id);
 
     public function withUserIds(
-        UserIdInterface $owner_id,
+        UserIdInterface $sender_id,
         UserIdInterface $receiver_id);
 }

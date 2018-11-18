@@ -2,29 +2,41 @@
 
 namespace App\Application\Action;
 
-use App\Domain\Action\ActionRepoInterface;
-use App\Domain\Action\ActionFactory;
+use App\Domain\User\UserRepoInterface;
+use App\Domain\User\UserId\UserId;
+use App\Domain\User\Action\ActionRepoInterface;
+use App\Domain\User\Action\ActionFactory;
 
 
 class CreateActionService
 {
     private $action_repo;
 
+    private $user_repo;
 
-    public function __construct(ActionRepoInterface $action_repo)
+
+    public function __construct(
+        ActionRepoInterface $action_repo,
+        UserRepoInterface $user_repo)
     {
         $this->action_repo = $action_repo;
+        $this->user_repo   = $user_repo;
     }
 
     public function execute(CreateActionRequestInterface $request)
     {
         $action = ActionFactory::build(
             $this->action_repo->nextId(),
-            $request->getActionType(),
-            $request->getSenderId(),
-            $request->getReceiverId()
+            $request->type,
+            $request->sender_id,
+            $request->receiver_id
         );
-        $this->action_repo->add($action);
-        return $action;
+
+        $sender = $this->user_repo->withId(new UserId($request->sender_id));
+        $sender->addAction($action);
+
+        $this->user_repo->add($sender);
+
+        return $sender;
     }
 }

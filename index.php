@@ -13,7 +13,7 @@ use App\Infrastructure\User\UserRepo;
 use App\Application\User\UserLoginRequest;
 use App\Application\User\UserRegisterRequest;
 use App\Application\LogoutService;
-use App\Application\Match\NewMatchRequest;
+use App\Application\Match\CreateMatchRequest;
 use App\Application\Message\SendMessageRequest;
 use App\Application\Action\CreateActionRequest;
 
@@ -47,8 +47,7 @@ $persist_listener = $container->get(App\Domain\PersistDomainEventSubscriber::cla
 // Subscribe the listener to the publisher
 $publisher->subscribe($persist_listener);
 
-
-
+// Get Router components
 $router  = $container->get(Interceptor\Router::class);
 $request = $container->get(Interceptor\Request::class);
 
@@ -87,6 +86,7 @@ $router->add(Route::post('register', function($request) use ($container) {
         $user = $register_serv->execute(new UserRegisterRequest(
             $request->dump()->name,
             $request->dump()->birth_date,
+            $request->dump()->gender,
             $request->dump()->email,
             $request->dump()->password
         ));
@@ -102,6 +102,52 @@ $router->add(Route::get('users', function($request) use ($container) {
     $get_users_serv = $container->get(App\Application\User\GetUsersService::class);
     $users = $get_users_serv->execute();
     Response::asJson($users);
+}));
+
+
+$router->add(Route::post('action', function($request) use ($container) {
+    $create_action_serv = $container->get(App\Application\Action\CreateActionService::class);
+    try {
+        $action = $create_action_serv->execute(new CreateActionRequest(
+            $request->dump()->type,
+            $request->dump()->sender_id,
+            $request->dump()->receiver_id
+        ));
+        Response::asJson($action);
+    } catch(\Exception $e) {
+        dd($e->getMessage());
+    }
+}));
+
+
+$router->add(Route::post('match', function($request) use ($container) {
+    $create_match_serv = $container->get(App\Application\Match\CreateMatchService::class);
+    try {
+        $match = $create_match_serv->execute(new CreateMatchRequest(
+            $request->dump()->first_user_id,
+            $request->dump()->second_user_id
+        ));
+        Response::asJson($match);
+    } catch(\Exception $e) {
+        dd($e->getMessage());
+    }
+}));
+
+
+$router->add(Route::post('message', function($request) use ($container) {
+    $send_message_srv = $container->get(App\Application\Message\SendMessageService::class);
+
+    try {
+        $send_message_srv->execute(new SendMessageRequest(
+            $request->dump()->sender_id,
+            $request->dump()->receiver_id,
+            $request->dump()->match_id,
+            $request->dump()->body
+        ));
+        Response::asJson([ 'result' => 'Message was sent' ]);
+    } catch(\Exception $e) {
+        dd($e->getMessage());
+    }
 }));
 
 
@@ -132,60 +178,51 @@ $router->add(Route::get('test', function($request) use ($container) {
         new CreatedOn()
     );
 
-    $like = new Action(
-        $action_repo->nextId(),
-        new Type('like'),
-        $mihai->getId(),
-        $cristina->getId(),
-        new CreatedOn()
-    );
+    $user_repo->addAll([ $mihai, $cristina ]);
 
-    $pass = new Action(
-        $action_repo->nextId(),
-        new Type('pass'),
-        $mihai->getId(),
-        $cristina->getId(),
-        new CreatedOn()
-    );
-
-    $mihai->addActions([$like, $pass]);
-
-
-    $match = new Match(
-        $match_repo->nextId(),
-        $mihai,
-        $cristina,
-        new CreatedOn()
-    );
-
-    // $message = new Message(
-    //     $message_repo->nextId(),
-    //     $mihai,
-    //     $cristina,
-    //     new Body('Ce faci Cristina? Esti bine?'),
-    //     new CreatedOn()
-    // );
-
-    $match->addMessage([
-        'id'       => $message_repo->nextId(),
-        'sender'   => $mihai,
-        'receiver' => $cristina,
-        'body'     => new Body('Ce faci Cristina? Esti bine?')
-    ]);
-
-    // Try and save User aggregate
+    // $mihai->addAction([
+    //     'id'          => $action_repo->nextId(),
+    //     'type'        => new Type('like'),
+    //     'receiver_id' => $cristina->getId()
+    // ]);
+    //
+    // $cristina->addAction([
+    //     'id'          => $action_repo->nextId(),
+    //     'type'        => new Type('like'),
+    //     'receiver_id' => $mihai->getId()
+    // ]);
+    //
     // try {
-    //     $user_repo->add($mihai);
+    //     $match = new Match(
+    //         $match_repo->nextId(),
+    //         $mihai,
+    //         $cristina,
+    //         new CreatedOn()
+    //     );
     // } catch(\Exception $e) {
     //     dd($e->getMessage());
     // }
-
-    // Try and save Match aggregate
-    try {
-        $match_repo->add($match);
-    } catch(\Exception $e) {
-        dd($e->getMessage());
-    }
+    //
+    // $match->addMessage([
+    //     'id'       => $message_repo->nextId(),
+    //     'sender'   => $mihai,
+    //     'receiver' => $cristina,
+    //     'body'     => new Body('Ce faci Cristina? Esti bine?')
+    // ]);
+    //
+    // // Try and save User aggregate
+    // try {
+    //     $user_repo->addAll([ $mihai, $cristina ]);
+    // } catch(\Exception $e) {
+    //     dd($e->getMessage());
+    // }
+    //
+    // // Try and save Match aggregate
+    // try {
+    //     $match_repo->add($match);
+    // } catch(\Exception $e) {
+    //     dd($e->getMessage());
+    // }
 
     // dd($match);
     dd($mihai, $cristina);
@@ -193,50 +230,6 @@ $router->add(Route::get('test', function($request) use ($container) {
 }));
 
 
-$router->add(Route::post('action', function($request) use ($container) {
-    $create_action_serv = $container->get(App\Application\Action\CreateActionService::class);
-    try {
-        $action = $create_action_serv->execute(new CreateActionRequest(
-            $request->dump()->type,
-            $request->dump()->sender_id,
-            $request->dump()->receiver_id
-        ));
-        Response::asJson($action);
-    } catch(\Exception $e) {
-        dd($e->getMessage());
-    }
-}));
-
-
-$router->add(Route::post('message', function($request) use ($container) {
-    $send_message_srv = $container->get(App\Application\Message\SendMessageService::class);
-
-    try {
-        $send_message_srv->execute(new SendMessageRequest(
-            $request->dump()->sender_id,
-            $request->dump()->receiver_id,
-            $request->dump()->match_id,
-            $request->dump()->body
-        ));
-        Response::asJson([ 'result' => 'Message was sent' ]);
-    } catch(\Exception $e) {
-        dd($e->getMessage());
-    }
-}));
-
-
-$router->add(Route::post('match', function($request) use ($container) {
-    $create_match_serv = $container->get(App\Application\Match\CreateNewMatchService::class);
-    try {
-        $match = $create_match_serv->execute(new NewMatchRequest(
-            $request->dump()->like_a,
-            $request->dump()->like_b
-        ));
-        Response::asJson($match);
-    } catch(\Exception $e) {
-        dd($e->getMessage());
-    }
-}));
 
 
 // Run the Router

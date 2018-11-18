@@ -23,10 +23,11 @@ class UserRegisterService
     {
         $user = UserFactory::build(
             $this->user_repo->nextId(),
-            $request->getName(),
-            $request->getBirthDate(),
-            $request->getEmail(),
-            $request->getPassword()
+            $request->name,
+            $request->birth_date,
+            $request->gender,
+            $request->email,
+            $request->password
         );
         $this->user_repo->add($user);
 

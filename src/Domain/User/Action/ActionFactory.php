@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Domain\Action;
+namespace App\Domain\User\Action;
 
 use App\Domain\CreatedOn\CreatedOn;
-use App\Domain\Action\Action;
-use App\Domain\Action\ActionId\ActionId;
-use App\Domain\Action\Type\Type;
+use App\Domain\User\Action\Action;
+use App\Domain\User\Action\ActionId\ActionId;
+use App\Domain\User\Action\Type\Type;
 use App\Domain\User\UserId\UserId;
 
 
