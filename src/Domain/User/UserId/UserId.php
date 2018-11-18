@@ -22,4 +22,9 @@ class UserId implements UserIdInterface
     {
         return (string) $this->getId();
     }
+
+    public function isEqual(UserIdInterface $id)
+    {
+        return $this->getId() === $id->getId();
+    }
 }

@@ -3,16 +3,13 @@
 namespace App\Infrastructure\User;
 
 use Ramsey\Uuid\Uuid;
-use App\Domain\User\UserId\{
-    UserId,
-    UserIdInterface
-};
+use App\Domain\User\User;
+use App\Domain\User\UserFactory;
+use App\Domain\User\UserRepoInterface;
+use App\Domain\User\UserId\UserId;
+use App\Domain\User\UserId\UserIdInterface;
 use App\Domain\User\Email\EmailInterface;
-use App\Domain\User\{
-    User,
-    UserFactory,
-    UserRepoInterface
-};
+use App\Infrastructure\Action\ActionRepo;
 
 
 class UserRepo implements UserRepoInterface
@@ -38,9 +35,18 @@ class UserRepo implements UserRepoInterface
             'id'         => (string) $user->getId(),
             'name'       => (string) $user->getName(),
             'birth_date' => (string) $user->getBirthDate(),
+            'gender'     => (string) $user->getGender(),
             'email'      => (string) $user->getEmail(),
-            'password'   => (string) $user->getPassword()->getHashedPassword()
+            'password'   => (string) $user->getPassword()->getHashedPassword(),
+            'created_on' => (string) $user->getCreatedOn()
         ]);
+
+        // Save the actions in the action array
+        if(count($user->getActions()) > 0)
+        {
+            $action_repo = new ActionRepo($this->persist);
+            $action_repo->addAll($user->getActions());
+        }
     }
 
     public function addAll(Array $users)
@@ -69,13 +75,22 @@ class UserRepo implements UserRepoInterface
         $user = $this->persist->table('users')->where('id', (string) $id->getId())->selectOne();
         if($user)
         {
-            return UserFactory::build(
+            $user_model = UserFactory::build(
                 $user['id'],
                 $user['name'],
                 $user['birth_date'],
+                $user['gender'],
                 $user['email'],
-                $user['password']
+                $user['password'],
+                $user['created_on']
             );
+
+            // get action repo
+            $action_repo = new ActionRepo($this->persist);
+            $actions = $action_repo->withSenderId($user_model->getId());
+
+            $user_model->addActions($actions);
+            return $user_model;
         }
         return null;
     }
@@ -89,8 +104,10 @@ class UserRepo implements UserRepoInterface
                 $user['id'],
                 $user['name'],
                 $user['birth_date'],
+                $user['gender'],
                 $user['email'],
-                $user['password']
+                $user['password'],
+                $user['created_on']
             );
         }
         return null;
@@ -114,8 +131,10 @@ class UserRepo implements UserRepoInterface
                     $user['id'],
                     $user['name'],
                     $user['birth_date'],
+                    $user['gender'],
                     $user['email'],
-                    $user['password']
+                    $user['password'],
+                    $user['created_on']
                 );
             }
             return $this->users;

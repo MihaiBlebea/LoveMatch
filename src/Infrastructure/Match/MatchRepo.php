@@ -4,13 +4,13 @@ namespace App\Infrastructure\Match;
 
 use Ramsey\Uuid\Uuid;
 use Domino\Interfaces\PersistenceInterface;
+use App\Domain\User\UserId\UserId;
 use App\Domain\Match\Match;
+use App\Domain\Match\MatchInterface;
 use App\Domain\Match\MatchId\MatchId;
 use App\Domain\Match\MatchId\MatchIdInterface;
 use App\Domain\Match\MatchRepoInterface;
-use App\Domain\Action\ActionId\ActionId;
-use App\Infrastructure\Action\ActionRepo;
-use App\Domain\User\UserId\UserId;
+use App\Infrastructure\Message\MessageRepo;
 
 
 class MatchRepo implements MatchRepoInterface
@@ -30,14 +30,23 @@ class MatchRepo implements MatchRepoInterface
         return new MatchId(strtoupper(Uuid::uuid4()));
     }
 
-    public function add(Match $match)
+    public function add(MatchInterface $match)
     {
         $this->persist->table('matches')->create([
-            'id'          => (string) $match->getId(),
-            'action_a_id' => $match->getUsers()[0],
-            'action_b_id' => $match->getUsers()[1],
-            'created_on'  => $match->getCreatedOn()
+            'id'             => (string) $match->getId(),
+            'first_user_id'  => $match->getUsers()[0],
+            'second_user_id' => $match->getUsers()[1],
+            'created_on'     => $match->getCreatedOn()
         ]);
+
+        if($match->getMessageCount() > 0)
+        {
+            foreach($match->getMessages() as $message)
+            {
+                $message_repo = new MessageRepo($this->persist);
+                $message_repo->add($message);
+            }
+        }
     }
 
     public function addAll(Array $matches)
@@ -48,7 +57,7 @@ class MatchRepo implements MatchRepoInterface
         }
     }
 
-    public function remove(Match $match)
+    public function remove(MatchInterface $match)
     {
         $this->persist->table('matches')
                       ->where('id', (string) $match->getId())
@@ -70,19 +79,19 @@ class MatchRepo implements MatchRepoInterface
                                ->selectOne();
         if($match)
         {
-            $action_repo = new ActionRepo($this->persist);
-            $action_a = $action_repo->withId(new ActionId($match['action_a_id']));
-            $action_b = $action_repo->withId(new ActionId($match['action_b_id']));
-            dd($$action_a);
-            if($action_a && $action_b)
-            {
-                return new Match(
-                    new MatchId($match['id']),
-                    $action_a,
-                    $action_b,
-                    $match['created_on']);
-            }
-            return null;
+            // $action_repo = new ActionRepo($this->persist);
+            // $action_a = $action_repo->withId(new ActionId($match['action_a_id']));
+            // $action_b = $action_repo->withId(new ActionId($match['action_b_id']));
+            // dd($$action_a);
+            // if($action_a && $action_b)
+            // {
+            //     return new Match(
+            //         new MatchId($match['id']),
+            //         $action_a,
+            //         $action_b,
+            //         $match['created_on']);
+            // }
+            // return null;
         }
         return null;
     }

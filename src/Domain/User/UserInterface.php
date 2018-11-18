@@ -33,6 +33,10 @@ interface UserInterface
 
     public function setBirthDate(BirthDateInterface $birth_date);
 
+    public function getGender();
+
+    public function setGender(GenderInterface $gender);
+
     public function getEmail();
 
     public function setEmail(EmailInterface $email);
@@ -41,7 +45,7 @@ interface UserInterface
 
     public function setPassword(PasswordInterface $password);
 
-    public function getCreatdOn();
+    public function getCreatedOn();
 
     public function addAction(ActionInterface $action);
 

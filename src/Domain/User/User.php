@@ -75,6 +75,16 @@ class User implements UserInterface, JsonSerializable
         $this->birth_date = $birth_date;
     }
 
+    public function getGender()
+    {
+        return $this->gender;
+    }
+
+    public function setGender(GenderInterface $gender)
+    {
+        $this->gender = $gender;
+    }
+
     public function getEmail()
     {
         return $this->email;
@@ -95,7 +105,7 @@ class User implements UserInterface, JsonSerializable
         $this->password = $password;
     }
 
-    public function getCreatdOn()
+    public function getCreatedOn()
     {
         return $this->created_on;
     }
@@ -142,6 +152,18 @@ class User implements UserInterface, JsonSerializable
             }
         }
         return $passes;
+    }
+
+    public function likesUser(UserIdInterface $user_id)
+    {
+        foreach($this->getLikes() as $like)
+        {
+            if($like->getReceiverId()->isEqual($user_id))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     public function jsonSerialize()

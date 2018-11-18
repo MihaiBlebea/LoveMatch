@@ -2,10 +2,8 @@
 
 namespace App\Domain\User;
 
-use App\Domain\User\{
-    UserId\UserIdInterface,
-    Email\Emailinterface
-};
+use App\Domain\User\UserId\UserIdInterface;
+use App\Domain\User\Email\Emailinterface;
 
 
 interface UserRepoInterface

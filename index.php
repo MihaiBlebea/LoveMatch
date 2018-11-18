@@ -153,22 +153,42 @@ $router->add(Route::get('test', function($request) use ($container) {
 
     $match = new Match(
         $match_repo->nextId(),
-        $cristina,
         $mihai,
+        $cristina,
         new CreatedOn()
     );
 
-    $message = new Message(
-        $message_repo->nextId(),
-        $mihai,
-        $cristina,
-        new Body('Ce faci Cristina? Esti bine?'),
-        new CreatedOn()
-    );
+    // $message = new Message(
+    //     $message_repo->nextId(),
+    //     $mihai,
+    //     $cristina,
+    //     new Body('Ce faci Cristina? Esti bine?'),
+    //     new CreatedOn()
+    // );
 
-    $match->addMessage($message);
+    $match->addMessage([
+        'id'       => $message_repo->nextId(),
+        'sender'   => $mihai,
+        'receiver' => $cristina,
+        'body'     => new Body('Ce faci Cristina? Esti bine?')
+    ]);
 
-    dd($match);
+    // Try and save User aggregate
+    // try {
+    //     $user_repo->add($mihai);
+    // } catch(\Exception $e) {
+    //     dd($e->getMessage());
+    // }
+
+    // Try and save Match aggregate
+    try {
+        $match_repo->add($match);
+    } catch(\Exception $e) {
+        dd($e->getMessage());
+    }
+
+    // dd($match);
+    dd($mihai, $cristina);
 
 }));
 

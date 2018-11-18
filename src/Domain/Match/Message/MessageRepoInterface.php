@@ -3,6 +3,7 @@
 namespace App\Domain\Match\Message;
 
 use Domino\Interfaces\PersistenceInterface;
+use App\Domain\Match\Message\MessageInterface;
 
 
 interface MessageRepoInterface
@@ -11,11 +12,11 @@ interface MessageRepoInterface
 
     public function nextId();
 
-    public function add(Message $message);
+    public function add(MessageInterface $message);
 
     public function addAll(Array $messages);
 
-    public function remove(Message $message);
+    public function remove(MessageInterface $message);
 
     public function removeAll(Array $messages);
 }
