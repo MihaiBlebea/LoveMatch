@@ -9,18 +9,14 @@ use Interceptor\{
     Response
 };
 
-use App\Infrastructure\User\UserRepo;
-use App\Application\User\UserLoginRequest;
-use App\Application\User\UserRegisterRequest;
+use App\Application\User\UserLogin\UserLoginRequest;
+use App\Application\User\UserRegister\UserRegisterRequest;
+
 use App\Application\LogoutService;
-use App\Application\Match\NewMatchRequest;
+use App\Application\Match\CreateMatch\CreateMatchRequest;
+use App\Application\Match\GetMatches\GetMatchesRequest;
 use App\Application\Message\SendMessageRequest;
 use App\Application\Action\CreateActionRequest;
-
-use App\Domain\Match\MatchId\MatchId;
-use App\Domain\Match\Match;
-use App\Domain\CreatedOn\CreatedOn;
-use App\Domain\Action\ActionId\ActionId;
 
 
 // Init DomainEventPublisher
@@ -33,16 +29,14 @@ $persist_listener = $container->get(App\Domain\PersistDomainEventSubscriber::cla
 // Subscribe the listener to the publisher
 $publisher->subscribe($persist_listener);
 
-
-
+// Get Router components
 $router  = $container->get(Interceptor\Router::class);
 $request = $container->get(Interceptor\Request::class);
 
 
 // Route for User login
 $router->add(new Route('login', function() use ($request, $container) {
-    $login_serv = $container->get(App\Domain\User\UserLoginService::class);
-
+    $login_serv = $container->get(App\Application\User\UserLogin\UserLoginService::class);
     try {
         $user = $login_serv->execute(new UserLoginRequest(
             $request->retrive('email'),
@@ -68,11 +62,12 @@ $router->add(Route::get('logout', function() {
 
 // Route for User register
 $router->add(Route::post('register', function($request) use ($container) {
-    $register_serv = $container->get(App\Application\User\UserRegisterService::class);
+    $register_serv = $container->get(App\Application\User\UserRegister\UserRegisterService::class);
     try {
         $user = $register_serv->execute(new UserRegisterRequest(
             $request->dump()->name,
             $request->dump()->birth_date,
+            $request->dump()->gender,
             $request->dump()->email,
             $request->dump()->password
         ));
@@ -85,24 +80,9 @@ $router->add(Route::post('register', function($request) use ($container) {
 
 // Get all users
 $router->add(Route::get('users', function($request) use ($container) {
-    $get_users_serv = $container->get(App\Application\User\GetUsersService::class);
+    $get_users_serv = $container->get(App\Application\User\GetUsers\GetUsersService::class);
     $users = $get_users_serv->execute();
     Response::asJson($users);
-}));
-
-
-// Test the domain event store
-$router->add(Route::get('test', function($request) use ($container) {
-    $match_repo  = $container->get(App\Infrastructure\Match\MatchRepo::class);
-    $action_repo = $container->get(App\Infrastructure\Action\ActionRepo::class);
-
-    $match = new Match(
-        new MatchId($match_repo->nextId()),
-        $action_repo->withId(new ActionId('ABDCF14D-F17D-4C16-8DBE-F106E447AEEA')),
-        $action_repo->withId(new ActionId('ABDCF14D-F17D-4C16-8DBE-F106E4B7AEEA')),
-        new CreatedOn()
-    );
-    dd($match);
 }));
 
 
@@ -115,6 +95,31 @@ $router->add(Route::post('action', function($request) use ($container) {
             $request->dump()->receiver_id
         ));
         Response::asJson($action);
+    } catch(\Exception $e) {
+        dd($e->getMessage());
+    }
+}));
+
+
+$router->add(Route::post('match', function($request) use ($container) {
+    $create_match_serv = $container->get(App\Application\Match\CreateMatch\CreateMatchService::class);
+    try {
+        $match = $create_match_serv->execute(new CreateMatchRequest(
+            $request->dump()->first_user_id,
+            $request->dump()->second_user_id
+        ));
+        Response::asJson($match);
+    } catch(\Exception $e) {
+        dd($e->getMessage());
+    }
+}));
+
+
+$router->add(Route::get('matches', function($request) use ($container) {
+    $get_match_serv = $container->get(App\Application\Match\GetMatches\GetMatchesService::class);
+    try {
+        $matches = $get_match_serv->execute(new GetMatchesRequest($request->retrive('user_id')));
+        Response::asJson($matches);
     } catch(\Exception $e) {
         dd($e->getMessage());
     }
@@ -138,18 +143,7 @@ $router->add(Route::post('message', function($request) use ($container) {
 }));
 
 
-$router->add(Route::post('match', function($request) use ($container) {
-    $create_match_serv = $container->get(App\Application\Match\CreateNewMatchService::class);
-    try {
-        $match = $create_match_serv->execute(new NewMatchRequest(
-            $request->dump()->like_a,
-            $request->dump()->like_b
-        ));
-        Response::asJson($match);
-    } catch(\Exception $e) {
-        dd($e->getMessage());
-    }
-}));
+
 
 
 // Run the Router

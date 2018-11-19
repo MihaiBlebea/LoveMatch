@@ -57,23 +57,27 @@ $container->add(App\Domain\PersistDomainEventSubscriber::class)
           ->addArgument(App\Infrastructure\Event\EventStore::class);
 
 
-$container->add(App\Domain\User\UserLoginService::class)
+$container->add(App\Application\User\UserLogin\UserLoginService::class)
           ->addArgument(App\Infrastructure\User\UserRepo::class);
 
-$container->add(App\Application\User\UserRegisterService::class)
+$container->add(App\Application\User\UserRegister\UserRegisterService::class)
           ->addArgument(App\Infrastructure\User\UserRepo::class);
 
 $container->add(App\Application\Action\CreateActionService::class)
-          ->addArgument(App\Infrastructure\Action\ActionRepo::class);
+          ->addArgument(App\Infrastructure\Action\ActionRepo::class)
+          ->addArgument(App\Infrastructure\User\UserRepo::class);
 
 $container->add(App\Application\Message\SendMessageService::class)
           ->addArgument(App\Infrastructure\Message\MessageRepo::class)
           ->addArgument(App\Infrastructure\User\UserRepo::class)
           ->addArgument(App\Infrastructure\Match\MatchRepo::class);
 
-$container->add(App\Application\Match\CreateNewMatchService::class)
+$container->add(App\Application\Match\CreateMatch\CreateMatchService::class)
           ->addArgument(App\Infrastructure\Match\MatchRepo::class)
-          ->addArgument(App\Infrastructure\Action\ActionRepo::class);
-
-$container->add(App\Application\User\GetUsersService::class)
           ->addArgument(App\Infrastructure\User\UserRepo::class);
+
+$container->add(App\Application\User\GetUsers\GetUsersService::class)
+          ->addArgument(App\Infrastructure\User\UserRepo::class);
+
+$container->add(App\Application\Match\GetMatches\GetMatchesService::class)
+          ->addArgument(App\Infrastructure\Match\MatchRepo::class);

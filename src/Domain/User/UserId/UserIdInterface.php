@@ -10,4 +10,6 @@ interface UserIdInterface
     public function getId();
 
     public function __toString();
+
+    public function isEqual(UserIdInterface $id);
 }

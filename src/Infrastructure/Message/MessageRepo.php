@@ -4,9 +4,14 @@ namespace App\Infrastructure\Message;
 
 use Ramsey\Uuid\Uuid;
 use Domino\Interfaces\PersistenceInterface;
-use App\Domain\Message\MessageId\MessageId;
-use App\Domain\Message\MessageRepoInterface;
-use App\Domain\Message\Message;
+use App\Domain\Match\MatchId\MatchIdInterface;
+use App\Domain\Match\Message\MessageInterface;
+use App\Domain\Match\Message\MessageId\MessageId;
+use App\Domain\Match\Message\MessageId\MessageIdInterface;
+use App\Domain\Match\Message\MessageRepoInterface;
+use App\Domain\Match\Message\MessageFactory;
+use App\Domain\User\UserId\UserId;
+use App\Infrastructure\User\UserRepo;
 
 
 class MessageRepo implements MessageRepoInterface
@@ -26,16 +31,27 @@ class MessageRepo implements MessageRepoInterface
         return new MessageId(strtoupper(Uuid::uuid4()));
     }
 
-    public function add(Message $message)
+    public function add(MessageInterface $message)
     {
-        $this->persist->table('messages')->create([
-            'id'       => (string) $message->getId(),
-            'sender'   => (string) $message->getSender()->getId(),
-            'receiver' => (string) $message->getReceiver()->getId(),
-            'body'     => (string) $message->getBody(),
-            'match_id' => (string) $message->getMatch()->getId(),
-            'sent_on'  => (string) $message->getSentOn()
-        ]);
+        $saved_message = $this->withId($message->getId());
+        if($saved_message)
+        {
+            $this->persist->table('messages')->where('id', (string) $message->getId())->update([
+                'match_id'   => (string) $message->getMatchId(),
+                'sender'     => (string) $message->getSender()->getId(),
+                'receiver'   => (string) $message->getReceiver()->getId(),
+                'body'       => (string) $message->getBody()
+            ]);
+        } else {
+            $this->persist->table('messages')->create([
+                'id'         => (string) $message->getId(),
+                'match_id'   => (string) $message->getMatchId(),
+                'sender'     => (string) $message->getSender()->getId(),
+                'receiver'   => (string) $message->getReceiver()->getId(),
+                'body'       => (string) $message->getBody(),
+                'created_on' => (string) $message->getCreatedOn()
+            ]);
+        }
     }
 
     public function addAll(Array $messages)
@@ -46,7 +62,7 @@ class MessageRepo implements MessageRepoInterface
         }
     }
 
-    public function remove(Message $message)
+    public function remove(MessageInterface $message)
     {
         $this->persist->table('messages')->where('id', (string) $message->getId())->delete();
     }
@@ -57,5 +73,48 @@ class MessageRepo implements MessageRepoInterface
         {
             $this->remove($message);
         }
+    }
+
+    public function withId(MessageIdInterface $id)
+    {
+        $message = $this->persist->table('messages')
+                                 ->where('id', (string) $id->getId())
+                                 ->selectOne();
+        if($message)
+        {
+            return $this->buildMessage($message);
+        }
+        return null;
+    }
+
+    public function withMatchId(MatchIdInterface $id)
+    {
+        $messages = $this->persist->table('messages')
+                                  ->where('match_id', (string) $id->getId())
+                                  ->select();
+
+        if($messages && count($messages) > 0)
+        {
+            foreach($messages as $message)
+            {
+                $this->messages[] = $this->buildMessage($message);
+            }
+            return $this->messages;
+        }
+        return null;
+    }
+
+    private function buildMessage(Array $message)
+    {
+        $user_repo = new UserRepo($this->persist);
+
+        return MessageFactory::build(
+            $message['id'],
+            $message['match_id'],
+            $user_repo->withId(new UserId($message['sender'])),
+            $user_repo->withId(new UserId($message['receiver'])),
+            $message['body'],
+            $message['created_on']
+        );
     }
 }

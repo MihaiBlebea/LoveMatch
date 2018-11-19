@@ -3,9 +3,15 @@
 namespace App\Domain\Match;
 
 use JsonSerializable;
+use App\Domain\User\UserInterface;
+use App\Domain\User\UserId\UserIdInterface;
+use App\Domain\Match\Message\Message;
+use App\Domain\Match\Message\MessageInterface;
 use App\Domain\Match\MatchId\MatchIdInterface;
-use App\Domain\Action\ActionInterface;
+use App\Domain\CreatedOn\CreatedOn;
 use App\Domain\CreatedOn\CreatedOnInterface;
+use App\Domain\Match\Exceptions\InvalidUsersMatchException;
+use App\Domain\Match\Exceptions\MissingKeyException;
 
 
 class Match implements MatchInterface, JsonSerializable
@@ -21,50 +27,42 @@ class Match implements MatchInterface, JsonSerializable
 
     public function __construct(
         MatchIdInterface $id,
-        ActionInterface $action_a,
-        ActionInterface $action_b,
+        UserInterface $first_user,
+        UserInterface $second_user,
         CreatedOnInterface $created_on)
     {
-        if(!$this->assertActionIsLike($action_a) &&
-            !$this->assertActionIsLike($action_b))
+        if(!$this->assertUserLikeOtherUser($first_user, $second_user->getId()))
         {
-            throw new \Exception('Action is not LIKE', 1);
+            throw new InvalidUsersMatchException(
+                (string) $first_user->getName(),
+                (string) $second_user->getName(),
+                1
+            );
         }
 
-        if(!$this->assertUsersMatch($action_a, $action_b))
-        {
-            throw new \Exception('Users doesn\'t match', 1);
-        }
         $this->id         = $id;
-        $this->users[]    = (string) $action_a->getSenderId()->getId();
-        $this->users[]    = (string) $action_b->getSenderId()->getId();
+        $this->users[]    = (string) $first_user->getId();
+        $this->users[]    = (string) $second_user->getId();
         $this->created_on = $created_on;
     }
 
-    private function assertUsersMatch(
-        ActionInterface $action_a,
-        ActionInterface $action_b)
+    private function assertUserLikeOtherUser(
+        UserInterface $user,
+        UserIdInterface $second_user)
     {
-        $action_a_sender_id   = (string) $action_a->getSenderId()->getId();
-        $action_a_receiver_id = (string) $action_a->getReceiverId()->getId();
+        return $user->likesUser($second_user);
+    }
 
-        $action_b_sender_id   = (string) $action_b->getSenderId()->getId();
-        $action_b_receiver_id = (string) $action_b->getReceiverId()->getId();
-
-        if($action_a_sender_id === $action_b_receiver_id &&
-            $action_a_receiver_id === $action_b_sender_id)
+    private function assertArrayKeysExist(Array $array, Array $keys)
+    {
+        foreach($keys as $key)
         {
-            return true;
-        } else {
-            return false;
+            if(!array_key_exists($key, $array))
+            {
+                throw new MissingKeyException($key, 1);
+            }
         }
     }
-
-    private function assertActionIsLike(ActionInterface $action)
-    {
-        return (string) $action->getType() === 'LIKE';
-    }
-
 
     public function getId()
     {
@@ -81,9 +79,17 @@ class Match implements MatchInterface, JsonSerializable
         return $this->created_on;
     }
 
-    public function addMessage($message)
+    public function addMessage(MessageInterface $message)
     {
         $this->messages[] = $message;
+    }
+
+    public function addMessages(Array $messages)
+    {
+        foreach($messages as $message)
+        {
+            $this->addMessage($message);
+        }
     }
 
     public function getMessages()
@@ -91,11 +97,43 @@ class Match implements MatchInterface, JsonSerializable
         return $this->messages;
     }
 
+    public function getMessageCount()
+    {
+        return count($this->messages);
+    }
+
+    public function getSenderMessages(UserIdInterface $owner_id)
+    {
+        $messages = [];
+        foreach($this->getMessages() as $message)
+        {
+            if((string) $message->getSender()->getId() === $owner_id)
+            {
+                $messages[] = $message;
+            }
+        }
+        return $messages;
+    }
+
+    public function getReceiverMessages(UserIdInterface $owner_id)
+    {
+        $messages = [];
+        foreach($this->getMessages() as $message)
+        {
+            if((string) $message->getReceiver()->getId() === $owner_id)
+            {
+                $messages[] = $message;
+            }
+        }
+        return $messages;
+    }
+
     public function jsonSerialize()
     {
         return [
             'id'         => (string) $this->getId(),
             'users'      => $this->getUsers(),
+            'messages'   => $this->getMessages(),
             'created_on' => (string) $this->getCreatedOn()
         ];
     }
