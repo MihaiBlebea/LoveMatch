@@ -40,7 +40,8 @@ class UserRepo implements UserRepoInterface
                 'birth_date' => (string) $user->getBirthDate(),
                 'gender'     => (string) $user->getGender(),
                 'email'      => (string) $user->getEmail(),
-                'password'   => (string) $user->getPassword()->getHashedPassword()
+                'password'   => (string) $user->getPassword()->getHashedPassword(),
+                'token'      => $user->getToken() ? (string) $user->getToken() : null,
             ]);
         } else {
             $this->persist->table('users')->create([
@@ -50,6 +51,7 @@ class UserRepo implements UserRepoInterface
                 'gender'     => (string) $user->getGender(),
                 'email'      => (string) $user->getEmail(),
                 'password'   => (string) $user->getPassword()->getHashedPassword(),
+                'token'      => $user->getToken() ? (string) $user->getToken() : null,
                 'created_on' => (string) $user->getCreatedOn()
             ]);
         }
@@ -94,6 +96,9 @@ class UserRepo implements UserRepoInterface
             $row['password'],
             $row['created_on']
         );
+
+        // Get Auth token
+        $user->addToken($row['token']);
 
         // get action repo
         $action_repo = new ActionRepo($this->persist);

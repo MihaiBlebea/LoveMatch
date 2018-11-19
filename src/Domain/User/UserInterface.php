@@ -9,6 +9,7 @@ use App\Domain\User\Gender\GenderInterface;
 use App\Domain\User\Email\EmailInterface;
 use App\Domain\User\Password\PasswordInterface;
 use App\Domain\User\Action\ActionInterface;
+use App\Domain\User\Token\TokenInterface;
 use App\Domain\CreatedOn\CreatedOnInterface;
 
 
@@ -46,6 +47,10 @@ interface UserInterface
     public function setPassword(PasswordInterface $password);
 
     public function getCreatedOn();
+
+    public function addToken(TokenInterface $token = null);
+
+    public function getToken();
 
     public function addAction(ActionInterface $action);
 

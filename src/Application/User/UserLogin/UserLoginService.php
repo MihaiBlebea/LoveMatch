@@ -21,11 +21,6 @@ class UserLoginService
 
     public function execute(UserLoginRequestInterface $request)
     {
-        if(isset($_SESSION['auth']) && !empty($_SESSION['auth']))
-        {
-            throw new \Exception('This user or another user is already logged in. Logout first', 1);
-        }
-
         $user = $this->user_repo->withEmail(new Email($request->email));
         if($user && $user->getPassword()->verifyPassword(new Password($request->password)))
         {
@@ -33,7 +28,6 @@ class UserLoginService
             $publisher = DomainEventPublisher::instance();
             $publisher->publish(new UserLoggedIn($user->getId()));
 
-            $_SESSION['auth'] = $user->getId();
             return $user;
         }
         return null;

@@ -10,6 +10,7 @@ use App\Domain\User\Gender\GenderInterface;
 use App\Domain\User\Email\EmailInterface;
 use App\Domain\User\Password\PasswordInterface;
 use App\Domain\User\Action\ActionInterface;
+use App\Domain\User\Token\TokenInterface;
 use App\Domain\CreatedOn\CreatedOn;
 use App\Domain\CreatedOn\CreatedOnInterface;
 
@@ -29,6 +30,8 @@ class User implements UserInterface, JsonSerializable
     private $password;
 
     private $actions = [];
+
+    private $token;
 
     private $created_on;
 
@@ -119,10 +122,24 @@ class User implements UserInterface, JsonSerializable
         return $this->created_on;
     }
 
+    public function addToken(TokenInterface $token = null)
+    {
+        $this->token = $token;
+    }
+
+    public function getToken()
+    {
+        if($this->token !== null)
+        {
+            return $this->token;
+        }
+        return null;
+    }
+
     public function addAction(ActionInterface $action)
     {
         $this->assertActionSenderMatchUser($action);
-        
+
         $this->actions[] = $action;
     }
 

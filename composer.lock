@@ -4,8 +4,54 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fd8a463b406d49871348ec4205b8624e",
+    "content-hash": "2fe882735245fba92cdd63b47be32db1",
     "packages": [
+        {
+            "name": "firebase/php-jwt",
+            "version": "v5.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/firebase/php-jwt.git",
+                "reference": "9984a4d3a32ae7673d6971ea00bae9d0a1abba0e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/firebase/php-jwt/zipball/9984a4d3a32ae7673d6971ea00bae9d0a1abba0e",
+                "reference": "9984a4d3a32ae7673d6971ea00bae9d0a1abba0e",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": " 4.8.35"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Firebase\\JWT\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Neuman Vong",
+                    "email": "neuman+pear@twilio.com",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Anant Narayanan",
+                    "email": "anant@php.net",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A simple library to encode and decode JSON Web Tokens (JWT) in PHP. Should conform to the current spec.",
+            "homepage": "https://github.com/firebase/php-jwt",
+            "time": "2017-06-27T22:17:23+00:00"
+        },
         {
             "name": "league/container",
             "version": "3.2.2",
@@ -74,16 +120,16 @@
         },
         {
             "name": "mihaiblebea/domino",
-            "version": "v1.0.7",
+            "version": "v1.0.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/MihaiBlebea/Domino.git",
-                "reference": "3468cf67e6452cf5ee8fbb421215fcd0ec468930"
+                "reference": "dce922a10ab062183d720a4f4e0ad7df21dd0a84"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/MihaiBlebea/Domino/zipball/3468cf67e6452cf5ee8fbb421215fcd0ec468930",
-                "reference": "3468cf67e6452cf5ee8fbb421215fcd0ec468930",
+                "url": "https://api.github.com/repos/MihaiBlebea/Domino/zipball/dce922a10ab062183d720a4f4e0ad7df21dd0a84",
+                "reference": "dce922a10ab062183d720a4f4e0ad7df21dd0a84",
                 "shasum": ""
             },
             "require": {
@@ -106,24 +152,28 @@
                 }
             ],
             "description": "Domino is a basic ORM for PHP using mysql PDO",
-            "time": "2018-11-18T12:39:50+00:00"
+            "time": "2018-11-19T22:33:27+00:00"
         },
         {
             "name": "mihaiblebea/interceptor",
-            "version": "v1.0.1",
+            "version": "v1.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/MihaiBlebea/Interceptor.git",
-                "reference": "1cfe3538f981d444e938007421ec57bc44f21df7"
+                "reference": "d6097f8ca8800dc0736e03532a7b85070a938136"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/MihaiBlebea/Interceptor/zipball/1cfe3538f981d444e938007421ec57bc44f21df7",
-                "reference": "1cfe3538f981d444e938007421ec57bc44f21df7",
+                "url": "https://api.github.com/repos/MihaiBlebea/Interceptor/zipball/d6097f8ca8800dc0736e03532a7b85070a938136",
+                "reference": "d6097f8ca8800dc0736e03532a7b85070a938136",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "donatj/mock-webserver": "dev-master",
+                "phpunit/phpunit": "^7.5@dev"
             },
             "type": "library",
             "autoload": {
@@ -142,7 +192,7 @@
                 }
             ],
             "description": "Interceptor is a basic Router for PHP",
-            "time": "2018-11-11T23:28:32+00:00"
+            "time": "2018-11-19T13:11:24+00:00"
         },
         {
             "name": "paragonie/random_compat",
