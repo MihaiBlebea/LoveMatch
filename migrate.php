@@ -23,6 +23,7 @@ $blueprint->table('users')
           ->add(Column::datetime('created_on')->notNull())
           ->create();
 
+
 $blueprint->table('events')
           ->add(Column::string('id')->primaryKey())
           ->add(Column::text('payload')->notNull())

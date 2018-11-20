@@ -9,6 +9,8 @@ use App\Domain\User\UserRepoInterface;
 use App\Domain\User\UserId\UserId;
 use App\Domain\User\UserId\UserIdInterface;
 use App\Domain\User\Email\EmailInterface;
+use App\Domain\User\Token\TokenInterface;
+use App\Domain\User\Token\Token;
 use App\Infrastructure\Action\ActionRepo;
 
 
@@ -40,7 +42,7 @@ class UserRepo implements UserRepoInterface
                 'birth_date' => (string) $user->getBirthDate(),
                 'gender'     => (string) $user->getGender(),
                 'email'      => (string) $user->getEmail(),
-                'password'   => (string) $user->getPassword()->getHashedPassword(),
+                'password'   => (string) $user->getPassword(),
                 'token'      => $user->getToken() ? (string) $user->getToken() : null,
             ]);
         } else {
@@ -98,7 +100,10 @@ class UserRepo implements UserRepoInterface
         );
 
         // Get Auth token
-        $user->addToken($row['token']);
+        if($row['token'])
+        {
+            $user->addToken(new Token($row['token']));
+        }
 
         // get action repo
         $action_repo = new ActionRepo($this->persist);
@@ -113,7 +118,9 @@ class UserRepo implements UserRepoInterface
 
     public function withId(UserIdInterface $id)
     {
-        $user = $this->persist->table('users')->where('id', (string) $id->getId())->selectOne();
+        $user = $this->persist->table('users')
+                              ->where('id', (string) $id->getId())
+                              ->selectOne();
         if($user)
         {
             return $this->buildUserAndDependencies($user);
@@ -123,7 +130,21 @@ class UserRepo implements UserRepoInterface
 
     public function withEmail(EmailInterface $email)
     {
-        $user = $this->persist->table('users')->where('email', (string) $email->getEmail())->selectOne();
+        $user = $this->persist->table('users')
+                              ->where('email', (string) $email->getEmail())
+                              ->selectOne();
+        if($user)
+        {
+            return $this->buildUserAndDependencies($user);
+        }
+        return null;
+    }
+
+    public function withToken(TokenInterface $token)
+    {
+        $user = $this->persist->table('users')
+                              ->where('token', $token->getToken())
+                              ->selectOne();
         if($user)
         {
             return $this->buildUserAndDependencies($user);

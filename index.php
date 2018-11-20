@@ -20,18 +20,6 @@ use App\Application\Message\SendMessageRequest;
 use App\Application\Action\CreateActionRequest;
 
 
-// $key = "example_key";
-// $token = array(
-//     "iss" => "http://example.org",
-//     "aud" => "http://example.com",
-//     "iat" => 1356999524,
-//     "nbf" => 1357000000
-// );
-//
-// $jwt = JWT::encode($token, $key);
-// $decoded = JWT::decode($jwt, $key, array('HS256'));
-// dd($jwt);
-
 // Init DomainEventPublisher
 // Get the publisher instance
 $publisher = App\Domain\DomainEventPublisher::instance();
@@ -47,11 +35,16 @@ $router  = $container->get(Interceptor\Router::class);
 $request = $container->get(Interceptor\Request::class);
 
 
-$auth = Middleware::apply(function($request, $next) {
-    var_dump('Middleware run');
-    
+// Middleware that will check the header for JWT auth
+$auth = Middleware::apply(function($request, $next) use ($container) {
+    $validate_token_serv = $container->get(App\Application\User\UserLogin\ValidateUserTokenService::class);
+    if($validate_token_serv->execute($_SERVER['HTTP_JWT']) === null)
+    {
+        throw new \Exception('JWT has expired. Please login and generate a new token', 1);
+    }
     return $next;
 });
+
 
 // Route for User login
 $router->add(Route::get('login', function() use ($request, $container) {
@@ -61,7 +54,11 @@ $router->add(Route::get('login', function() use ($request, $container) {
             $request->retrive('email'),
             $request->retrive('password')
         ));
-        Response::asJson($user);
+        if($user)
+        {
+            Response::asJson([ 'token' => (string) $user->getToken() ]);
+        }
+
     } catch(\Exception $e) {
         dd($e->getMessage());
     }

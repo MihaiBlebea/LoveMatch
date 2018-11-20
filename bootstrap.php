@@ -35,23 +35,30 @@ $container->add(Domino\Connector::class)
           ->addArgument('root')
           ->addArgument('root');
 
+
 $container->add(Domino\Persistence::class)
           ->addArgument(Domino\Connector::class);
+
 
 $container->add(App\Infrastructure\User\UserRepo::class)
           ->addArgument(Domino\Persistence::class);
 
+
 $container->add(App\Infrastructure\Action\ActionRepo::class)
           ->addArgument(Domino\Persistence::class);
+
 
 $container->add(App\Infrastructure\Message\MessageRepo::class)
           ->addArgument(Domino\Persistence::class);
 
+
 $container->add(App\Infrastructure\Match\MatchRepo::class)
           ->addArgument(Domino\Persistence::class);
 
+
 $container->add(App\Infrastructure\Event\EventStore::class)
           ->addArgument(Domino\Persistence::class);
+
 
 $container->add(App\Domain\PersistDomainEventSubscriber::class)
           ->addArgument(App\Infrastructure\Event\EventStore::class);
@@ -60,24 +67,34 @@ $container->add(App\Domain\PersistDomainEventSubscriber::class)
 $container->add(App\Application\User\UserLogin\UserLoginService::class)
           ->addArgument(App\Infrastructure\User\UserRepo::class);
 
+
+$container->add(App\Application\User\UserLogin\ValidateUserTokenService::class)
+          ->addArgument(App\Infrastructure\User\UserRepo::class);
+
+
 $container->add(App\Application\User\UserRegister\UserRegisterService::class)
           ->addArgument(App\Infrastructure\User\UserRepo::class);
+
 
 $container->add(App\Application\Action\CreateActionService::class)
           ->addArgument(App\Infrastructure\Action\ActionRepo::class)
           ->addArgument(App\Infrastructure\User\UserRepo::class);
+
 
 $container->add(App\Application\Message\SendMessageService::class)
           ->addArgument(App\Infrastructure\Message\MessageRepo::class)
           ->addArgument(App\Infrastructure\User\UserRepo::class)
           ->addArgument(App\Infrastructure\Match\MatchRepo::class);
 
+
 $container->add(App\Application\Match\CreateMatch\CreateMatchService::class)
           ->addArgument(App\Infrastructure\Match\MatchRepo::class)
           ->addArgument(App\Infrastructure\User\UserRepo::class);
 
+
 $container->add(App\Application\User\GetUsers\GetUsersService::class)
           ->addArgument(App\Infrastructure\User\UserRepo::class);
+
 
 $container->add(App\Application\Match\GetMatches\GetMatchesService::class)
           ->addArgument(App\Infrastructure\Match\MatchRepo::class);
