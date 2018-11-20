@@ -9,15 +9,15 @@ use App\Domain\User\Token\TokenInterface;
 
 interface UserRepoInterface
 {
-    public function __construct($persist);
+    public function __construct($persist = null);
 
     public function nextId();
 
-    public function add(User $user);
+    public function add(UserInterface $user);
 
     public function addAll(Array $users);
 
-    public function remove(User $user);
+    public function remove(UserInterface $user);
 
     public function removeAll(Array $users);
 

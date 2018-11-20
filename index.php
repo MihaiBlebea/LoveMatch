@@ -18,6 +18,7 @@ use App\Application\Match\CreateMatch\CreateMatchRequest;
 use App\Application\Match\GetMatches\GetMatchesRequest;
 use App\Application\Message\SendMessageRequest;
 use App\Application\Action\CreateActionRequest;
+use App\Application\User\UserLogin\ValidateTokenRequest;
 
 
 // Init DomainEventPublisher
@@ -38,7 +39,9 @@ $request = $container->get(Interceptor\Request::class);
 // Middleware that will check the header for JWT auth
 $auth = Middleware::apply(function($request, $next) use ($container) {
     $validate_token_serv = $container->get(App\Application\User\UserLogin\ValidateUserTokenService::class);
-    if($validate_token_serv->execute($_SERVER['HTTP_JWT']) === null)
+    $user = $validate_token_serv->execute(new ValidateTokenRequest($_SERVER['HTTP_JWT']));
+
+    if($user === null)
     {
         throw new \Exception('JWT has expired. Please login and generate a new token', 1);
     }

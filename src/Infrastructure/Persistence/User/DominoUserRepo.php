@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Infrastructure\User;
+namespace App\Infrastructure\Persistence\User;
 
 use Ramsey\Uuid\Uuid;
 use App\Domain\User\User;
+use App\Domain\User\UserInterface;
 use App\Domain\User\UserFactory;
 use App\Domain\User\UserRepoInterface;
 use App\Domain\User\UserId\UserId;
@@ -14,7 +15,7 @@ use App\Domain\User\Token\Token;
 use App\Infrastructure\Action\ActionRepo;
 
 
-class UserRepo implements UserRepoInterface
+class DominoUserRepo implements UserRepoInterface
 {
     private $users = [];
 
@@ -31,7 +32,7 @@ class UserRepo implements UserRepoInterface
         return new UserId(strtoupper(Uuid::uuid4()));
     }
 
-    public function add(User $user)
+    public function add(UserInterface $user)
     {
         $saved_user = $this->withId($user->getId());
 
@@ -74,7 +75,7 @@ class UserRepo implements UserRepoInterface
         }
     }
 
-    public function remove(User $user)
+    public function remove(UserInterface $user)
     {
         $this->persist->table('users')->where('id', (string) $user->getId())->delete();
     }

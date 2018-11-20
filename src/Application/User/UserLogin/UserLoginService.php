@@ -28,7 +28,7 @@ class UserLoginService
         if($user && $user->getPassword()->verifyPassword(new Password($request->password)))
         {
             $token = JWTAuthorize::encode((string) $user->getEmail(), (string) $user->getPassword());
-            
+    
             $user->addToken(new Token($token));
 
             $this->user_repo->add($user);
