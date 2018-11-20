@@ -4,10 +4,11 @@ require_once __DIR__ . '/vendor/autoload.php';
 require_once __DIR__ . '/helpers.php';
 require_once __DIR__ . '/bootstrap.php';
 
-use Interceptor\{
-    Route,
-    Response
-};
+
+use Firebase\JWT\JWT;
+use Interceptor\Route;
+use Interceptor\Response;
+use Interceptor\Middleware;
 
 use App\Application\User\UserLogin\UserLoginRequest;
 use App\Application\User\UserRegister\UserRegisterRequest;
@@ -34,15 +35,30 @@ $router  = $container->get(Interceptor\Router::class);
 $request = $container->get(Interceptor\Request::class);
 
 
+// Middleware that will check the header for JWT auth
+$auth = Middleware::apply(function($request, $next) use ($container) {
+    $validate_token_serv = $container->get(App\Application\User\UserLogin\ValidateUserTokenService::class);
+    if($validate_token_serv->execute($_SERVER['HTTP_JWT']) === null)
+    {
+        throw new \Exception('JWT has expired. Please login and generate a new token', 1);
+    }
+    return $next;
+});
+
+
 // Route for User login
-$router->add(new Route('login', function() use ($request, $container) {
+$router->add(Route::get('login', function() use ($request, $container) {
     $login_serv = $container->get(App\Application\User\UserLogin\UserLoginService::class);
     try {
         $user = $login_serv->execute(new UserLoginRequest(
             $request->retrive('email'),
             $request->retrive('password')
         ));
-        Response::asJson($user);
+        if($user)
+        {
+            Response::asJson([ 'token' => (string) $user->getToken() ]);
+        }
+
     } catch(\Exception $e) {
         dd($e->getMessage());
     }
@@ -65,11 +81,11 @@ $router->add(Route::post('register', function($request) use ($container) {
     $register_serv = $container->get(App\Application\User\UserRegister\UserRegisterService::class);
     try {
         $user = $register_serv->execute(new UserRegisterRequest(
-            $request->dump()->name,
-            $request->dump()->birth_date,
-            $request->dump()->gender,
-            $request->dump()->email,
-            $request->dump()->password
+            $request->retrive('name'),
+            $request->retrive('birth_date'),
+            $request->retrive('gender'),
+            $request->retrive('email'),
+            $request->retrive('password')
         ));
         Response::asJson($user);
     } catch(\Exception $e) {
@@ -78,21 +94,21 @@ $router->add(Route::post('register', function($request) use ($container) {
 }));
 
 
-// Get all users
+// Get all users with JWT auth middleware
 $router->add(Route::get('users', function($request) use ($container) {
     $get_users_serv = $container->get(App\Application\User\GetUsers\GetUsersService::class);
     $users = $get_users_serv->execute();
     Response::asJson($users);
-}));
+}, $auth));
 
 
 $router->add(Route::post('action', function($request) use ($container) {
     $create_action_serv = $container->get(App\Application\Action\CreateActionService::class);
     try {
         $action = $create_action_serv->execute(new CreateActionRequest(
-            $request->dump()->type,
-            $request->dump()->sender_id,
-            $request->dump()->receiver_id
+            $request->retrive('type'),
+            $request->retrive('sender_id'),
+            $request->retrive('retrive_id')
         ));
         Response::asJson($action);
     } catch(\Exception $e) {
@@ -105,8 +121,8 @@ $router->add(Route::post('match', function($request) use ($container) {
     $create_match_serv = $container->get(App\Application\Match\CreateMatch\CreateMatchService::class);
     try {
         $match = $create_match_serv->execute(new CreateMatchRequest(
-            $request->dump()->first_user_id,
-            $request->dump()->second_user_id
+            $request->retrive('first_user_id'),
+            $request->retrive('second_user_id')
         ));
         Response::asJson($match);
     } catch(\Exception $e) {
@@ -131,19 +147,16 @@ $router->add(Route::post('message', function($request) use ($container) {
 
     try {
         $send_message_srv->execute(new SendMessageRequest(
-            $request->dump()->sender_id,
-            $request->dump()->receiver_id,
-            $request->dump()->match_id,
-            $request->dump()->body
+            $request->retrive('sender_id'),
+            $request->retrive('receiver_id'),
+            $request->retrive('match_id'),
+            $request->retrive('body')
         ));
         Response::asJson([ 'result' => 'Message was sent' ]);
     } catch(\Exception $e) {
         dd($e->getMessage());
     }
 }));
-
-
-
 
 
 // Run the Router

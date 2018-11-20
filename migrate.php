@@ -19,8 +19,10 @@ $blueprint->table('users')
           ->add(Column::string('gender')->notNull())
           ->add(Column::string('email')->notNull()->isUnique())
           ->add(Column::string('password')->notNull())
+          ->add(Column::text('token')->default(NULL))
           ->add(Column::datetime('created_on')->notNull())
           ->create();
+
 
 $blueprint->table('events')
           ->add(Column::string('id')->primaryKey())

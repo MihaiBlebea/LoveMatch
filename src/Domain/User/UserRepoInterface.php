@@ -4,6 +4,7 @@ namespace App\Domain\User;
 
 use App\Domain\User\UserId\UserIdInterface;
 use App\Domain\User\Email\Emailinterface;
+use App\Domain\User\Token\TokenInterface;
 
 
 interface UserRepoInterface
@@ -23,4 +24,8 @@ interface UserRepoInterface
     public function withId(UserIdInterface $id);
 
     public function withEmail(EmailInterface $email);
+
+    public function withToken(TokenInterface $token);
+
+    public function all(Int $count = null);
 }

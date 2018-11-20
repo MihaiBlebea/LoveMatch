@@ -15,7 +15,9 @@
         "ramsey/uuid": "^3.8",
         "league/container": "^3.2",
         "mihaiblebea/domino": "^1.0",
-        "mihaiblebea/interceptor": "^1.0"
+        "mihaiblebea/interceptor": "^1.0",
+        "firebase/php-jwt": "^5.0",
+        "nesbot/carbon": "^2.5"
     },
     "require-dev": {
         "phpunit/phpunit": "^7",
