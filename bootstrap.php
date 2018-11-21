@@ -40,61 +40,61 @@ $container->add(Domino\Persistence::class)
           ->addArgument(Domino\Connector::class);
 
 
-$container->add(App\Infrastructure\User\UserRepo::class)
+$container->add('UserRepo', App\Infrastructure\Persistence\User\DominoUserRepo::class)
           ->addArgument(Domino\Persistence::class);
 
 
-$container->add(App\Infrastructure\Action\ActionRepo::class)
+$container->add('ActionRepo', App\Infrastructure\Persistence\Action\DominoActionRepo::class)
           ->addArgument(Domino\Persistence::class);
 
 
-$container->add(App\Infrastructure\Message\MessageRepo::class)
+$container->add('MessageRepo', App\Infrastructure\Persistence\Message\DominoMessageRepo::class)
           ->addArgument(Domino\Persistence::class);
 
 
-$container->add(App\Infrastructure\Match\MatchRepo::class)
+$container->add('MatchRepo', App\Infrastructure\Persistence\Match\DominoMatchRepo::class)
           ->addArgument(Domino\Persistence::class);
 
 
-$container->add(App\Infrastructure\Event\EventStore::class)
+$container->add('EventStore', App\Infrastructure\Event\EventStore::class)
           ->addArgument(Domino\Persistence::class);
 
 
-$container->add(App\Domain\PersistDomainEventSubscriber::class)
-          ->addArgument(App\Infrastructure\Event\EventStore::class);
+$container->add('PersistDomainEventSubscriber', App\Domain\PersistDomainEventSubscriber::class)
+          ->addArgument('EventStore');
 
 
-$container->add(App\Application\User\UserLogin\UserLoginService::class)
-          ->addArgument(App\Infrastructure\User\UserRepo::class);
+$container->add('UserLoginService', App\Application\User\UserLogin\UserLoginService::class)
+          ->addArgument('UserRepo');
 
 
-$container->add(App\Application\User\UserLogin\ValidateUserTokenService::class)
-          ->addArgument(App\Infrastructure\User\UserRepo::class);
+$container->add('ValidateUserTokenService', App\Application\User\UserLogin\ValidateUserTokenService::class)
+          ->addArgument('UserRepo');
 
 
-$container->add(App\Application\User\UserRegister\UserRegisterService::class)
-          ->addArgument(App\Infrastructure\User\UserRepo::class);
+$container->add('UserRegisterService', App\Application\User\UserRegister\UserRegisterService::class)
+          ->addArgument('UserRepo');
 
 
-$container->add(App\Application\Action\CreateActionService::class)
-          ->addArgument(App\Infrastructure\Action\ActionRepo::class)
-          ->addArgument(App\Infrastructure\User\UserRepo::class);
+$container->add('CreateActionService', App\Application\Action\CreateActionService::class)
+          ->addArgument('ActionRepo')
+          ->addArgument('UserRepo');
 
 
-$container->add(App\Application\Message\SendMessageService::class)
-          ->addArgument(App\Infrastructure\Message\MessageRepo::class)
-          ->addArgument(App\Infrastructure\User\UserRepo::class)
-          ->addArgument(App\Infrastructure\Match\MatchRepo::class);
+$container->add('SendMessageService', App\Application\Message\SendMessageService::class)
+          ->addArgument('MessageRepo')
+          ->addArgument('UserRepo')
+          ->addArgument('MatchRepo');
 
 
-$container->add(App\Application\Match\CreateMatch\CreateMatchService::class)
-          ->addArgument(App\Infrastructure\Match\MatchRepo::class)
-          ->addArgument(App\Infrastructure\User\UserRepo::class);
+$container->add('CreateMatchService', App\Application\Match\CreateMatch\CreateMatchService::class)
+          ->addArgument('MatchRepo')
+          ->addArgument('UserRepo');
 
 
-$container->add(App\Application\User\GetUsers\GetUsersService::class)
-          ->addArgument(App\Infrastructure\User\UserRepo::class);
+$container->add('GetUsersService', App\Application\User\GetUsers\GetUsersService::class)
+          ->addArgument('UserRepo');
 
 
-$container->add(App\Application\Match\GetMatches\GetMatchesService::class)
-          ->addArgument(App\Infrastructure\Match\MatchRepo::class);
+$container->add('GetMatchesService', App\Application\Match\GetMatches\GetMatchesService::class)
+          ->addArgument('MatchRepo');

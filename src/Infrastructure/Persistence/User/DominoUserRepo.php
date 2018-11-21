@@ -12,7 +12,7 @@ use App\Domain\User\UserId\UserIdInterface;
 use App\Domain\User\Email\EmailInterface;
 use App\Domain\User\Token\TokenInterface;
 use App\Domain\User\Token\Token;
-use App\Infrastructure\Action\ActionRepo;
+use App\Infrastructure\Persistence\Action\DominoActionRepo;
 
 
 class DominoUserRepo implements UserRepoInterface
@@ -22,7 +22,7 @@ class DominoUserRepo implements UserRepoInterface
     private $persist;
 
 
-    public function __construct($persist)
+    public function __construct($persist = null)
     {
         $this->persist = $persist;
     }
@@ -62,7 +62,7 @@ class DominoUserRepo implements UserRepoInterface
         // Save the actions in the action array
         if(count($user->getActions()) > 0)
         {
-            $action_repo = new ActionRepo($this->persist);
+            $action_repo = new DominoActionRepo($this->persist);
             $action_repo->addAll($user->getActions());
         }
     }
@@ -107,7 +107,7 @@ class DominoUserRepo implements UserRepoInterface
         }
 
         // get action repo
-        $action_repo = new ActionRepo($this->persist);
+        $action_repo = new DominoActionRepo($this->persist);
         $actions = $action_repo->withSenderId($user->getId());
 
         if($actions && count($actions) > 0)
