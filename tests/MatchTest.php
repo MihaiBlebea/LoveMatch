@@ -8,6 +8,8 @@ use App\Infrastructure\Persistence\Action\InMemoryActionRepo;
 use App\Infrastructure\Persistence\Message\InMemoryMessageRepo;
 use App\Application\Match\CreateMatch\CreateMatchService;
 use App\Application\Match\CreateMatch\CreateMatchRequest;
+use App\Application\Match\GetMatches\GetMatchesService;
+use App\Application\Match\GetMatches\GetMatchesRequest;
 use App\Application\User\UserRegister\UserRegisterService;
 use App\Application\User\UserRegister\UserRegisterRequest;
 use App\Application\Action\CreateActionService;
@@ -71,6 +73,22 @@ class MatchTest extends TestCase
         $this->assertEquals($match->getUsers()[1], (string) $this->second_user->getId());
     }
 
+    public function testGetMessages()
+    {
+        $match = $this->create_match_serv->execute(new CreateMatchRequest(
+            (string) $this->first_user->getId(),
+            (string) $this->second_user->getId()
+        ));
+
+        $get_matches_serv = new GetMatchesService($this->match_repo);
+
+        $matches = $get_matches_serv->execute(new GetMatchesRequest((string) $this->first_user->getId()));
+
+        $this->assertEquals((string) $matches[0]->getId(), (string) $match->getId());
+        $this->assertEquals($matches[0]->getUsers()[0], (string) $this->first_user->getId());
+        $this->assertEquals($matches[0]->getUsers()[1], (string) $this->second_user->getId());
+    }
+
     public function testSendMessage()
     {
         $match = $this->create_match_serv->execute(new CreateMatchRequest(
@@ -88,5 +106,7 @@ class MatchTest extends TestCase
         $match->addMessage($message);
 
         $this->assertEquals((string) $match->getMessages()[0]->getId(), (string) $message->getId());
+        $this->assertEquals((string) $match->getMessages()[0]->getSender()->getId(), (string) $this->first_user->getId());
+        $this->assertEquals((string) $match->getMessages()[0]->getReceiver()->getId(), (string) $this->second_user->getId());
     }
 }

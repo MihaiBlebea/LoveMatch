@@ -83,7 +83,7 @@ class InMemoryMatchRepo implements MatchRepoInterface
         {
             foreach($match->getUsers() as $user)
             {
-                if($user->getId()->isEqual($id))
+                if($user === (string) $id->getId())
                 {
                     $result[] = $match;
                 }
