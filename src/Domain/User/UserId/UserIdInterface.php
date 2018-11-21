@@ -5,7 +5,7 @@ namespace App\Domain\User\UserId;
 
 interface UserIdInterface
 {
-    public function __construct($id);
+    public function __construct(String $id);
 
     public function getId();
 

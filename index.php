@@ -18,6 +18,7 @@ use App\Application\Match\CreateMatch\CreateMatchRequest;
 use App\Application\Match\GetMatches\GetMatchesRequest;
 use App\Application\Message\SendMessageRequest;
 use App\Application\Action\CreateActionRequest;
+use App\Application\User\UserLogin\ValidateTokenRequest;
 
 
 // Init DomainEventPublisher
@@ -25,7 +26,7 @@ use App\Application\Action\CreateActionRequest;
 $publisher = App\Domain\DomainEventPublisher::instance();
 
 // Get the persist event listener
-$persist_listener = $container->get(App\Domain\PersistDomainEventSubscriber::class);
+$persist_listener = $container->get('PersistDomainEventSubscriber');
 
 // Subscribe the listener to the publisher
 $publisher->subscribe($persist_listener);
@@ -37,18 +38,19 @@ $request = $container->get(Interceptor\Request::class);
 
 // Middleware that will check the header for JWT auth
 $auth = Middleware::apply(function($request, $next) use ($container) {
-    $validate_token_serv = $container->get(App\Application\User\UserLogin\ValidateUserTokenService::class);
-    if($validate_token_serv->execute($_SERVER['HTTP_JWT']) === null)
+    $validate_token_serv = $container->get('ValidateUserTokenService');
+    $user = $validate_token_serv->execute(new ValidateTokenRequest($_SERVER['HTTP_JWT']));
+
+    if($user !== null)
     {
-        throw new \Exception('JWT has expired. Please login and generate a new token', 1);
+        return $next;
     }
-    return $next;
 });
 
 
 // Route for User login
 $router->add(Route::get('login', function() use ($request, $container) {
-    $login_serv = $container->get(App\Application\User\UserLogin\UserLoginService::class);
+    $login_serv = $container->get('UserLoginService');
     try {
         $user = $login_serv->execute(new UserLoginRequest(
             $request->retrive('email'),
@@ -60,7 +62,7 @@ $router->add(Route::get('login', function() use ($request, $container) {
         }
 
     } catch(\Exception $e) {
-        dd($e->getMessage());
+        Response::asJson([ 'error' => $e->getMessage() ]);
     }
 }));
 
@@ -71,14 +73,14 @@ $router->add(Route::get('logout', function() {
         LogoutService::execute();
         Response::asJson([ 'result' => 'User was logged out from the app' ]);
     } catch(\Exception $e) {
-        dd($e->getMessage());
+        Response::asJson([ 'error' => $e->getMessage() ]);
     }
 }));
 
 
 // Route for User register
 $router->add(Route::post('register', function($request) use ($container) {
-    $register_serv = $container->get(App\Application\User\UserRegister\UserRegisterService::class);
+    $register_serv = $container->get('UserRegisterService');
     try {
         $user = $register_serv->execute(new UserRegisterRequest(
             $request->retrive('name'),
@@ -89,21 +91,25 @@ $router->add(Route::post('register', function($request) use ($container) {
         ));
         Response::asJson($user);
     } catch(\Exception $e) {
-        dd($e->getMessage());
+        Response::asJson([ 'error' => $e->getMessage() ]);
     }
 }));
 
 
 // Get all users with JWT auth middleware
 $router->add(Route::get('users', function($request) use ($container) {
-    $get_users_serv = $container->get(App\Application\User\GetUsers\GetUsersService::class);
-    $users = $get_users_serv->execute();
-    Response::asJson($users);
+    $get_users_serv = $container->get('GetUsersService');
+    try {
+        $users = $get_users_serv->execute();
+        Response::asJson($users);
+    } catch(\Exception $e) {
+        Response::asJson([ 'error' => $e->getMessage() ]);
+    }
 }, $auth));
 
 
 $router->add(Route::post('action', function($request) use ($container) {
-    $create_action_serv = $container->get(App\Application\Action\CreateActionService::class);
+    $create_action_serv = $container->get('CreateActionService');
     try {
         $action = $create_action_serv->execute(new CreateActionRequest(
             $request->retrive('type'),
@@ -112,13 +118,13 @@ $router->add(Route::post('action', function($request) use ($container) {
         ));
         Response::asJson($action);
     } catch(\Exception $e) {
-        dd($e->getMessage());
+        Response::asJson([ 'error' => $e->getMessage() ]);
     }
 }));
 
 
 $router->add(Route::post('match', function($request) use ($container) {
-    $create_match_serv = $container->get(App\Application\Match\CreateMatch\CreateMatchService::class);
+    $create_match_serv = $container->get('CreateMatchService');
     try {
         $match = $create_match_serv->execute(new CreateMatchRequest(
             $request->retrive('first_user_id'),
@@ -126,24 +132,24 @@ $router->add(Route::post('match', function($request) use ($container) {
         ));
         Response::asJson($match);
     } catch(\Exception $e) {
-        dd($e->getMessage());
+        Response::asJson([ 'error' => $e->getMessage() ]);
     }
 }));
 
 
 $router->add(Route::get('matches', function($request) use ($container) {
-    $get_match_serv = $container->get(App\Application\Match\GetMatches\GetMatchesService::class);
+    $get_match_serv = $container->get('GetMatchesService');
     try {
         $matches = $get_match_serv->execute(new GetMatchesRequest($request->retrive('user_id')));
         Response::asJson($matches);
     } catch(\Exception $e) {
-        dd($e->getMessage());
+        Response::asJson([ 'error' => $e->getMessage() ]);
     }
 }));
 
 
 $router->add(Route::post('message', function($request) use ($container) {
-    $send_message_srv = $container->get(App\Application\Message\SendMessageService::class);
+    $send_message_srv = $container->get('SendMessageService');
 
     try {
         $send_message_srv->execute(new SendMessageRequest(
@@ -154,7 +160,7 @@ $router->add(Route::post('message', function($request) use ($container) {
         ));
         Response::asJson([ 'result' => 'Message was sent' ]);
     } catch(\Exception $e) {
-        dd($e->getMessage());
+        Response::asJson([ 'error' => $e->getMessage() ]);
     }
 }));
 
@@ -163,5 +169,5 @@ $router->add(Route::post('message', function($request) use ($container) {
 try {
     $router->run();
 } catch(Exception $e) {
-    return var_dump(404);
+    return 404;
 }

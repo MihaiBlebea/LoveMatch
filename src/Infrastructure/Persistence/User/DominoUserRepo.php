@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Infrastructure\User;
+namespace App\Infrastructure\Persistence\User;
 
 use Ramsey\Uuid\Uuid;
 use App\Domain\User\User;
+use App\Domain\User\UserInterface;
 use App\Domain\User\UserFactory;
 use App\Domain\User\UserRepoInterface;
 use App\Domain\User\UserId\UserId;
@@ -11,17 +12,17 @@ use App\Domain\User\UserId\UserIdInterface;
 use App\Domain\User\Email\EmailInterface;
 use App\Domain\User\Token\TokenInterface;
 use App\Domain\User\Token\Token;
-use App\Infrastructure\Action\ActionRepo;
+use App\Infrastructure\Persistence\Action\DominoActionRepo;
 
 
-class UserRepo implements UserRepoInterface
+class DominoUserRepo implements UserRepoInterface
 {
     private $users = [];
 
     private $persist;
 
 
-    public function __construct($persist)
+    public function __construct($persist = null)
     {
         $this->persist = $persist;
     }
@@ -31,7 +32,7 @@ class UserRepo implements UserRepoInterface
         return new UserId(strtoupper(Uuid::uuid4()));
     }
 
-    public function add(User $user)
+    public function add(UserInterface $user)
     {
         $saved_user = $this->withId($user->getId());
 
@@ -61,7 +62,7 @@ class UserRepo implements UserRepoInterface
         // Save the actions in the action array
         if(count($user->getActions()) > 0)
         {
-            $action_repo = new ActionRepo($this->persist);
+            $action_repo = new DominoActionRepo($this->persist);
             $action_repo->addAll($user->getActions());
         }
     }
@@ -74,7 +75,7 @@ class UserRepo implements UserRepoInterface
         }
     }
 
-    public function remove(User $user)
+    public function remove(UserInterface $user)
     {
         $this->persist->table('users')->where('id', (string) $user->getId())->delete();
     }
@@ -106,7 +107,7 @@ class UserRepo implements UserRepoInterface
         }
 
         // get action repo
-        $action_repo = new ActionRepo($this->persist);
+        $action_repo = new DominoActionRepo($this->persist);
         $actions = $action_repo->withSenderId($user->getId());
 
         if($actions && count($actions) > 0)

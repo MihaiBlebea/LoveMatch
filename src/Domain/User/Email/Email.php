@@ -18,6 +18,11 @@ class Email implements EmailInterface
         return $this->email;
     }
 
+    public function isEqual(EmailInterface $email)
+    {
+        return $this->getEmail() === $email->getEmail();
+    }
+
     public function __toString()
     {
         return $this->getEmail();

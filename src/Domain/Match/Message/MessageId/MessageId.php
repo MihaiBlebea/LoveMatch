@@ -8,7 +8,7 @@ class MessageId implements MessageIdInterface
     private $id;
 
 
-    public function __construct($id)
+    public function __construct(String $id)
     {
         $this->id = $id;
     }
@@ -16,6 +16,11 @@ class MessageId implements MessageIdInterface
     public function getId()
     {
         return $this->id;
+    }
+
+    public function isEqual(MessageIdInterface $id)
+    {
+        return $this->getId() === $id->getId();
     }
 
     public function __toString()

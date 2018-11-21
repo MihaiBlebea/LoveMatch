@@ -37,6 +37,6 @@ class CreateActionService
 
         $this->user_repo->add($sender);
 
-        return $sender;
+        return $action;
     }
 }

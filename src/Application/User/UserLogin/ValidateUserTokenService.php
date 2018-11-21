@@ -17,11 +17,13 @@ class ValidateUserTokenService
         $this->user_repo = $user_repo;
     }
 
-    public function execute(String $string_token)
+    public function execute(ValidateTokenRequestInterface $request)
     {
-        $token = new Token($string_token);
+        $token = new Token($request->token);
+
         $decoded    = JWTAuthorize::decode($token);
         $is_expired = JWTAuthorize::hasExpired((array) $decoded);
+        
         if($is_expired === false)
         {
             return $this->user_repo->withToken($token);

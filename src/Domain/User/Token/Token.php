@@ -18,6 +18,11 @@ class Token implements TokenInterface
         return $this->token;
     }
 
+    public function isEqual(TokenInterface $token)
+    {
+        return $this->getToken() === $token->getToken();
+    }
+
     public function __toString()
     {
         return $this->getToken();

@@ -8,7 +8,7 @@ class UserId implements UserIdInterface
     private $id;
 
 
-    public function __construct($id)
+    public function __construct(String $id)
     {
         $this->id = $id;
     }
