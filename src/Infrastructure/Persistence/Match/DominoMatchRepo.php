@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Infrastructure\Match;
+namespace App\Infrastructure\Persistence\Match;
 
 use Ramsey\Uuid\Uuid;
-use Domino\Interfaces\PersistenceInterface;
 use App\Domain\User\UserId\UserId;
 use App\Domain\User\UserId\UserIdInterface;
 use App\Domain\User\UserRepoInterface;
@@ -18,14 +17,14 @@ use App\Infrastructure\Message\MessageRepo;
 use App\Infrastructure\User\UserRepo;
 
 
-class MatchRepo implements MatchRepoInterface
+class DominoMatchRepo implements MatchRepoInterface
 {
     private $persist;
 
     private $matches = [];
 
 
-    public function __construct(PersistenceInterface $persist)
+    public function __construct($persist = null)
     {
         $this->persist = $persist;
     }

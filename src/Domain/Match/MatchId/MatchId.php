@@ -18,6 +18,11 @@ class MatchId implements MatchIdInterface
         return $this->id;
     }
 
+    public function isEqual(MatchIdInterface $id)
+    {
+        return $this->getId() === $id->getId();
+    }
+
     public function __toString()
     {
         return $this->getId();

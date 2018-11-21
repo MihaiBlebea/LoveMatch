@@ -42,5 +42,7 @@ class SendMessageService
         );
 
         $this->message_repo->add($message);
+
+        return $message;
     }
 }

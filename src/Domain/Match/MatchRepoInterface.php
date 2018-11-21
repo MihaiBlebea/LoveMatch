@@ -2,7 +2,6 @@
 
 namespace App\Domain\Match;
 
-use Domino\Interfaces\PersistenceInterface;
 use App\Domain\Match\MatchInterface;
 use App\Domain\User\UserId\UserIdInterface;
 use App\Domain\Match\MatchId\MatchIdInterface;
@@ -10,7 +9,7 @@ use App\Domain\Match\MatchId\MatchIdInterface;
 
 interface MatchRepoInterface
 {
-    public function __construct(PersistenceInterface $persist);
+    public function __construct($persist = null);
 
     public function nextId();
 

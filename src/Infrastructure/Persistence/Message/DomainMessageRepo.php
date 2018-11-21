@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Infrastructure\Message;
+namespace App\Infrastructure\Persistence\Message;
 
 use Ramsey\Uuid\Uuid;
 use Domino\Interfaces\PersistenceInterface;
@@ -14,14 +14,14 @@ use App\Domain\User\UserId\UserId;
 use App\Infrastructure\User\UserRepo;
 
 
-class MessageRepo implements MessageRepoInterface
+class DomainMessageRepo implements MessageRepoInterface
 {
     private $persist;
 
     private $messages = [];
 
 
-    public function __construct(PersistenceInterface $persist)
+    public function __construct($persist = null)
     {
         $this->persist = $persist;
     }

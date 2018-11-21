@@ -9,5 +9,7 @@ interface MatchIdInterface
 
     public function getId();
 
+    public function isEqual(MatchIdInterface $id);
+
     public function __toString();
 }

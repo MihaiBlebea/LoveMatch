@@ -2,7 +2,6 @@
 
 namespace App\Domain\Match\Message;
 
-use Domino\Interfaces\PersistenceInterface;
 use App\Domain\Match\MatchId\MatchIdInterface;
 use App\Domain\Match\Message\MessageInterface;
 use App\Domain\Match\Message\MessageId\MessageIdInterface;
@@ -10,7 +9,7 @@ use App\Domain\Match\Message\MessageId\MessageIdInterface;
 
 interface MessageRepoInterface
 {
-    public function __construct(PersistenceInterface $persist);
+    public function __construct($persist = null);
 
     public function nextId();
 

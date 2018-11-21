@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Infrastructure\Action;
+namespace App\Infrastructure\Persistence\Action;
 
 use Ramsey\Uuid\Uuid;
 use Domino\Interfaces\PersistenceInterface;
@@ -12,14 +12,14 @@ use App\Domain\User\Action\ActionFactory;
 use App\Domain\User\UserId\UserIdInterface;
 
 
-class ActionRepo implements ActionRepoInterface
+class DominoActionRepo implements ActionRepoInterface
 {
     private $persist;
 
     private $actions = [];
 
 
-    public function __construct(PersistenceInterface $persist)
+    public function __construct($persist = null)
     {
         $this->persist = $persist;
     }

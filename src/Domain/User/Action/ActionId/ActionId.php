@@ -8,7 +8,7 @@ class ActionId implements ActionIdInterface
     private $id;
 
 
-    public function __construct($id)
+    public function __construct(String $id)
     {
         $this->id = $id;
     }
@@ -16,6 +16,11 @@ class ActionId implements ActionIdInterface
     public function getId()
     {
         return $this->id;
+    }
+
+    public function isEqual(ActionIdInterface $id)
+    {
+        return $this->getId() === $id->getId();
     }
 
     public function __toString()
