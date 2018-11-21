@@ -120,16 +120,16 @@
         },
         {
             "name": "mihaiblebea/domino",
-            "version": "v1.0.8",
+            "version": "v1.0.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/MihaiBlebea/Domino.git",
-                "reference": "dce922a10ab062183d720a4f4e0ad7df21dd0a84"
+                "reference": "27dd1dd25ecaad277689cf3763adfdf8b58105bc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/MihaiBlebea/Domino/zipball/dce922a10ab062183d720a4f4e0ad7df21dd0a84",
-                "reference": "dce922a10ab062183d720a4f4e0ad7df21dd0a84",
+                "url": "https://api.github.com/repos/MihaiBlebea/Domino/zipball/27dd1dd25ecaad277689cf3763adfdf8b58105bc",
+                "reference": "27dd1dd25ecaad277689cf3763adfdf8b58105bc",
                 "shasum": ""
             },
             "require": {
@@ -152,7 +152,7 @@
                 }
             ],
             "description": "Domino is a basic ORM for PHP using mysql PDO",
-            "time": "2018-11-19T22:33:27+00:00"
+            "time": "2018-11-21T22:16:57+00:00"
         },
         {
             "name": "mihaiblebea/interceptor",
@@ -196,16 +196,16 @@
         },
         {
             "name": "nesbot/carbon",
-            "version": "2.5.4",
+            "version": "2.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/briannesbitt/Carbon.git",
-                "reference": "92edfddcfe37b0d7956045d57f8ba714df8c0fb8"
+                "reference": "1f334c85c7fdd79d1fa506c87393c32f6bb75718"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/92edfddcfe37b0d7956045d57f8ba714df8c0fb8",
-                "reference": "92edfddcfe37b0d7956045d57f8ba714df8c0fb8",
+                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/1f334c85c7fdd79d1fa506c87393c32f6bb75718",
+                "reference": "1f334c85c7fdd79d1fa506c87393c32f6bb75718",
                 "shasum": ""
             },
             "require": {
@@ -251,7 +251,7 @@
                 "datetime",
                 "time"
             ],
-            "time": "2018-11-15T06:40:11+00:00"
+            "time": "2018-11-19T19:58:55+00:00"
         },
         {
             "name": "paragonie/random_compat",
@@ -1435,16 +1435,16 @@
         },
         {
             "name": "psr/log",
-            "version": "1.0.2",
+            "version": "1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-fig/log.git",
-                "reference": "4ebe3a8bf773a19edfe0a84b6585ba3d401b724d"
+                "reference": "6c001f1daafa3a3ac1d8ff69ee4db8e799a654dd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/log/zipball/4ebe3a8bf773a19edfe0a84b6585ba3d401b724d",
-                "reference": "4ebe3a8bf773a19edfe0a84b6585ba3d401b724d",
+                "url": "https://api.github.com/repos/php-fig/log/zipball/6c001f1daafa3a3ac1d8ff69ee4db8e799a654dd",
+                "reference": "6c001f1daafa3a3ac1d8ff69ee4db8e799a654dd",
                 "shasum": ""
             },
             "require": {
@@ -1478,7 +1478,7 @@
                 "psr",
                 "psr-3"
             ],
-            "time": "2016-10-10T12:19:37+00:00"
+            "time": "2018-11-20T15:27:04+00:00"
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",

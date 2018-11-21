@@ -11,13 +11,17 @@ class JWTAuthorize implements JWTAuthorizeInterface
     private static $key = 'example_key';
 
 
-    public static function encode(String $email, String $password)
+    public static function encode(
+        String $email,
+        String $password,
+        String $id)
     {
         $token = array(
-            "created_on" => Carbon::now(),
-            "expires"    => 2,
-            "email"      => $email,
-            "password"   => $password
+            'created_on' => Carbon::now(),
+            'expires'    => 2,
+            'email'      => $email,
+            'password'   => $password,
+            'user_id'    => $id
         );
         return JWT::encode($token, self::$key);
     }

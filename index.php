@@ -19,6 +19,7 @@ use App\Application\Match\GetMatches\GetMatchesRequest;
 use App\Application\Message\SendMessageRequest;
 use App\Application\Action\CreateActionRequest;
 use App\Application\User\UserLogin\ValidateTokenRequest;
+use App\Application\User\GetUsers\GetUsersRequest;
 
 
 // Init DomainEventPublisher
@@ -38,13 +39,17 @@ $request = $container->get(Interceptor\Request::class);
 
 // Middleware that will check the header for JWT auth
 $auth = Middleware::apply(function($request, $next) use ($container) {
+    if(!$request->retrive('auth_token'))
+    {
+        dd('Token not given');
+    }
     $validate_token_serv = $container->get('ValidateUserTokenService');
-    $user = $validate_token_serv->execute(new ValidateTokenRequest($_SERVER['HTTP_JWT']));
-
+    $user = $validate_token_serv->execute(new ValidateTokenRequest($request->retrive('auth_token')));
     if($user !== null)
     {
         return $next;
     }
+    dd('Token expired');
 });
 
 
@@ -100,7 +105,8 @@ $router->add(Route::post('register', function($request) use ($container) {
 $router->add(Route::get('users', function($request) use ($container) {
     $get_users_serv = $container->get('GetUsersService');
     try {
-        $users = $get_users_serv->execute();
+
+        $users = $get_users_serv->execute(new GetUsersRequest($request->retrive('count') ?? null, 'MALE'));
         Response::asJson($users);
     } catch(\Exception $e) {
         Response::asJson([ 'error' => $e->getMessage() ]);

@@ -15,8 +15,8 @@ class GetUsersService
         $this->user_repo = $user_repo;
     }
 
-    public function execute()
+    public function execute(GetUsersRequestInterface $request)
     {
-        return $this->user_repo->all();
+        return $this->user_repo->all($request->count);
     }
 }
