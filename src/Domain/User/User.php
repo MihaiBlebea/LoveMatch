@@ -11,6 +11,7 @@ use App\Domain\User\Email\EmailInterface;
 use App\Domain\User\Password\PasswordInterface;
 use App\Domain\User\Action\ActionInterface;
 use App\Domain\User\Token\TokenInterface;
+use App\Domain\User\Image\ImageInterface;
 use App\Domain\CreatedOn\CreatedOn;
 use App\Domain\CreatedOn\CreatedOnInterface;
 
@@ -30,6 +31,8 @@ class User implements UserInterface, JsonSerializable
     private $password;
 
     private $actions = [];
+
+    private $images = [];
 
     private $token;
 
@@ -192,6 +195,16 @@ class User implements UserInterface, JsonSerializable
             }
         }
         return false;
+    }
+
+    public function getImages()
+    {
+        return $this->images;
+    }
+
+    public function addImage(ImageInterface $image)
+    {
+        $this->images[] = $image;
     }
 
     public function jsonSerialize()

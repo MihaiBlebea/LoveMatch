@@ -10,6 +10,7 @@ use App\Domain\User\Email\EmailInterface;
 use App\Domain\User\Password\PasswordInterface;
 use App\Domain\User\Action\ActionInterface;
 use App\Domain\User\Token\TokenInterface;
+use App\Domain\User\Image\ImageInterface;
 use App\Domain\CreatedOn\CreatedOnInterface;
 
 
@@ -61,6 +62,10 @@ interface UserInterface
     public function getLikes();
 
     public function getPasses();
+
+    public function getImages();
+
+    public function addImage(ImageInterface $image);
 
     public function jsonSerialize();
 }

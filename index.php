@@ -13,7 +13,6 @@ use Interceptor\Middleware;
 use App\Application\User\UserLogin\UserLoginRequest;
 use App\Application\User\UserRegister\UserRegisterRequest;
 
-use App\Application\LogoutService;
 use App\Application\Match\CreateMatch\CreateMatchRequest;
 use App\Application\Match\GetMatches\GetMatchesRequest;
 use App\Application\Message\SendMessageRequest;
@@ -72,17 +71,6 @@ $router->add(Route::get('login', function() use ($request, $container) {
 }));
 
 
-// Route for User logout
-$router->add(Route::get('logout', function() {
-    try {
-        LogoutService::execute();
-        Response::asJson([ 'result' => 'User was logged out from the app' ]);
-    } catch(\Exception $e) {
-        Response::asJson([ 'error' => $e->getMessage() ]);
-    }
-}));
-
-
 // Route for User register
 $router->add(Route::post('register', function($request) use ($container) {
     $register_serv = $container->get('UserRegisterService');
@@ -112,6 +100,12 @@ $router->add(Route::get('users', function($request) use ($container) {
         Response::asJson([ 'error' => $e->getMessage() ]);
     }
 }, $auth));
+
+
+$router->add(Route::post('image', function($request) use ($container) {
+    $path = $request->retrive('path');
+    dd($path);
+}));
 
 
 $router->add(Route::post('action', function($request) use ($container) {
