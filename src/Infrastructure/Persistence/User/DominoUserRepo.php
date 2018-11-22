@@ -12,7 +12,9 @@ use App\Domain\User\UserId\UserIdInterface;
 use App\Domain\User\Email\EmailInterface;
 use App\Domain\User\Token\TokenInterface;
 use App\Domain\User\Token\Token;
+use App\Domain\User\Gender\GenderInterface;
 use App\Domain\User\Description\Description;
+use App\Domain\User\Location\LocationInterface;
 use App\Infrastructure\Persistence\Action\DominoActionRepo;
 use App\Infrastructure\Persistence\Image\DominoImageRepo;
 
@@ -46,6 +48,8 @@ class DominoUserRepo implements UserRepoInterface
                 'gender'      => (string) $user->getGender(),
                 'description' => (string) $user->getDescription(),
                 'email'       => (string) $user->getEmail(),
+                'longitude'   => $user->getLocation()->getLongitude(),
+                'latitude'    => $user->getLocation()->getLatitude(),
                 'password'    => (string) $user->getPassword(),
                 'token'       => $user->getToken() ? (string) $user->getToken() : null,
             ]);
@@ -57,6 +61,8 @@ class DominoUserRepo implements UserRepoInterface
                 'gender'      => (string) $user->getGender(),
                 'description' => (string) $user->getDescription(),
                 'email'       => (string) $user->getEmail(),
+                'longitude'   => $user->getLocation()->getLongitude(),
+                'latitude'    => $user->getLocation()->getLatitude(),
                 'password'    => (string) $user->getPassword()->getHashedPassword(),
                 'token'       => $user->getToken() ? (string) $user->getToken() : null,
                 'created_on'  => (string) $user->getCreatedOn()
@@ -106,6 +112,8 @@ class DominoUserRepo implements UserRepoInterface
             $row['birth_date'],
             $row['gender'],
             $row['email'],
+            $row['longitude'],
+            $row['latitude'],
             $row['password'],
             $row['created_on']
         );
@@ -179,16 +187,22 @@ class DominoUserRepo implements UserRepoInterface
         return null;
     }
 
-    public function all(Int $count = null)
+    public function all(
+        Int $count,
+        GenderInterface $gender,
+        UserIdInterface $user_id,
+        LocationInterface $location,
+        Int $distance)
     {
-        $query = $this->persist->table('users');
-        if($count === null)
-        {
-            $users = $query->selectAll();
-        } else {
-            $users = $query->limit($count)->select();
-        }
-
+        $users = $this->persist->table('users')
+                               ->where('gender', (string) $gender)
+                               ->where('id', '!=', (string) $user_id)
+                               ->where('longitude', '>', $location->getMinLongitude($distance))
+                               ->where('longitude', '<', $location->getMaxLongitude($distance))
+                               ->where('latitude', '>', $location->getMinLatitude($distance))
+                               ->where('latitude', '<', $location->getMaxLatitude($distance))
+                               ->limit($count)
+                               ->select();
         if($users)
         {
             foreach($users as $user)

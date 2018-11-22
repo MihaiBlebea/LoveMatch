@@ -13,6 +13,10 @@ class UserRegisterRequest implements UserRegisterRequestInterface
 
     public $email;
 
+    public $longitude;
+
+    public $latitude;
+
     public $password;
 
 
@@ -21,12 +25,16 @@ class UserRegisterRequest implements UserRegisterRequestInterface
         String $birth_date,
         String $gender,
         String $email,
+        String $longitude,
+        String $latitude,
         String $password)
     {
         $this->name       = $name;
         $this->birth_date = $birth_date;
         $this->gender     = $gender;
         $this->email      = $email;
+        $this->longitude  = $longitude;
+        $this->latitude   = $latitude;
         $this->password   = $password;
     }
 }

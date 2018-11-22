@@ -8,6 +8,7 @@ use App\Domain\User\Name\NameInterface;
 use App\Domain\User\BirthDate\BirthDateInterface;
 use App\Domain\User\Gender\GenderInterface;
 use App\Domain\User\Email\EmailInterface;
+use App\Domain\User\Location\LocationInterface;
 use App\Domain\User\Password\PasswordInterface;
 use App\Domain\User\Action\ActionInterface;
 use App\Domain\User\Token\TokenInterface;
@@ -29,6 +30,8 @@ class User implements UserInterface, JsonSerializable
 
     private $email;
 
+    private $location;
+
     private $password;
 
     private $actions = [];
@@ -48,6 +51,7 @@ class User implements UserInterface, JsonSerializable
         BirthDateInterface $birth_date,
         GenderInterface $gender,
         EmailInterface $email,
+        LocationInterface $location,
         PasswordInterface $password,
         CreatedOnInterface $created_on)
     {
@@ -56,6 +60,7 @@ class User implements UserInterface, JsonSerializable
         $this->birth_date = $birth_date;
         $this->gender     = $gender;
         $this->email      = $email;
+        $this->location   = $location;
         $this->password   = $password;
         $this->created_on = $created_on;
     }
@@ -111,6 +116,16 @@ class User implements UserInterface, JsonSerializable
     public function setEmail(EmailInterface $email)
     {
         $this->email = $email;
+    }
+
+    public function getLocation()
+    {
+        return $this->location;
+    }
+
+    public function setLocation(LocationInterface $location)
+    {
+        $this->location = $location;
     }
 
     public function getPassword()
@@ -247,6 +262,7 @@ class User implements UserInterface, JsonSerializable
             'gender'      => (string) $this->getGender(),
             'description' => (string) $this->getDescription(),
             'email'       => (string) $this->getEmail(),
+            'location'    => $this->getLocation(),
             'password'    => (string) $this->getPassword(),
             'images'      => $this->getImages(),
             'likes'       => $this->getLikes(),

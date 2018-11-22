@@ -7,6 +7,7 @@ use App\Domain\User\Name\NameInterface;
 use App\Domain\User\BirthDate\BirthDateInterface;
 use App\Domain\User\Gender\GenderInterface;
 use App\Domain\User\Email\EmailInterface;
+use App\Domain\User\Location\LocationInterface;
 use App\Domain\User\Password\PasswordInterface;
 use App\Domain\User\Action\ActionInterface;
 use App\Domain\User\Token\TokenInterface;
@@ -23,6 +24,7 @@ interface UserInterface
         BirthDateInterface $birth_date,
         GenderInterface $gender,
         EmailInterface $email,
+        LocationInterface $location,
         PasswordInterface $password,
         CreatedOnInterface $created_on);
 
@@ -43,6 +45,10 @@ interface UserInterface
     public function getEmail();
 
     public function setEmail(EmailInterface $email);
+
+    public function getLocation();
+
+    public function setLocation(LocationInterface $location);
 
     public function getPassword();
 

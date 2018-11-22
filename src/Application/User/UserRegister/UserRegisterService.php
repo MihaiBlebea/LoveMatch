@@ -29,6 +29,8 @@ class UserRegisterService
             $request->birth_date,
             $request->gender,
             $request->email,
+            $request->longitude,
+            $request->latitude,
             $request->password
         );
 
