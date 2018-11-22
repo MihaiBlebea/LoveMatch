@@ -11,6 +11,7 @@ use App\Domain\User\Password\PasswordInterface;
 use App\Domain\User\Action\ActionInterface;
 use App\Domain\User\Token\TokenInterface;
 use App\Domain\User\Image\ImageInterface;
+use App\Domain\User\Description\DescriptionInterface;
 use App\Domain\CreatedOn\CreatedOnInterface;
 
 
@@ -72,6 +73,10 @@ interface UserInterface
     public function addImages(Array $images);
 
     public function countImages();
+
+    public function addDescription(DescriptionInterface $description);
+
+    public function getDescription();
 
     public function jsonSerialize();
 }

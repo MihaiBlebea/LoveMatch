@@ -30,12 +30,22 @@ class DominoImageRepo implements ImageRepoInterface
 
     public function add(ImageInterface $image)
     {
-        $this->persist->table('images')->create([
-            'id'         => (string) $image->getId(),
-            'user_id'    => (string) $image->getUserId(),
-            'path'       => (string) $image->getPath(),
-            'created_on' => (string) $image->getCreatedOn()
-        ]);
+        $saved_image = $this->withId($image->getId());
+
+        if($saved_image)
+        {
+            $this->persist->table('images')->where('id', (string) $image->getId())->update([
+                'user_id'    => (string) $image->getUserId(),
+                'path'       => (string) $image->getPath()
+            ]);
+        } else {
+            $this->persist->table('images')->create([
+                'id'         => (string) $image->getId(),
+                'user_id'    => (string) $image->getUserId(),
+                'path'       => (string) $image->getPath(),
+                'created_on' => (string) $image->getCreatedOn()
+            ]);
+        }
     }
 
     public function addAll(Array $images)
@@ -64,7 +74,7 @@ class DominoImageRepo implements ImageRepoInterface
     public function withId(ImageIdInterface $id)
     {
         $image = $this->persist->table('images')
-                               ->where('id', (string) $image->getId())
+                               ->where('id', (string) $id->getId())
                                ->selectOne();
 
         if($image)

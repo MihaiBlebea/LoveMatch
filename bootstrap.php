@@ -80,6 +80,10 @@ $container->add('UserRegisterService', App\Application\User\UserRegister\UserReg
           ->addArgument('UserRepo');
 
 
+$container->add('AttachDescriptionService', App\Application\User\AttachDescription\AttachDescriptionService::class)
+          ->addArgument('UserRepo');
+
+
 $container->add('CreateActionService', App\Application\Action\CreateActionService::class)
           ->addArgument('ActionRepo')
           ->addArgument('UserRepo');

@@ -26,14 +26,19 @@ class AttachImageService
     public function execute(AttachImageRequestInterface $request)
     {
         $user = $this->user_repo->withId(new UserId($request->user_id));
-        $user->addImage(ImageFactory::build(
-            (string) $this->image_repo->nextId(),
-            $request->user_id,
-            $request->image_path
-        ));
+        if($user)
+        {
+            $image = ImageFactory::build(
+                (string) $this->image_repo->nextId(),
+                $request->user_id,
+                $request->image_path
+            );
+            $user->addImage($image);
 
-        $this->user_repo->add($user);
+            $this->user_repo->add($user);
 
-        return $user;
+            return $user;
+        }
+        return null;
     }
 }

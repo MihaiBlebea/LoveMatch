@@ -20,6 +20,7 @@ use App\Application\Action\CreateActionRequest;
 use App\Application\User\UserLogin\ValidateTokenRequest;
 use App\Application\User\GetUsers\GetUsersRequest;
 use App\Application\User\AttachImage\AttachImageRequest;
+use App\Application\User\AttachDescription\AttachDescriptionRequest;
 
 
 // Init DomainEventPublisher
@@ -113,6 +114,20 @@ $router->add(Route::post('image', function($request) use ($container) {
         Response::asJson($user);
     } catch(\Exception $e) {
         Response::asJson([ 'error' => $e->getMessage() ]);
+    }
+}));
+
+
+$router->add(Route::post('description', function($request) use ($container) {
+    $attach_description_serv = $container->get('AttachDescriptionService');
+    try {
+        $user = $attach_description_serv->execute(new AttachDescriptionRequest(
+            $request->retrive('description'),
+            $request->retrive('user_id')
+        ));
+        Response::asJson($user);
+    } catch(\Exception $e) {
+        Response::asJson([ 'error' => $e->getMEssage() ]);
     }
 }));
 

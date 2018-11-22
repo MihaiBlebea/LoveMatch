@@ -12,6 +12,7 @@ use App\Domain\User\UserId\UserIdInterface;
 use App\Domain\User\Email\EmailInterface;
 use App\Domain\User\Token\TokenInterface;
 use App\Domain\User\Token\Token;
+use App\Domain\User\Description\Description;
 use App\Infrastructure\Persistence\Action\DominoActionRepo;
 use App\Infrastructure\Persistence\Image\DominoImageRepo;
 
@@ -40,23 +41,25 @@ class DominoUserRepo implements UserRepoInterface
         if($saved_user)
         {
             $this->persist->table('users')->where('id', (string) $saved_user->getId())->update([
-                'name'       => (string) $user->getName(),
-                'birth_date' => (string) $user->getBirthDate(),
-                'gender'     => (string) $user->getGender(),
-                'email'      => (string) $user->getEmail(),
-                'password'   => (string) $user->getPassword(),
-                'token'      => $user->getToken() ? (string) $user->getToken() : null,
+                'name'        => (string) $user->getName(),
+                'birth_date'  => (string) $user->getBirthDate(),
+                'gender'      => (string) $user->getGender(),
+                'description' => (string) $user->getDescription(),
+                'email'       => (string) $user->getEmail(),
+                'password'    => (string) $user->getPassword(),
+                'token'       => $user->getToken() ? (string) $user->getToken() : null,
             ]);
         } else {
             $this->persist->table('users')->create([
-                'id'         => (string) $user->getId(),
-                'name'       => (string) $user->getName(),
-                'birth_date' => (string) $user->getBirthDate(),
-                'gender'     => (string) $user->getGender(),
-                'email'      => (string) $user->getEmail(),
-                'password'   => (string) $user->getPassword()->getHashedPassword(),
-                'token'      => $user->getToken() ? (string) $user->getToken() : null,
-                'created_on' => (string) $user->getCreatedOn()
+                'id'          => (string) $user->getId(),
+                'name'        => (string) $user->getName(),
+                'birth_date'  => (string) $user->getBirthDate(),
+                'gender'      => (string) $user->getGender(),
+                'description' => (string) $user->getDescription(),
+                'email'       => (string) $user->getEmail(),
+                'password'    => (string) $user->getPassword()->getHashedPassword(),
+                'token'       => $user->getToken() ? (string) $user->getToken() : null,
+                'created_on'  => (string) $user->getCreatedOn()
             ]);
         }
 
@@ -66,7 +69,6 @@ class DominoUserRepo implements UserRepoInterface
             $action_repo = new DominoActionRepo($this->persist);
             $action_repo->addAll($user->getActions());
         }
-
         if($user->countImages() > 0)
         {
             $image_repo = new DominoImageRepo($this->persist);
@@ -127,9 +129,15 @@ class DominoUserRepo implements UserRepoInterface
         $image_repo = new DominoImageRepo($this->persist);
         $images = $image_repo->withUserId($user->getId());
 
-        if($actions && count($actions) > 0)
+        if($images && count($images) > 0)
         {
             $user->addImages($images);
+        }
+
+        // Add description to the object
+        if($row['description'])
+        {
+            $user->addDescription(new Description($row['description']));
         }
 
         return $user;
