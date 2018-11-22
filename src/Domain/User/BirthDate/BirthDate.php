@@ -4,6 +4,7 @@ namespace App\Domain\User\BirthDate;
 
 use JsonSerializable;
 use DateTime;
+use DateInterval;
 
 
 class BirthDate implements BirthDateInterface, JsonSerializable
@@ -11,7 +12,14 @@ class BirthDate implements BirthDateInterface, JsonSerializable
     private $date;
 
     private $format = 'Y-m-d';
+    
 
+    public static function createFromAge(Int $age)
+    {
+        $now = new DateTime();
+        $date = $now->sub(new DateInterval('P' . $age . 'Y'));
+        return new self($date->format('Y-m-d'));
+    }
 
     public function __construct(String $date)
     {
