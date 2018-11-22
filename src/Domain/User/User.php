@@ -159,6 +159,11 @@ class User implements UserInterface, JsonSerializable
         return $this->actions;
     }
 
+    public function countActions()
+    {
+        return count($this->getActions());
+    }
+
     public function getLikes()
     {
         $likes = [];
@@ -207,6 +212,19 @@ class User implements UserInterface, JsonSerializable
         $this->images[] = $image;
     }
 
+    public function addImages(Array $images)
+    {
+        foreach($images as $image)
+        {
+            $this->addImage($image);
+        }
+    }
+
+    public function countImages()
+    {
+        return count($this->getImages());
+    }
+
     public function jsonSerialize()
     {
         return [
@@ -216,6 +234,7 @@ class User implements UserInterface, JsonSerializable
             'gender'     => (string) $this->getGender(),
             'email'      => (string) $this->getEmail(),
             'password'   => (string) $this->getPassword(),
+            'images'     => $this->getImages(),
             'likes'      => $this->getLikes(),
             'passes'     => $this->getPasses(),
             'created_on' => (string) $this->getCreatedOn()

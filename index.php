@@ -19,6 +19,7 @@ use App\Application\Message\SendMessageRequest;
 use App\Application\Action\CreateActionRequest;
 use App\Application\User\UserLogin\ValidateTokenRequest;
 use App\Application\User\GetUsers\GetUsersRequest;
+use App\Application\User\AttachImage\AttachImageRequest;
 
 
 // Init DomainEventPublisher
@@ -103,8 +104,16 @@ $router->add(Route::get('users', function($request) use ($container) {
 
 
 $router->add(Route::post('image', function($request) use ($container) {
-    $path = $request->retrive('path');
-    dd($path);
+    $attach_img_serv = $container->get('AttachImageService');
+    try {
+        $user = $attach_img_serv->execute(new AttachImageRequest(
+            $request->retrive('user_id'),
+            $request->retrive('image_path')
+        ));
+        Response::asJson($user);
+    } catch(\Exception $e) {
+        Response::asJson([ 'error' => $e->getMessage() ]);
+    }
 }));
 
 

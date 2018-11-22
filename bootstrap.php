@@ -48,6 +48,10 @@ $container->add('ActionRepo', App\Infrastructure\Persistence\Action\DominoAction
           ->addArgument(Domino\Persistence::class);
 
 
+$container->add('ImageRepo', App\Infrastructure\Persistence\Image\DominoImageRepo::class)
+          ->addArgument(Domino\Persistence::class);
+
+
 $container->add('MessageRepo', App\Infrastructure\Persistence\Message\DominoMessageRepo::class)
           ->addArgument(Domino\Persistence::class);
 
@@ -98,3 +102,7 @@ $container->add('GetUsersService', App\Application\User\GetUsers\GetUsersService
 
 $container->add('GetMatchesService', App\Application\Match\GetMatches\GetMatchesService::class)
           ->addArgument('MatchRepo');
+
+$container->add('AttachImageService', App\Application\User\AttachImage\AttachImageService::class)
+          ->addArgument('UserRepo')
+          ->addArgument('ImageRepo');

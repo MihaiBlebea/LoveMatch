@@ -13,6 +13,7 @@ use App\Domain\User\Email\EmailInterface;
 use App\Domain\User\Token\TokenInterface;
 use App\Domain\User\Token\Token;
 use App\Infrastructure\Persistence\Action\DominoActionRepo;
+use App\Infrastructure\Persistence\Image\DominoImageRepo;
 
 
 class DominoUserRepo implements UserRepoInterface
@@ -60,11 +61,18 @@ class DominoUserRepo implements UserRepoInterface
         }
 
         // Save the actions in the action array
-        if(count($user->getActions()) > 0)
+        if($user->countActions() > 0)
         {
             $action_repo = new DominoActionRepo($this->persist);
             $action_repo->addAll($user->getActions());
         }
+
+        if($user->countImages() > 0)
+        {
+            $image_repo = new DominoImageRepo($this->persist);
+            $image_repo->addAll($user->getImages());
+        }
+
     }
 
     public function addAll(Array $users)
@@ -106,7 +114,7 @@ class DominoUserRepo implements UserRepoInterface
             $user->addToken(new Token($row['token']));
         }
 
-        // get action repo
+        // get actions from repo
         $action_repo = new DominoActionRepo($this->persist);
         $actions = $action_repo->withSenderId($user->getId());
 
@@ -114,6 +122,16 @@ class DominoUserRepo implements UserRepoInterface
         {
             $user->addActions($actions);
         }
+
+        // Get images from repo
+        $image_repo = new DominoImageRepo($this->persist);
+        $images = $image_repo->withUserId($user->getId());
+
+        if($actions && count($actions) > 0)
+        {
+            $user->addImages($images);
+        }
+
         return $user;
     }
 

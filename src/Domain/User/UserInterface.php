@@ -59,6 +59,8 @@ interface UserInterface
 
     public function getActions();
 
+    public function countActions();
+
     public function getLikes();
 
     public function getPasses();
@@ -66,6 +68,10 @@ interface UserInterface
     public function getImages();
 
     public function addImage(ImageInterface $image);
+
+    public function addImages(Array $images);
+
+    public function countImages();
 
     public function jsonSerialize();
 }
