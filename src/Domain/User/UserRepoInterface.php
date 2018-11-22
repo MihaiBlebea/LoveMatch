@@ -5,6 +5,8 @@ namespace App\Domain\User;
 use App\Domain\User\UserId\UserIdInterface;
 use App\Domain\User\Email\Emailinterface;
 use App\Domain\User\Token\TokenInterface;
+use App\Domain\User\Gender\GenderInterface;
+use App\Domain\User\Location\LocationInterface;
 
 
 interface UserRepoInterface
@@ -27,5 +29,10 @@ interface UserRepoInterface
 
     public function withToken(TokenInterface $token);
 
-    public function all(Int $count = null);
+    public function all(
+        Int $count,
+        GenderInterface $gender,
+        UserIdInterface $user_id,
+        LocationInterface $location,
+        Int $distance);
 }

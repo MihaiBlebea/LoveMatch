@@ -10,5 +10,7 @@ interface UserRegisterRequestInterface
         String $birth_date,
         String $gender,
         String $email,
+        String $longitude,
+        String $latitude,
         String $password);
 }

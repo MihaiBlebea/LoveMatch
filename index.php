@@ -13,13 +13,14 @@ use Interceptor\Middleware;
 use App\Application\User\UserLogin\UserLoginRequest;
 use App\Application\User\UserRegister\UserRegisterRequest;
 
-use App\Application\LogoutService;
 use App\Application\Match\CreateMatch\CreateMatchRequest;
 use App\Application\Match\GetMatches\GetMatchesRequest;
 use App\Application\Message\SendMessageRequest;
 use App\Application\Action\CreateActionRequest;
 use App\Application\User\UserLogin\ValidateTokenRequest;
 use App\Application\User\GetUsers\GetUsersRequest;
+use App\Application\User\AttachImage\AttachImageRequest;
+use App\Application\User\AttachDescription\AttachDescriptionRequest;
 
 
 // Init DomainEventPublisher
@@ -72,17 +73,6 @@ $router->add(Route::get('login', function() use ($request, $container) {
 }));
 
 
-// Route for User logout
-$router->add(Route::get('logout', function() {
-    try {
-        LogoutService::execute();
-        Response::asJson([ 'result' => 'User was logged out from the app' ]);
-    } catch(\Exception $e) {
-        Response::asJson([ 'error' => $e->getMessage() ]);
-    }
-}));
-
-
 // Route for User register
 $router->add(Route::post('register', function($request) use ($container) {
     $register_serv = $container->get('UserRegisterService');
@@ -92,6 +82,8 @@ $router->add(Route::post('register', function($request) use ($container) {
             $request->retrive('birth_date'),
             $request->retrive('gender'),
             $request->retrive('email'),
+            $request->retrive('longitude'),
+            $request->retrive('latitude'),
             $request->retrive('password')
         ));
         Response::asJson($user);
@@ -106,12 +98,47 @@ $router->add(Route::get('users', function($request) use ($container) {
     $get_users_serv = $container->get('GetUsersService');
     try {
 
-        $users = $get_users_serv->execute(new GetUsersRequest($request->retrive('count') ?? null, 'MALE'));
+        $users = $get_users_serv->execute(new GetUsersRequest(
+            $request->retrive('count'),
+            $request->retrive('gender'),
+            $request->retrive('longitude'),
+            $request->retrive('latitude'),
+            $request->retrive('distance'),
+            $request->retrive('user_id')
+        ));
         Response::asJson($users);
     } catch(\Exception $e) {
         Response::asJson([ 'error' => $e->getMessage() ]);
     }
 }, $auth));
+
+
+$router->add(Route::post('image', function($request) use ($container) {
+    $attach_img_serv = $container->get('AttachImageService');
+    try {
+        $user = $attach_img_serv->execute(new AttachImageRequest(
+            $request->retrive('user_id'),
+            $request->retrive('image_path')
+        ));
+        Response::asJson($user);
+    } catch(\Exception $e) {
+        Response::asJson([ 'error' => $e->getMessage() ]);
+    }
+}));
+
+
+$router->add(Route::post('description', function($request) use ($container) {
+    $attach_description_serv = $container->get('AttachDescriptionService');
+    try {
+        $user = $attach_description_serv->execute(new AttachDescriptionRequest(
+            $request->retrive('description'),
+            $request->retrive('user_id')
+        ));
+        Response::asJson($user);
+    } catch(\Exception $e) {
+        Response::asJson([ 'error' => $e->getMEssage() ]);
+    }
+}));
 
 
 $router->add(Route::post('action', function($request) use ($container) {

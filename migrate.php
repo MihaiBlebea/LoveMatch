@@ -17,9 +17,20 @@ $blueprint->table('users')
           ->add(Column::string('name')->notNull())
           ->add(Column::date('birth_date')->notNull())
           ->add(Column::string('gender')->notNull())
+          ->add(Column::text('description')->default(NULL))
           ->add(Column::string('email')->notNull()->isUnique())
+          ->add(Column::string('longitude')->notNull())
+          ->add(Column::string('latitude')->notNull())
           ->add(Column::string('password')->notNull())
           ->add(Column::text('token')->default(NULL))
+          ->add(Column::datetime('created_on')->notNull())
+          ->create();
+
+
+$blueprint->table('images')
+          ->add(Column::string('id')->primaryKey())
+          ->add(Column::string('user_id')->notNull())
+          ->add(Column::string('path')->notNull())
           ->add(Column::datetime('created_on')->notNull())
           ->create();
 

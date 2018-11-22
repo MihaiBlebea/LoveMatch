@@ -12,7 +12,11 @@ use App\Domain\User\UserId\UserIdInterface;
 use App\Domain\User\Email\EmailInterface;
 use App\Domain\User\Token\TokenInterface;
 use App\Domain\User\Token\Token;
+use App\Domain\User\Gender\GenderInterface;
+use App\Domain\User\Description\Description;
+use App\Domain\User\Location\LocationInterface;
 use App\Infrastructure\Persistence\Action\DominoActionRepo;
+use App\Infrastructure\Persistence\Image\DominoImageRepo;
 
 
 class DominoUserRepo implements UserRepoInterface
@@ -39,32 +43,44 @@ class DominoUserRepo implements UserRepoInterface
         if($saved_user)
         {
             $this->persist->table('users')->where('id', (string) $saved_user->getId())->update([
-                'name'       => (string) $user->getName(),
-                'birth_date' => (string) $user->getBirthDate(),
-                'gender'     => (string) $user->getGender(),
-                'email'      => (string) $user->getEmail(),
-                'password'   => (string) $user->getPassword(),
-                'token'      => $user->getToken() ? (string) $user->getToken() : null,
+                'name'        => (string) $user->getName(),
+                'birth_date'  => (string) $user->getBirthDate(),
+                'gender'      => (string) $user->getGender(),
+                'description' => (string) $user->getDescription(),
+                'email'       => (string) $user->getEmail(),
+                'longitude'   => $user->getLocation()->getLongitude(),
+                'latitude'    => $user->getLocation()->getLatitude(),
+                'password'    => (string) $user->getPassword(),
+                'token'       => $user->getToken() ? (string) $user->getToken() : null,
             ]);
         } else {
             $this->persist->table('users')->create([
-                'id'         => (string) $user->getId(),
-                'name'       => (string) $user->getName(),
-                'birth_date' => (string) $user->getBirthDate(),
-                'gender'     => (string) $user->getGender(),
-                'email'      => (string) $user->getEmail(),
-                'password'   => (string) $user->getPassword()->getHashedPassword(),
-                'token'      => $user->getToken() ? (string) $user->getToken() : null,
-                'created_on' => (string) $user->getCreatedOn()
+                'id'          => (string) $user->getId(),
+                'name'        => (string) $user->getName(),
+                'birth_date'  => (string) $user->getBirthDate(),
+                'gender'      => (string) $user->getGender(),
+                'description' => (string) $user->getDescription(),
+                'email'       => (string) $user->getEmail(),
+                'longitude'   => $user->getLocation()->getLongitude(),
+                'latitude'    => $user->getLocation()->getLatitude(),
+                'password'    => (string) $user->getPassword()->getHashedPassword(),
+                'token'       => $user->getToken() ? (string) $user->getToken() : null,
+                'created_on'  => (string) $user->getCreatedOn()
             ]);
         }
 
         // Save the actions in the action array
-        if(count($user->getActions()) > 0)
+        if($user->countActions() > 0)
         {
             $action_repo = new DominoActionRepo($this->persist);
             $action_repo->addAll($user->getActions());
         }
+        if($user->countImages() > 0)
+        {
+            $image_repo = new DominoImageRepo($this->persist);
+            $image_repo->addAll($user->getImages());
+        }
+
     }
 
     public function addAll(Array $users)
@@ -96,6 +112,8 @@ class DominoUserRepo implements UserRepoInterface
             $row['birth_date'],
             $row['gender'],
             $row['email'],
+            $row['longitude'],
+            $row['latitude'],
             $row['password'],
             $row['created_on']
         );
@@ -106,7 +124,7 @@ class DominoUserRepo implements UserRepoInterface
             $user->addToken(new Token($row['token']));
         }
 
-        // get action repo
+        // get actions from repo
         $action_repo = new DominoActionRepo($this->persist);
         $actions = $action_repo->withSenderId($user->getId());
 
@@ -114,6 +132,22 @@ class DominoUserRepo implements UserRepoInterface
         {
             $user->addActions($actions);
         }
+
+        // Get images from repo
+        $image_repo = new DominoImageRepo($this->persist);
+        $images = $image_repo->withUserId($user->getId());
+
+        if($images && count($images) > 0)
+        {
+            $user->addImages($images);
+        }
+
+        // Add description to the object
+        if($row['description'])
+        {
+            $user->addDescription(new Description($row['description']));
+        }
+
         return $user;
     }
 
@@ -153,16 +187,22 @@ class DominoUserRepo implements UserRepoInterface
         return null;
     }
 
-    public function all(Int $count = null)
+    public function all(
+        Int $count,
+        GenderInterface $gender,
+        UserIdInterface $user_id,
+        LocationInterface $location,
+        Int $distance)
     {
-        $query = $this->persist->table('users');
-        if($count === null)
-        {
-            $users = $query->selectAll();
-        } else {
-            $users = $query->limit($count)->select();
-        }
-
+        $users = $this->persist->table('users')
+                               ->where('gender', (string) $gender)
+                               ->where('id', '!=', (string) $user_id)
+                               ->where('longitude', '>', $location->getMinLongitude($distance))
+                               ->where('longitude', '<', $location->getMaxLongitude($distance))
+                               ->where('latitude', '>', $location->getMinLatitude($distance))
+                               ->where('latitude', '<', $location->getMaxLatitude($distance))
+                               ->limit($count)
+                               ->select();
         if($users)
         {
             foreach($users as $user)

@@ -8,9 +8,12 @@ use App\Domain\User\Name\NameInterface;
 use App\Domain\User\BirthDate\BirthDateInterface;
 use App\Domain\User\Gender\GenderInterface;
 use App\Domain\User\Email\EmailInterface;
+use App\Domain\User\Location\LocationInterface;
 use App\Domain\User\Password\PasswordInterface;
 use App\Domain\User\Action\ActionInterface;
 use App\Domain\User\Token\TokenInterface;
+use App\Domain\User\Image\ImageInterface;
+use App\Domain\User\Description\DescriptionInterface;
 use App\Domain\CreatedOn\CreatedOn;
 use App\Domain\CreatedOn\CreatedOnInterface;
 
@@ -27,11 +30,17 @@ class User implements UserInterface, JsonSerializable
 
     private $email;
 
+    private $location;
+
     private $password;
 
     private $actions = [];
 
+    private $images = [];
+
     private $token;
+
+    private $description;
 
     private $created_on;
 
@@ -42,6 +51,7 @@ class User implements UserInterface, JsonSerializable
         BirthDateInterface $birth_date,
         GenderInterface $gender,
         EmailInterface $email,
+        LocationInterface $location,
         PasswordInterface $password,
         CreatedOnInterface $created_on)
     {
@@ -50,6 +60,7 @@ class User implements UserInterface, JsonSerializable
         $this->birth_date = $birth_date;
         $this->gender     = $gender;
         $this->email      = $email;
+        $this->location   = $location;
         $this->password   = $password;
         $this->created_on = $created_on;
     }
@@ -107,6 +118,16 @@ class User implements UserInterface, JsonSerializable
         $this->email = $email;
     }
 
+    public function getLocation()
+    {
+        return $this->location;
+    }
+
+    public function setLocation(LocationInterface $location)
+    {
+        $this->location = $location;
+    }
+
     public function getPassword()
     {
         return $this->password;
@@ -156,6 +177,11 @@ class User implements UserInterface, JsonSerializable
         return $this->actions;
     }
 
+    public function countActions()
+    {
+        return count($this->getActions());
+    }
+
     public function getLikes()
     {
         $likes = [];
@@ -194,18 +220,54 @@ class User implements UserInterface, JsonSerializable
         return false;
     }
 
+    public function getImages()
+    {
+        return $this->images;
+    }
+
+    public function addImage(ImageInterface $image)
+    {
+        $this->images[] = $image;
+    }
+
+    public function addImages(Array $images)
+    {
+        foreach($images as $image)
+        {
+            $this->addImage($image);
+        }
+    }
+
+    public function countImages()
+    {
+        return count($this->getImages());
+    }
+
+    public function addDescription(DescriptionInterface $description)
+    {
+        $this->description = $description;
+    }
+
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
     public function jsonSerialize()
     {
         return [
-            'id'         => (string) $this->getId(),
-            'name'       => (string) $this->getName(),
-            'birth_date' => $this->getBirthDate(),
-            'gender'     => (string) $this->getGender(),
-            'email'      => (string) $this->getEmail(),
-            'password'   => (string) $this->getPassword(),
-            'likes'      => $this->getLikes(),
-            'passes'     => $this->getPasses(),
-            'created_on' => (string) $this->getCreatedOn()
+            'id'          => (string) $this->getId(),
+            'name'        => (string) $this->getName(),
+            'birth_date'  => $this->getBirthDate(),
+            'gender'      => (string) $this->getGender(),
+            'description' => (string) $this->getDescription(),
+            'email'       => (string) $this->getEmail(),
+            'location'    => $this->getLocation(),
+            'password'    => (string) $this->getPassword(),
+            'images'      => $this->getImages(),
+            'likes'       => $this->getLikes(),
+            'passes'      => $this->getPasses(),
+            'created_on'  => (string) $this->getCreatedOn()
         ];
     }
 }

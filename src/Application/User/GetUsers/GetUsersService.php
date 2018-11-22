@@ -3,6 +3,9 @@
 namespace App\Application\User\GetUsers;
 
 use App\Domain\User\UserRepoInterface;
+use App\Domain\User\Gender\Gender;
+use App\Domain\User\UserId\UserId;
+use App\Domain\User\Location\Location;
 
 
 class GetUsersService
@@ -17,6 +20,11 @@ class GetUsersService
 
     public function execute(GetUsersRequestInterface $request)
     {
-        return $this->user_repo->all($request->count);
+        return $this->user_repo->all(
+            $request->count,
+            new Gender($request->gender),
+            new UserId($request->user_id),
+            new Location($request->long, $request->lat),
+            $request->distance);
     }
 }

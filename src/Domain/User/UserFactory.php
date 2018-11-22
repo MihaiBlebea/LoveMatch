@@ -7,6 +7,7 @@ use App\Domain\User\Name\Name;
 use App\Domain\User\BirthDate\BirthDate;
 use App\Domain\User\Gender\Gender;
 use App\Domain\User\Email\Email;
+use App\Domain\User\Location\Location;
 use App\Domain\User\Password\Password;
 use App\Domain\CreatedOn\CreatedOn;
 
@@ -19,6 +20,8 @@ class UserFactory
         String $birth_date,
         String $gender,
         String $email,
+        String $long,
+        String $lat,
         String $password,
         String $created_on = null)
     {
@@ -28,6 +31,7 @@ class UserFactory
             new BirthDate($birth_date),
             new Gender($gender),
             new Email($email),
+            new Location($long, $lat),
             new Password($password),
             new CreatedOn($created_on)
         );
