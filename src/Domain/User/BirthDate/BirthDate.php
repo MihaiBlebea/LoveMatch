@@ -3,6 +3,7 @@
 namespace App\Domain\User\BirthDate;
 
 use JsonSerializable;
+use DateTime;
 
 
 class BirthDate implements BirthDateInterface, JsonSerializable
@@ -18,7 +19,7 @@ class BirthDate implements BirthDateInterface, JsonSerializable
         {
             throw new \Exception('Date format is not correct. Please supply Y-m-d', 1);
         }
-        $this->date = \DateTime::createFromFormat($this->format, $date);
+        $this->date = DateTime::createFromFormat($this->format, $date);
     }
 
     public function getDate()
@@ -28,13 +29,13 @@ class BirthDate implements BirthDateInterface, JsonSerializable
 
     private function validateDate(String $date)
     {
-        $created_date = \DateTime::createFromFormat($this->format, $date);
+        $created_date = DateTime::createFromFormat($this->format, $date);
         return $created_date && $created_date->format($this->format) === $date;
     }
 
     public function getAge()
     {
-        $now = new \DateTime();
+        $now = new DateTime();
         $age = $now->diff($this->date);
         return $age->y;
     }

@@ -15,7 +15,11 @@ class GetUsersRequest implements GetUsersRequestInterface
 
     public $distance;
 
-    public $auth_user_id;
+    public $user_id;
+
+    public $min_age;
+
+    public $max_age;
 
 
     public function __construct(
@@ -24,7 +28,9 @@ class GetUsersRequest implements GetUsersRequestInterface
         String $long,
         String $lat,
         Int $distance,
-        String $user_id)
+        String $user_id,
+        Int $min_age,
+        Int $max_age)
     {
         $this->count    = $count;
         $this->gender   = $gender;
@@ -32,5 +38,7 @@ class GetUsersRequest implements GetUsersRequestInterface
         $this->lat      = $lat;
         $this->distance = $distance;
         $this->user_id  = $user_id;
+        $this->min_age  = $min_age;
+        $this->max_age  = $max_age;
     }
 }

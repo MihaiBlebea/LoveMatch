@@ -25,6 +25,8 @@ class GetUsersService
             new Gender($request->gender),
             new UserId($request->user_id),
             new Location($request->long, $request->lat),
-            $request->distance);
+            $request->distance,
+            $request->min_age,
+            $request->max_age);
     }
 }

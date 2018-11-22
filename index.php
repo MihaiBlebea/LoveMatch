@@ -97,14 +97,15 @@ $router->add(Route::post('register', function($request) use ($container) {
 $router->add(Route::get('users', function($request) use ($container) {
     $get_users_serv = $container->get('GetUsersService');
     try {
-
         $users = $get_users_serv->execute(new GetUsersRequest(
             $request->retrive('count'),
             $request->retrive('gender'),
             $request->retrive('longitude'),
             $request->retrive('latitude'),
             $request->retrive('distance'),
-            $request->retrive('user_id')
+            $request->retrive('user_id'),
+            $request->retrive('min_age'),
+            $request->retrive('max_age')
         ));
         Response::asJson($users);
     } catch(\Exception $e) {

@@ -34,5 +34,7 @@ interface UserRepoInterface
         GenderInterface $gender,
         UserIdInterface $user_id,
         LocationInterface $location,
-        Int $distance);
+        Int $distance,
+        Int $min_age,
+        Int $max_age);
 }

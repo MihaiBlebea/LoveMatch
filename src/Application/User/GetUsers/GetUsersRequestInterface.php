@@ -11,5 +11,7 @@ interface GetUsersRequestInterface
         String $long,
         String $lat,
         Int $distance,
-        String $user_id);
+        String $user_id,
+        Int $min_age,
+        Int $max_age);
 }

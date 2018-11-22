@@ -192,8 +192,15 @@ class DominoUserRepo implements UserRepoInterface
         GenderInterface $gender,
         UserIdInterface $user_id,
         LocationInterface $location,
-        Int $distance)
+        Int $distance,
+        Int $min_age,
+        Int $max_age)
     {
+        // Calculate years from age
+        $min_year = \App\Domain\User\BirthDate\CalculateYearFromAgeService::execute($min_age);
+        $max_year = \App\Domain\User\BirthDate\CalculateYearFromAgeService::execute($max_age);
+
+
         $users = $this->persist->table('users')
                                ->where('gender', (string) $gender)
                                ->where('id', '!=', (string) $user_id)
@@ -201,6 +208,8 @@ class DominoUserRepo implements UserRepoInterface
                                ->where('longitude', '<', $location->getMaxLongitude($distance))
                                ->where('latitude', '>', $location->getMinLatitude($distance))
                                ->where('latitude', '<', $location->getMaxLatitude($distance))
+                               ->where('birth_date', '>', $max_year->format('Y-m-d'))
+                               ->where('birth_date', '<', $min_year->format('Y-m-d'))
                                ->limit($count)
                                ->select();
         if($users)
