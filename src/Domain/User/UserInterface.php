@@ -84,5 +84,13 @@ interface UserInterface
 
     public function getDescription();
 
+    public function addDistance(Int $distance);
+
+    public function getDistance();
+
+    public function addAgeInterval(Int $min, Int $max);
+
+    public function getAgeInterval();
+
     public function jsonSerialize();
 }

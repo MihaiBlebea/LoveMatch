@@ -14,7 +14,6 @@ use App\Domain\User\Token\TokenInterface;
 use App\Domain\User\Token\Token;
 use App\Domain\User\Gender\GenderInterface;
 use App\Domain\User\Description\Description;
-use App\Domain\User\Location\LocationInterface;
 use App\Infrastructure\Persistence\Action\DominoActionRepo;
 use App\Infrastructure\Persistence\Image\DominoImageRepo;
 
@@ -52,6 +51,9 @@ class DominoUserRepo implements UserRepoInterface
                 'latitude'    => $user->getLocation()->getLatitude(),
                 'password'    => (string) $user->getPassword(),
                 'token'       => $user->getToken() ? (string) $user->getToken() : null,
+                'distance'    => $user->getDistance()->getDistance(),
+                'min_age'     => $user->getAgeInterval()->getMin(),
+                'max_age'     => $user->getAgeInterval()->getMax()
             ]);
         } else {
             $this->persist->table('users')->create([
@@ -65,7 +67,10 @@ class DominoUserRepo implements UserRepoInterface
                 'latitude'    => $user->getLocation()->getLatitude(),
                 'password'    => (string) $user->getPassword()->getHashedPassword(),
                 'token'       => $user->getToken() ? (string) $user->getToken() : null,
-                'created_on'  => (string) $user->getCreatedOn()
+                'created_on'  => (string) $user->getCreatedOn(),
+                'distance'    => $user->getDistance()->getDistance(),
+                'min_age'     => $user->getAgeInterval()->getMin(),
+                'max_age'     => $user->getAgeInterval()->getMax()
             ]);
         }
 
@@ -123,6 +128,19 @@ class DominoUserRepo implements UserRepoInterface
         {
             $user->addToken(new Token($row['token']));
         }
+
+        // Get distance if not null
+        if($row['distance'])
+        {
+            $user->addDistance($row['distance']);
+        }
+
+        // Get age interval if not null
+        if($row['min_age'] && $row['max_age'])
+        {
+            $user->addAgeInterval($row['min_age'], $row['max_age']);
+        }
+
 
         // get actions from repo
         $action_repo = new DominoActionRepo($this->persist);
@@ -189,9 +207,12 @@ class DominoUserRepo implements UserRepoInterface
 
     public function all(
         Int $count,
-        GenderInterface $gender,
-        UserIdInterface $user_id,
-        LocationInterface $location,
+        String $gender,
+        String $user_id,
+        String $min_longitude,
+        String $max_longitude,
+        String $min_latitude,
+        String $max_latitude,
         Int $distance,
         Int $min_age,
         Int $max_age)
@@ -204,12 +225,12 @@ class DominoUserRepo implements UserRepoInterface
 
 
         $users = $this->persist->table('users')
-                               ->where('gender', (string) $gender)
-                               ->where('id', '!=', (string) $user_id)
-                               ->where('longitude', '>', $location->getMinLongitude($distance))
-                               ->where('longitude', '<', $location->getMaxLongitude($distance))
-                               ->where('latitude', '>', $location->getMinLatitude($distance))
-                               ->where('latitude', '<', $location->getMaxLatitude($distance))
+                               ->where('gender', $gender)
+                               ->where('id', '!=', $user_id)
+                               ->where('longitude', '>', $min_longitude)
+                               ->where('longitude', '<', $max_longitude)
+                               ->where('latitude', '>', $min_latitude)
+                               ->where('latitude', '<', $max_latitude)
                                ->where('birth_date', '>', $max_year)
                                ->where('birth_date', '<', $min_year)
                                ->limit($count)

@@ -14,6 +14,8 @@ use App\Domain\User\Action\ActionInterface;
 use App\Domain\User\Token\TokenInterface;
 use App\Domain\User\Image\ImageInterface;
 use App\Domain\User\Description\DescriptionInterface;
+use App\Domain\User\Distance\Distance;
+use App\Domain\User\AgeInterval\AgeInterval;
 use App\Domain\CreatedOn\CreatedOn;
 use App\Domain\CreatedOn\CreatedOnInterface;
 
@@ -42,6 +44,10 @@ class User implements UserInterface, JsonSerializable
 
     private $description;
 
+    private $distance;
+
+    private $age_interval;
+
     private $created_on;
 
 
@@ -63,6 +69,10 @@ class User implements UserInterface, JsonSerializable
         $this->location   = $location;
         $this->password   = $password;
         $this->created_on = $created_on;
+
+        // Default prferences values
+        $this->distance     = new Distance(30);
+        $this->age_interval = new AgeInterval(18, 65);
     }
 
     private function assertActionSenderMatchUser(ActionInterface $action)
@@ -253,6 +263,26 @@ class User implements UserInterface, JsonSerializable
         return $this->description;
     }
 
+    public function addDistance(Int $distance)
+    {
+        $this->distance = new Distance($distance);
+    }
+
+    public function getDistance()
+    {
+        return $this->distance;
+    }
+
+    public function addAgeInterval(Int $min, Int $max)
+    {
+        $this->age_interval = new AgeInterval($min, $max);
+    }
+
+    public function getAgeInterval()
+    {
+        return $this->age_interval;
+    }
+
     public function jsonSerialize()
     {
         return [
@@ -267,6 +297,10 @@ class User implements UserInterface, JsonSerializable
             'images'      => $this->getImages(),
             'likes'       => $this->getLikes(),
             'passes'      => $this->getPasses(),
+            'preferences' => [
+                'distance' => (string) $this->getDistance(),
+                'age'      => $this->age_interval ? $this->age_interval->getInterval() : null
+            ],
             'created_on'  => (string) $this->getCreatedOn()
         ];
     }

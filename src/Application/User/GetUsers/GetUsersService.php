@@ -3,9 +3,7 @@
 namespace App\Application\User\GetUsers;
 
 use App\Domain\User\UserRepoInterface;
-use App\Domain\User\Gender\Gender;
 use App\Domain\User\UserId\UserId;
-use App\Domain\User\Location\Location;
 
 
 class GetUsersService
@@ -20,13 +18,25 @@ class GetUsersService
 
     public function execute(GetUsersRequestInterface $request)
     {
+        $user = $this->user_repo->withId(new UserId($request->user_id));
+
+        if(!$user)
+        {
+            throw new \Exception('Could not find user with id ' . $request->user_id, 1);
+        }
+
+        $distance = $user->getDistance()->getDistance();
+
         return $this->user_repo->all(
             $request->count,
-            new Gender($request->gender),
-            new UserId($request->user_id),
-            new Location($request->long, $request->lat),
-            $request->distance,
-            $request->min_age,
-            $request->max_age);
+            $user->getGender()->getOpposite(),
+            (string) $user->getId(),
+            $user->getLocation()->getMinLongitude($distance),
+            $user->getLocation()->getMaxLongitude($distance),
+            $user->getLocation()->getMinLatitude($distance),
+            $user->getLocation()->getMaxLatitude($distance),
+            $distance,
+            $user->getAgeInterval()->getMin(),
+            $user->getAgeInterval()->getMax());
     }
 }

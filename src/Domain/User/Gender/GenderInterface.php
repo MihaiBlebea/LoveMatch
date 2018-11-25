@@ -9,5 +9,7 @@ interface GenderInterface
 
     public function getGender();
 
+    public function getOpposite();
+
     public function __toString();
 }

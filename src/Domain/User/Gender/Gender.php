@@ -29,6 +29,11 @@ class Gender implements GenderInterface
         return $this->gender;
     }
 
+    public function getOpposite()
+    {
+        return strtolower($this->gender) === 'female' ? 'MALE' : 'FEMALE';
+    }
+
     public function __toString()
     {
         return $this->getGender();

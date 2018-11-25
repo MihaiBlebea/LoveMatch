@@ -21,6 +21,7 @@ use App\Application\User\UserLogin\ValidateTokenRequest;
 use App\Application\User\GetUsers\GetUsersRequest;
 use App\Application\User\AttachImage\AttachImageRequest;
 use App\Application\User\AttachDescription\AttachDescriptionRequest;
+use App\Application\User\GetMe\GetMeRequest;
 
 
 // Init DomainEventPublisher
@@ -99,19 +100,24 @@ $router->add(Route::get('users', function($request) use ($container) {
     try {
         $users = $get_users_serv->execute(new GetUsersRequest(
             $request->retrive('count'),
-            $request->retrive('gender'),
-            $request->retrive('longitude'),
-            $request->retrive('latitude'),
-            $request->retrive('distance'),
-            $request->retrive('user_id'),
-            $request->retrive('min_age'),
-            $request->retrive('max_age')
+            $request->retrive('user_id')
         ));
         Response::asJson($users);
     } catch(\Exception $e) {
         Response::asJson([ 'error' => $e->getMessage() ]);
     }
 }, $auth));
+
+
+$router->add(Route::get('me', function($request) use ($container) {
+    $get_me_serv = $container->get('GetMeService');
+    try {
+        $user = $get_me_serv->execute(new GetMeRequest($request->retrive('user_id')));
+        Response::asJson($user);
+    } catch (\Exception $e) {
+        Response::asJson([ 'error' => $e->getMessage() ]);
+    }
+}));
 
 
 $router->add(Route::post('image', function($request) use ($container) {

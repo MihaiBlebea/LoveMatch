@@ -31,9 +31,12 @@ interface UserRepoInterface
 
     public function all(
         Int $count,
-        GenderInterface $gender,
-        UserIdInterface $user_id,
-        LocationInterface $location,
+        String $gender,
+        String $user_id,
+        String $min_longitude,
+        String $max_longitude,
+        String $min_latitude,
+        String $max_latitude,
         Int $distance,
         Int $min_age,
         Int $max_age);

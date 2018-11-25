@@ -84,6 +84,10 @@ $container->add('AttachDescriptionService', App\Application\User\AttachDescripti
           ->addArgument('UserRepo');
 
 
+$container->add('GetMeService', App\Application\User\GetMe\GetMeService::class)
+          ->addArgument('UserRepo');
+
+
 $container->add('CreateActionService', App\Application\Action\CreateActionService::class)
           ->addArgument('ActionRepo')
           ->addArgument('UserRepo');
