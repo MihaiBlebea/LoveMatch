@@ -18,7 +18,7 @@ class JWTAuthorize implements JWTAuthorizeInterface
     {
         $token = array(
             'created_on' => Carbon::now(),
-            'expires'    => 30,
+            'expires'    => 3600,
             'email'      => $email,
             'password'   => $password,
             'user_id'    => $id

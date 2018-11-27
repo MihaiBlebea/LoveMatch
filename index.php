@@ -102,7 +102,8 @@ $router->add(Route::get('users', function($request) use ($container) {
             $request->retrive('count'),
             $request->retrive('user_id')
         ));
-        Response::asJson($users);
+        echo json_encode($users);
+        // Response::asJson($users);
     } catch(\Exception $e) {
         Response::asJson([ 'error' => $e->getMessage() ]);
     }
