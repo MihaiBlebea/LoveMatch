@@ -1,50 +1,45 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Route, Redirect, Switch } from 'react-router-dom'
 
-import { Home, Profile, Match } from './Pages'
+import { Home, Profile, Match, Me, Login, Logout, Register } from './Pages'
+import { Container } from './Components'
+import { isAuth } from './services'
 
 
-class App extends Component
-{
-    isAuth()
-    {
-        return false;
-    }
+const App = ()=> {
 
-    privateRoutes()
-    {
+    const privateRoutes = ()=> {
         return (
             <Switch>
-                <Route path="/" component={ Home } />
-
+                <Route exact path="/" component={ Profile } />
+                <Route exact path="/me" component={ Me } />
+                <Route exact path="/matches" component={ Match } />
+                <Route exact path="/logout" component={ Logout } />
 
                 <Redirect to='/' />
             </Switch>
         )
     }
 
-    publicRoutes()
-    {
+    const publicRoutes = ()=> {
         return (
             <Switch>
                 <Route exact path="/" component={ Home } />
-                <Route exact path="/profiles" component={ Profile } />
-                <Route exact path="/matches" component={ Match } />
+                <Route exact path="/login" component={ Login } />
+                <Route exact path="/register" component={ Register } />
 
-                <Redirect to='/' />
+                <Redirect to='/login' />
             </Switch>
         )
     }
 
-    render() {
-        return (
-            <div>
-                <Router>
-                    { this.isAuth() ? this.privateRoutes() : this.publicRoutes() }
-                </Router>
-            </div>
-        );
-    }
+    return (
+        <Container>
+            <Router>
+                { isAuth() ? privateRoutes() : publicRoutes() }
+            </Router>
+        </Container>
+    );
 }
 
 export default App;

@@ -11,10 +11,29 @@ class Profile extends React.Component
         super()
         this.state = {
             profiles: [],
-            userId: '7AC47F10-7C23-44AE-A4A2-F80AA145386E',
-            token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJjcmVhdGVkX29uIjoiMjAxOC0xMS0yNlQyMToxNDo1MC45NTg3NTBaIiwiZXhwaXJlcyI6MzYwMCwiZW1haWwiOiJtaWhhaXNlcmJhbi5ibGViZWFAZ21haWwuY29tIiwicGFzc3dvcmQiOiIkMnkkMTAkODVMXC9ZQVNEUXB2WmM2d1FxakFpM3VZZENIZlpWZ1ZOOW13VXZkU2JtVmdvaHREOWhraExHIiwidXNlcl9pZCI6IjdBQzQ3RjEwLTdDMjMtNDRBRS1BNEEyLUY4MEFBMTQ1Mzg2RSJ9.GiJ0f8-haLB1A0JjNtZ2W9-mvm8RkeWf1prZQ_SQbU4'
+            userId: null,
+            token: null
         }
-        this.getProfiles()
+    }
+
+    componentDidMount()
+    {
+        if(this.isAuth())
+        {
+            this.setState({
+                token: localStorage.getItem('token'),
+                userId: localStorage.getItem('user_id')
+            })
+        }
+    }
+
+    isAuth()
+    {
+        if(localStorage.getItem('token'))
+        {
+            return true
+        }
+        return false
     }
 
     getProfiles()
@@ -29,13 +48,42 @@ class Profile extends React.Component
         })
     }
 
-    renderUserCards()
+    handleAction(profile, type)
+    {
+        console.log(profile)
+        axios.post('/action', {
+            type: type,
+	        sender_id: this.state.userId,
+	        receiver_id: profile.id
+        }).then((result)=> {
+            if(result.status === 200)
+            {
+
+            }
+            console.log(result.status)
+        }).catch((error)=> {
+            console.log(error)
+        })
+    }
+
+    handleSeeProfile()
     {
 
+    }
+
+    renderUserCards()
+    {
         if(this.state.profiles.length > 0)
         {
             return this.state.profiles.map((profile, index)=> {
-                return ( <UserCard key={ index } name={ profile.name }/> )
+                return (
+                    <UserCard key={ index }
+                              name={ profile.name }
+                              images={ profile.images }
+                              onLike={ ()=> this.handleAction(profile, 'like') }
+                              onPass={ ()=> this.handleAction(profile, 'pass') }
+                              onSeeProfile={ ()=> this.handleSeeProfile(profile) } />
+                )
             })
         }
         return null
@@ -43,19 +91,16 @@ class Profile extends React.Component
 
     render()
     {
-        return (
-            <div className="container">
-                <div className="row mt-5 mb-5">
-                    <div className="col">
-                        <div className="card">
-                            <div className="card-body">
-                                <h1>Profiles</h1>
+        if(this.state.token && this.state.userId && this.state.profiles.length === 0)
+        {
+            this.getProfiles()
+        }
 
-                                { this.renderUserCards() }
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        return (
+            <div>
+                <h1>Profiles</h1>
+
+                { this.renderUserCards() }
             </div>
         )
     }

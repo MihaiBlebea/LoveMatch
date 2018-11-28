@@ -56,7 +56,7 @@ $auth = Middleware::apply(function($request, $next) use ($container) {
 
 
 // Route for User login
-$router->add(Route::get('login', function() use ($request, $container) {
+$router->add(Route::post('login', function() use ($request, $container) {
     $login_serv = $container->get('UserLoginService');
     try {
         $user = $login_serv->execute(new UserLoginRequest(
@@ -65,7 +65,10 @@ $router->add(Route::get('login', function() use ($request, $container) {
         ));
         if($user)
         {
-            Response::asJson([ 'token' => (string) $user->getToken() ]);
+            Response::asJson([
+                'token'   => (string) $user->getToken(),
+                'user_id' => (string) $user->getId()
+            ]);
         }
 
     } catch(\Exception $e) {
@@ -102,8 +105,7 @@ $router->add(Route::get('users', function($request) use ($container) {
             $request->retrive('count'),
             $request->retrive('user_id')
         ));
-        echo json_encode($users);
-        // Response::asJson($users);
+        Response::asJson($users);
     } catch(\Exception $e) {
         Response::asJson([ 'error' => $e->getMessage() ]);
     }
@@ -155,7 +157,7 @@ $router->add(Route::post('action', function($request) use ($container) {
         $action = $create_action_serv->execute(new CreateActionRequest(
             $request->retrive('type'),
             $request->retrive('sender_id'),
-            $request->retrive('retrive_id')
+            $request->retrive('receiver_id')
         ));
         Response::asJson($action);
     } catch(\Exception $e) {
