@@ -97,10 +97,10 @@ class Profile extends React.Component
         }
 
         return (
-            <div>
-                <h1>Profiles</h1>
-
-                { this.renderUserCards() }
+            <div className="row justify-content-center" style={{ height: '80vh', overflow: 'scroll' }}>
+                <div className="col-md-6 col-sm-8">
+                    { this.renderUserCards() }
+                </div>
             </div>
         )
     }

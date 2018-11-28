@@ -211,13 +211,9 @@ class Me extends React.Component
         }
 
         return (
-            <div>
-                <h1>My profile</h1>
-
-                <div className="row justify-content-center" style={{ maxHeight: '80vh', overflow: 'scroll' }}>
-                    <div className="col-md-6">
-                        { this.state.user ? this.renderForm() : null }
-                    </div>
+            <div className="row justify-content-center" style={{ height: '80vh', overflow: 'scroll' }}>
+                <div className="col-md-6">
+                    { this.state.user ? this.renderForm() : null }
                 </div>
             </div>
         )

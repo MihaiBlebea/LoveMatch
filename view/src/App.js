@@ -34,11 +34,11 @@ const App = ()=> {
     }
 
     return (
-        <Container>
-            <Router>
+        <Router>
+            <Container>
                 { isAuth() ? privateRoutes() : publicRoutes() }
-            </Router>
-        </Container>
+            </Container>
+        </Router>
     );
 }
 
