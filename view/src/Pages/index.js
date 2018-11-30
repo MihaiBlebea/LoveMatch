@@ -1,16 +1,16 @@
 import Home from './Home/Home'
-import Profile from './Profile/Profile'
+import Profiles from './Profiles/Profiles'
 import Match from './Match/Match'
-import Me from './Me/Me'
+import MyProfile from './MyProfile/MyProfile'
 import Login from './Login/Login'
 import Logout from './Logout/Logout'
 import Register from './Register/Register'
 
 export {
     Home,
-    Profile,
+    Profiles,
     Match,
-    Me,
+    MyProfile,
     Login,
     Logout,
     Register

@@ -39,6 +39,9 @@ $router  = $container->get(Interceptor\Router::class);
 $request = $container->get(Interceptor\Request::class);
 
 
+$router->injectInController($container);
+
+
 // Middleware that will check the header for JWT auth
 $auth = Middleware::apply(function($request, $next) use ($container) {
     if(!$request->retrive('auth_token'))
@@ -97,30 +100,11 @@ $router->add(Route::post('register', function($request) use ($container) {
 }));
 
 
-// Get all users with JWT auth middleware
-$router->add(Route::get('users', function($request) use ($container) {
-    $get_users_serv = $container->get('GetUsersService');
-    try {
-        $users = $get_users_serv->execute(new GetUsersRequest(
-            $request->retrive('count'),
-            $request->retrive('user_id')
-        ));
-        Response::asJson($users);
-    } catch(\Exception $e) {
-        Response::asJson([ 'error' => $e->getMessage() ]);
-    }
-}, $auth));
+$router->add(Route::get('users', 'Controllers\UserController@getUsers'));
 
+$router->add(Route::get('user', 'Controllers\UserController@getUser'));
 
-$router->add(Route::get('me', function($request) use ($container) {
-    $get_me_serv = $container->get('GetMeService');
-    try {
-        $user = $get_me_serv->execute(new GetMeRequest($request->retrive('user_id')));
-        Response::asJson($user);
-    } catch (\Exception $e) {
-        Response::asJson([ 'error' => $e->getMessage() ]);
-    }
-}));
+$router->add(Route::post('test', 'Controllers\UserController@updateUser'));
 
 
 $router->add(Route::post('image', function($request) use ($container) {
@@ -151,19 +135,21 @@ $router->add(Route::post('description', function($request) use ($container) {
 }));
 
 
-$router->add(Route::post('action', function($request) use ($container) {
-    $create_action_serv = $container->get('CreateActionService');
-    try {
-        $action = $create_action_serv->execute(new CreateActionRequest(
-            $request->retrive('type'),
-            $request->retrive('sender_id'),
-            $request->retrive('receiver_id')
-        ));
-        Response::asJson($action);
-    } catch(\Exception $e) {
-        Response::asJson([ 'error' => $e->getMessage() ]);
-    }
-}));
+// $router->add(Route::post('action', function($request) use ($container) {
+//     $create_action_serv = $container->get('CreateActionService');
+//     try {
+//         $action = $create_action_serv->execute(new CreateActionRequest(
+//             $request->retrive('type'),
+//             $request->retrive('sender_id'),
+//             $request->retrive('receiver_id')
+//         ));
+//         Response::asJson($action);
+//     } catch(\Exception $e) {
+//         Response::asJson([ 'error' => $e->getMessage() ]);
+//     }
+// }));
+
+$router->add(Route::post('action', 'Controllers\ActionController@createAction'));
 
 
 $router->add(Route::post('match', function($request) use ($container) {
@@ -212,5 +198,6 @@ $router->add(Route::post('message', function($request) use ($container) {
 try {
     $router->run();
 } catch(Exception $e) {
+    dd($e->getMessage());
     return 404;
 }

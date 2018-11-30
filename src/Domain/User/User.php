@@ -5,11 +5,17 @@ namespace App\Domain\User;
 use JsonSerializable;
 use App\Domain\User\UserId\UserIdInterface;
 use App\Domain\User\Name\NameInterface;
+use App\Domain\User\Name\Name;
 use App\Domain\User\BirthDate\BirthDateInterface;
+use App\Domain\User\BirthDate\BirthDate;
 use App\Domain\User\Gender\GenderInterface;
+use App\Domain\User\Gender\Gender;
 use App\Domain\User\Email\EmailInterface;
+use App\Domain\User\Email\Email;
 use App\Domain\User\Location\LocationInterface;
+use App\Domain\User\Location\Location;
 use App\Domain\User\Password\PasswordInterface;
+use App\Domain\User\Password\Password;
 use App\Domain\User\Action\ActionInterface;
 use App\Domain\User\Token\TokenInterface;
 use App\Domain\User\Image\ImageInterface;
@@ -93,9 +99,9 @@ class User implements UserInterface, JsonSerializable
         return $this->name;
     }
 
-    public function setName(NameInterface $name)
+    public function setName(String $name)
     {
-        $this->name = $name;
+        $this->name = new Name($name);
     }
 
     public function getBirthDate()
@@ -103,9 +109,9 @@ class User implements UserInterface, JsonSerializable
         return $this->birth_date;
     }
 
-    public function setBirthDate(BirthDateInterface $birth_date)
+    public function setBirthDate(String $birth_date)
     {
-        $this->birth_date = $birth_date;
+        $this->birth_date = new BirthDate($birth_date);
     }
 
     public function getGender()
@@ -113,9 +119,9 @@ class User implements UserInterface, JsonSerializable
         return $this->gender;
     }
 
-    public function setGender(GenderInterface $gender)
+    public function setGender(String $gender)
     {
-        $this->gender = $gender;
+        $this->gender = new Gender($gender);
     }
 
     public function getEmail()
@@ -123,9 +129,9 @@ class User implements UserInterface, JsonSerializable
         return $this->email;
     }
 
-    public function setEmail(EmailInterface $email)
+    public function setEmail(String $email)
     {
-        $this->email = $email;
+        $this->email = new Email($email);
     }
 
     public function getLocation()
@@ -133,9 +139,9 @@ class User implements UserInterface, JsonSerializable
         return $this->location;
     }
 
-    public function setLocation(LocationInterface $location)
+    public function setLocation(String $long, String $lat)
     {
-        $this->location = $location;
+        $this->location = new Location($long, $lat);
     }
 
     public function getPassword()
@@ -143,9 +149,9 @@ class User implements UserInterface, JsonSerializable
         return $this->password;
     }
 
-    public function setPassword(PasswordInterface $password)
+    public function setPassword(String $password)
     {
-        $this->password = $password;
+        $this->password = new Password($password);
     }
 
     public function getCreatedOn()

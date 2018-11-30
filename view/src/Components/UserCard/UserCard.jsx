@@ -20,6 +20,25 @@ class UserCard extends React.Component
         })
     }
 
+    resetCardState()
+    {
+        this.setState({
+            cardFront: true
+        })
+    }
+
+    handleLike()
+    {
+        this.resetCardState()
+        return this.props.onLike()
+    }
+
+    handlePass()
+    {
+        this.resetCardState()
+        return this.props.onPass()
+    }
+
     renderCardImage()
     {
         if(this.state.cardFront)
@@ -36,7 +55,7 @@ class UserCard extends React.Component
         return (
             <div>
                 <h4 className="card-title text-center">{ this.props.name }</h4>
-                <p className="card-text">{ this.props.description }</p>
+                <p>{ this.props.age } years old</p>
             </div>
         )
     }
@@ -47,7 +66,7 @@ class UserCard extends React.Component
             <div>
                 <h4 className="card-title text-center">Details</h4>
                 <div className="card-text pb-3">
-                    Nimic de vazut
+                    { this.props.description }
                 </div>
             </div>
         )
@@ -66,11 +85,11 @@ class UserCard extends React.Component
 
                     <div className="row justify-content-between px-3">
                         <button className="btn btn-danger col-md-3 col-sm-12 mb-2 mb-md-0"
-                                onClick={ ()=> this.props.onPass() }><i className="fas fa-angle-double-left"></i> Pass</button>
+                                onClick={ ()=> this.handlePass() }><i className="fas fa-angle-double-left"></i> Pass</button>
                         <button className="btn btn-primary col-md-5 col-sm-12 mb-2 mb-md-0"
                                 onClick={ ()=> this.changeCardState() }>See Profile <i className="far fa-user"></i></button>
                         <button className="btn btn-success col-md-3 col-sm-12 mb-2 mb-md-0"
-                                onClick={ ()=> this.props.onLike() }>Like <i className="fas fa-angle-double-right"></i></button>
+                                onClick={ ()=> this.handleLike() }>Like <i className="fas fa-angle-double-right"></i></button>
                     </div>
                 </div>
             </div>

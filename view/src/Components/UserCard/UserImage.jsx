@@ -47,7 +47,8 @@ class UserImage extends React.Component
             <img className="card-img-top"
                  style={{ cursor: 'pointer' }}
                  src={ this.getImage() }
-                 onClick={ ()=> this.nextImage() }/>
+                 onClick={ ()=> this.nextImage() }
+                 alt="user" />
         )
     }
 }

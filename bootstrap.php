@@ -132,8 +132,13 @@ $container->add('GetUsersService', App\Application\User\GetUsers\GetUsersService
           ->addArgument('UserRepo');
 
 
+$container->add('UpdateUserService', App\Application\User\UpdateUser\UpdateUserService::class)
+          ->addArgument('UserRepo');
+
+
 $container->add('GetMatchesService', App\Application\Match\GetMatches\GetMatchesService::class)
           ->addArgument('MatchRepo');
+
 
 $container->add('AttachImageService', App\Application\User\AttachImage\AttachImageService::class)
           ->addArgument('UserRepo')

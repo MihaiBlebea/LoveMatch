@@ -40,9 +40,18 @@ class Match implements MatchInterface, JsonSerializable
             );
         }
 
+        if(!$this->assertUserLikeOtherUser($second_user, $first_user->getId()))
+        {
+            throw new InvalidUsersMatchException(
+                (string) $second_user->getName(),
+                (string) $first_user->getName(),
+                1
+            );
+        }
+
         $this->id         = $id;
-        $this->users[]    = (string) $first_user->getId();
-        $this->users[]    = (string) $second_user->getId();
+        $this->users[]    = $first_user;
+        $this->users[]    = $second_user;
         $this->created_on = $created_on;
     }
 
@@ -53,16 +62,16 @@ class Match implements MatchInterface, JsonSerializable
         return $user->likesUser($second_user);
     }
 
-    private function assertArrayKeysExist(Array $array, Array $keys)
-    {
-        foreach($keys as $key)
-        {
-            if(!array_key_exists($key, $array))
-            {
-                throw new MissingKeyException($key, 1);
-            }
-        }
-    }
+    // private function assertArrayKeysExist(Array $array, Array $keys)
+    // {
+    //     foreach($keys as $key)
+    //     {
+    //         if(!array_key_exists($key, $array))
+    //         {
+    //             throw new MissingKeyException($key, 1);
+    //         }
+    //     }
+    // }
 
     public function getId()
     {

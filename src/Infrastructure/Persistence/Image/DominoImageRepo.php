@@ -58,7 +58,7 @@ class DominoImageRepo implements ImageRepoInterface
 
     public function remove(ImageInterface $image)
     {
-        $this->persist->table('images')
+        $result = $this->persist->table('images')
                       ->where('id', (string) $image->getId())
                       ->delete();
     }

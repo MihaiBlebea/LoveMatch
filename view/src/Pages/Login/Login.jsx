@@ -42,33 +42,35 @@ class Login extends React.Component
     render()
     {
         return (
-            <div>
-                <h1>Login</h1>
+            <div className="row justify-content-center" style={{ height: '80vh', overflowY: 'scroll' }}>
+                <div className="col-md-6 pt-5 pb-5">
+                    <h1>Login</h1>
 
-                <form>
-                    <div className="form-group">
-                        <label>Email address</label>
-                        <input type="email"
-                               name="email"
-                               className="form-control"
-                               placeholder="Enter email"
-                               value={ this.state.email }
-                               onChange={ (ev)=> this.handleInputChange(ev) }/>
-                        <small className="form-text text-muted">We'll never share your email with anyone else.</small>
-                    </div>
-                    <div className="form-group">
-                        <label>Password</label>
-                        <input type="password"
-                               name="password"
-                               className="form-control"
-                               placeholder="Password"
-                               value={ this.state.password }
-                               onChange={ (ev)=> this.handleInputChange(ev) }/>
-                    </div>
-                    <button type="submit"
-                            className="btn btn-primary"
-                            onClick={ (ev)=> this.handleSubmitForm(ev) }>Submit</button>
-                </form>
+                    <form>
+                        <div className="form-group">
+                            <label>Email address</label>
+                            <input type="email"
+                                   name="email"
+                                   className="form-control"
+                                   placeholder="Enter email"
+                                   value={ this.state.email }
+                                   onChange={ (ev)=> this.handleInputChange(ev) }/>
+                            <small className="form-text text-muted">We'll never share your email with anyone else.</small>
+                        </div>
+                        <div className="form-group">
+                            <label>Password</label>
+                            <input type="password"
+                                   name="password"
+                                   className="form-control"
+                                   placeholder="Password"
+                                   value={ this.state.password }
+                                   onChange={ (ev)=> this.handleInputChange(ev) }/>
+                        </div>
+                        <button type="submit"
+                                className="btn btn-primary"
+                                onClick={ (ev)=> this.handleSubmitForm(ev) }>Submit</button>
+                    </form>
+                </div>
             </div>
         )
     }

@@ -28,14 +28,22 @@ class AttachImageService
         $user = $this->user_repo->withId(new UserId($request->user_id));
         if($user)
         {
-            $image = ImageFactory::build(
-                (string) $this->image_repo->nextId(),
-                $request->user_id,
-                $request->image_path
-            );
-            $user->addImage($image);
+            $old_images = $this->image_repo->withUserId($user->getId());
+            if($old_images)
+            {
+                $this->image_repo->removeAll($old_images);
+            }
 
-            $this->user_repo->add($user);
+            $images = [];
+            foreach($request->image_path as $image)
+            {
+                $images[] = ImageFactory::build(
+                    (string) $this->image_repo->nextId(),
+                    $request->user_id,
+                    $image
+                );
+            }
+            $this->image_repo->addAll($images);
 
             return $user;
         }

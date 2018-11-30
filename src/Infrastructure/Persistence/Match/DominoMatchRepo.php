@@ -13,8 +13,8 @@ use App\Domain\Match\MatchId\MatchId;
 use App\Domain\Match\MatchId\MatchIdInterface;
 use App\Domain\Match\MatchRepoInterface;
 use App\Domain\Match\Message\MessageRepoInterface;
-use App\Infrastructure\Message\MessageRepo;
-use App\Infrastructure\User\UserRepo;
+use App\Infrastructure\Persistence\Message\DominoMessageRepo;
+use App\Infrastructure\Persistence\User\DominoUserRepo;
 
 
 class DominoMatchRepo implements MatchRepoInterface
@@ -56,7 +56,7 @@ class DominoMatchRepo implements MatchRepoInterface
         {
             foreach($match->getMessages() as $message)
             {
-                $message_repo = new MessageRepo($this->persist);
+                $message_repo = new DominoMessageRepo($this->persist);
                 $message_repo->add($message);
             }
         }
@@ -106,8 +106,8 @@ class DominoMatchRepo implements MatchRepoInterface
 
         if($matches && count($matches) > 0)
         {
-            $user_repo = new UserRepo($this->persist);
-            $message_repo = new MessageRepo($this->persist);
+            $user_repo = new DominoUserRepo($this->persist);
+            $message_repo = new DominoMessageRepo($this->persist);
             foreach($matches as $row)
             {
                 $this->matches[] = $this->buildMatch($row, $user_repo, $message_repo);;

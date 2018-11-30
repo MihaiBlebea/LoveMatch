@@ -1,7 +1,7 @@
 import React from 'react'
 import axios from 'axios'
 
-import { getLocation } from './../../services'
+// import { getLocation } from './../../services'
 
 
 class Register extends React.Component

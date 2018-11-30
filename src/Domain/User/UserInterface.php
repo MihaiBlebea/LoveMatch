@@ -32,27 +32,27 @@ interface UserInterface
 
     public function getName();
 
-    public function setName(NameInterface $name);
+    public function setName(String $name);
 
     public function getBirthDate();
 
-    public function setBirthDate(BirthDateInterface $birth_date);
+    public function setBirthDate(String $birth_date);
 
     public function getGender();
 
-    public function setGender(GenderInterface $gender);
+    public function setGender(String $gender);
 
     public function getEmail();
 
-    public function setEmail(EmailInterface $email);
+    public function setEmail(String $email);
 
     public function getLocation();
 
-    public function setLocation(LocationInterface $location);
+    public function setLocation(String $long, String $lat);
 
     public function getPassword();
 
-    public function setPassword(PasswordInterface $password);
+    public function setPassword(String $password);
 
     public function getCreatedOn();
 

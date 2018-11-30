@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link, Router } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 
 class Navigation extends React.Component
@@ -7,10 +7,11 @@ class Navigation extends React.Component
     render()
     {
         return (
-            <nav class="nav">
-                <a class="nav-link active" href="#">Active</a>
-                <Link className="nav-link active"
-                      to="/">Home</Link>
+            <nav className="nav">
+                <Link className="nav-link active" to="/">Home</Link>
+                <Link className="nav-link active" to="/me">Profile</Link>
+                <Link className="nav-link active" to="/login">Login</Link>
+                <Link className="nav-link active" to="/logout">Logout</Link>
             </nav>
         )
     }

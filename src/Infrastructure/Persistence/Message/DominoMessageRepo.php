@@ -14,7 +14,7 @@ use App\Domain\User\UserId\UserId;
 use App\Infrastructure\User\UserRepo;
 
 
-class DomainMessageRepo implements MessageRepoInterface
+class DominoMessageRepo implements MessageRepoInterface
 {
     private $persist;
 
