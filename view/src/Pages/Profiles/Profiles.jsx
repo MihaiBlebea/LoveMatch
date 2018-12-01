@@ -110,6 +110,7 @@ class Profiles extends React.Component
                 <UserCard name={ profile.name }
                           images={ profile.images }
                           age={ profile.birth_date.age }
+                          gender={ profile.gender }
                           description={ profile.description }
                           onLike={ ()=> this.handleAction(profile, 'like') }
                           onPass={ ()=> this.handleAction(profile, 'pass') }

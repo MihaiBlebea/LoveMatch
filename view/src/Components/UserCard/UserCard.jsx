@@ -44,7 +44,7 @@ class UserCard extends React.Component
         if(this.state.cardFront)
         {
             return (
-                <UserImage images={ this.props.images }/>
+                <UserImage images={ this.props.images } gender={ this.props.gender }/>
             )
         }
         return null
