@@ -5,7 +5,7 @@ import EventBus from 'eventing-bus'
 
 import { Home, Profiles, Match, MyProfile, Login, Logout, Register } from './Pages'
 import { Container, Alert } from './Components'
-import { isAuth } from './services'
+import { isAuth, getToken, getUserId } from './services'
 
 
 class App extends React.Component
@@ -16,7 +16,9 @@ class App extends React.Component
         this.state = {
             alert: false,
             type: null,
-            message: null
+            message: null,
+            token: null,
+            userId: null
         }
     }
 
@@ -28,7 +30,6 @@ class App extends React.Component
                 type: payload.type,
                 message: payload.message
             })
-
             setTimeout(()=> {
                 this.setState({
                     alert: false,
@@ -36,6 +37,15 @@ class App extends React.Component
                     message: null
                 })
             }, 5000)
+        })
+
+        EventBus.on('saveToken', (payload)=> {
+            this.setState({
+                token: payload.token,
+                userId: payload.userId
+            })
+            localStorage.setItem('token', payload.token);
+            localStorage.setItem('user_id', payload.userId);
         })
     }
 
@@ -72,7 +82,7 @@ class App extends React.Component
             <div>
                 <Router>
                     <Container>
-                        { isAuth() ? this.privateRoutes() : this.publicRoutes() }
+                        { this.state.token ? this.privateRoutes() : this.publicRoutes() }
                     </Container>
                 </Router>
 

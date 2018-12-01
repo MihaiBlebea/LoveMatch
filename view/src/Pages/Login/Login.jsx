@@ -1,5 +1,7 @@
 import React from 'react'
 import axios from 'axios'
+import EventBus from 'eventing-bus'
+
 
 
 class Login extends React.Component
@@ -29,9 +31,9 @@ class Login extends React.Component
         }).then((result)=> {
             if(result.status === 200)
             {
-                localStorage.setItem('token', result.data.token);
-                localStorage.setItem('user_id', result.data.user_id);
-
+                // Trigger event bus to save the token into App component
+                EventBus.publish('saveToken', { token: result.data.token, userId: result.data.user_id })
+                // Redirect to home
                 this.props.history.push('/')
             }
         }).catch((error)=> {
@@ -55,7 +57,6 @@ class Login extends React.Component
                                    placeholder="Enter email"
                                    value={ this.state.email }
                                    onChange={ (ev)=> this.handleInputChange(ev) }/>
-                            <small className="form-text text-muted">We'll never share your email with anyone else.</small>
                         </div>
                         <div className="form-group">
                             <label>Password</label>

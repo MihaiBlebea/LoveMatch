@@ -5,8 +5,8 @@ const Logout = ()=> {
 
     if(localStorage.getItem('token') !== null)
     {
-        console.log('ceva')
         localStorage.removeItem('token')
+        localStorage.removeItem('user_id')
     }
 
 
