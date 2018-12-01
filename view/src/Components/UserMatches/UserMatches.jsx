@@ -12,34 +12,16 @@ class UserMatches extends React.Component
     {
         super()
         this.state = {
-            userId: null,
-            matches: []
+            matches: [],
+            userId: null
         }
     }
 
     componentDidMount()
     {
-        if(isAuth())
-        {
-            let userId = getUserId()
-            this.setState({
-                userId: userId
-            })
-            this.getMatches(userId)
-        }
-    }
-
-    getMatches(userId)
-    {
-        axios.get('/matches?user_id=' + userId).then((matches)=> {
-            if(matches.status === 200)
-            {
-                this.setState({
-                    matches: matches.data
-                })
-            }
-        }).catch((error)=> {
-            console.log(error)
+        this.setState({
+            matches: this.props.matches,
+            userId: this.props.userId
         })
     }
 

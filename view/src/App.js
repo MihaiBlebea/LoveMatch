@@ -47,6 +47,23 @@ class App extends React.Component
             localStorage.setItem('token', payload.token);
             localStorage.setItem('user_id', payload.userId);
         })
+
+        EventBus.on('removeToken', ()=> {
+            this.setState({
+                token: null,
+                userId: null
+            })
+            localStorage.removeItem('token');
+            localStorage.removeItem('user_id');
+        })
+
+        if(isAuth())
+        {
+            this.setState({
+                token: getToken(),
+                userId: getUserId()
+            })
+        }
     }
 
     privateRoutes()

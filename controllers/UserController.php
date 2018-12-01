@@ -70,6 +70,10 @@ class UserController
                 $request->retrive('count'),
                 $request->retrive('user_id')
             ));
+            if($users === null)
+            {
+                $users = [];
+            }
             Response::asJson($users);
         } catch(\Exception $e) {
             Response::asJson([ 'error' => $e->getMessage() ]);

@@ -40,14 +40,14 @@ class DominoMatchRepo implements MatchRepoInterface
         if($saved_match)
         {
             $this->persist->table('matches')->where('id', (string) $match->getId())->update([
-                'first_user_id'  => $match->getUsers()[0],
-                'second_user_id' => $match->getUsers()[1],
+                'first_user_id'  => (string) $match->getUsers()[0]->getId(),
+                'second_user_id' => (string) $match->getUsers()[1]->getId(),
             ]);
         } else {
             $this->persist->table('matches')->create([
                 'id'             => (string) $match->getId(),
-                'first_user_id'  => $match->getUsers()[0],
-                'second_user_id' => $match->getUsers()[1],
+                'first_user_id'  => (string) $match->getUsers()[0]->getId(),
+                'second_user_id' => (string) $match->getUsers()[1]->getId(),
                 'created_on'     => $match->getCreatedOn()
             ]);
         }

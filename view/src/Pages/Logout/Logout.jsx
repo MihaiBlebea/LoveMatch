@@ -1,13 +1,10 @@
 import React from 'react'
+import EventBus from 'eventing-bus'
 
 
 const Logout = ()=> {
 
-    if(localStorage.getItem('token') !== null)
-    {
-        localStorage.removeItem('token')
-        localStorage.removeItem('user_id')
-    }
+    EventBus.publish('removeToken')
 
 
     return (
