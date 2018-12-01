@@ -224,6 +224,13 @@ class User implements UserInterface, JsonSerializable
         return $passes;
     }
 
+    public function getActionsUserIds() : Array
+    {
+        return array_map(function($action) {
+            return (string) $action->getReceiverId();
+        }, $this->getActions());
+    }
+
     public function likesUser(UserIdInterface $user_id)
     {
         foreach($this->getLikes() as $like)

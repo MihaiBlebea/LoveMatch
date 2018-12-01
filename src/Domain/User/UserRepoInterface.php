@@ -38,6 +38,7 @@ interface UserRepoInterface
         String $min_latitude,
         String $max_latitude,
         Int $distance,
-        Int $min_age,
-        Int $max_age);
+        String $min_year,
+        String $max_year,
+        Array $exclude_ids);
 }

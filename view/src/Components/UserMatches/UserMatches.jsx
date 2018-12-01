@@ -70,8 +70,8 @@ class UserMatches extends React.Component
     {
         return (
             <div>
-                <h1>Matches</h1>
-
+                <h4 className="text-center">Matches</h4>
+                <hr />
                 { this.renderMatchCards() }
             </div>
         )

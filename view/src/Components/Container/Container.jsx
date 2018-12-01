@@ -1,6 +1,8 @@
 import React from 'react'
 import { Navigation } from './../index'
 
+import './Container.css'
+
 
 const Container = (props)=> {
     return (
@@ -8,7 +10,7 @@ const Container = (props)=> {
             <div className="row mt-5 mb-5">
                 <div className="col">
                     <div className="card" style={{ borderWidth: '0px' }}>
-                        <div className="bg-success py-2 px-3 text-white"
+                        <div className="background-nav py-2 px-3 text-white"
                              style={{ borderTopLeftRadius: '.25rem', borderTopRightRadius: '.25rem' }}>
                             <Navigation />
                         </div>

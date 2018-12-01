@@ -19,7 +19,7 @@ const MatchCard = (props)=> {
 
     return (
         <div className="media">
-            <div style={{ width: '100px' }}>
+            <div style={{ width: '70px' }}>
                 <img className="align-self-start mr-3 w-100" src={ getImage() } alt="Generic" />
             </div>
             <div className="media-body ml-3">

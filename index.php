@@ -10,18 +10,16 @@ use Interceptor\Route;
 use Interceptor\Response;
 use Interceptor\Middleware;
 
-use App\Application\User\UserLogin\UserLoginRequest;
-use App\Application\User\UserRegister\UserRegisterRequest;
 
-use App\Application\Match\CreateMatch\CreateMatchRequest;
-use App\Application\Match\GetMatches\GetMatchesRequest;
-use App\Application\Message\SendMessageRequest;
-use App\Application\Action\CreateActionRequest;
-use App\Application\User\UserLogin\ValidateTokenRequest;
-use App\Application\User\GetUsers\GetUsersRequest;
-use App\Application\User\AttachImage\AttachImageRequest;
-use App\Application\User\AttachDescription\AttachDescriptionRequest;
-use App\Application\User\GetMe\GetMeRequest;
+// use App\Application\Match\CreateMatch\CreateMatchRequest;
+// use App\Application\Match\GetMatches\GetMatchesRequest;
+// use App\Application\Message\SendMessageRequest;
+// use App\Application\Action\CreateActionRequest;
+// use App\Application\User\UserLogin\ValidateTokenRequest;
+// use App\Application\User\GetUsers\GetUsersRequest;
+// use App\Application\User\AttachImage\AttachImageRequest;
+// use App\Application\User\AttachDescription\AttachDescriptionRequest;
+// use App\Application\User\GetMe\GetMeRequest;
 
 
 // Init DomainEventPublisher
@@ -58,46 +56,9 @@ $auth = Middleware::apply(function($request, $next) use ($container) {
 });
 
 
-// Route for User login
-$router->add(Route::post('login', function() use ($request, $container) {
-    $login_serv = $container->get('UserLoginService');
-    try {
-        $user = $login_serv->execute(new UserLoginRequest(
-            $request->retrive('email'),
-            $request->retrive('password')
-        ));
-        if($user)
-        {
-            Response::asJson([
-                'token'   => (string) $user->getToken(),
-                'user_id' => (string) $user->getId()
-            ]);
-        }
+$router->add(Route::post('login', 'Controllers\AuthController@login'));
 
-    } catch(\Exception $e) {
-        Response::asJson([ 'error' => $e->getMessage() ]);
-    }
-}));
-
-
-// Route for User register
-$router->add(Route::post('register', function($request) use ($container) {
-    $register_serv = $container->get('UserRegisterService');
-    try {
-        $user = $register_serv->execute(new UserRegisterRequest(
-            $request->retrive('name'),
-            $request->retrive('birth_date'),
-            $request->retrive('gender'),
-            $request->retrive('email'),
-            $request->retrive('longitude'),
-            $request->retrive('latitude'),
-            $request->retrive('password')
-        ));
-        Response::asJson($user);
-    } catch(\Exception $e) {
-        Response::asJson([ 'error' => $e->getMessage() ]);
-    }
-}));
+$router->add(Route::post('register', 'Controllers\AuthController@register'));
 
 
 $router->add(Route::get('users', 'Controllers\UserController@getUsers'));
@@ -135,46 +96,25 @@ $router->add(Route::post('description', function($request) use ($container) {
 }));
 
 
-// $router->add(Route::post('action', function($request) use ($container) {
-//     $create_action_serv = $container->get('CreateActionService');
+$router->add(Route::post('action', 'Controllers\ActionController@createAction'));
+
+
+// $router->add(Route::post('match', function($request) use ($container) {
+//     $create_match_serv = $container->get('CreateMatchService');
 //     try {
-//         $action = $create_action_serv->execute(new CreateActionRequest(
-//             $request->retrive('type'),
-//             $request->retrive('sender_id'),
-//             $request->retrive('receiver_id')
+//         $match = $create_match_serv->execute(new CreateMatchRequest(
+//             $request->retrive('first_user_id'),
+//             $request->retrive('second_user_id')
 //         ));
-//         Response::asJson($action);
+//         Response::asJson($match);
 //     } catch(\Exception $e) {
 //         Response::asJson([ 'error' => $e->getMessage() ]);
 //     }
 // }));
 
-$router->add(Route::post('action', 'Controllers\ActionController@createAction'));
+$router->add(Route::post('match', 'Controllers\MatchController@createMatch'));
 
-
-$router->add(Route::post('match', function($request) use ($container) {
-    $create_match_serv = $container->get('CreateMatchService');
-    try {
-        $match = $create_match_serv->execute(new CreateMatchRequest(
-            $request->retrive('first_user_id'),
-            $request->retrive('second_user_id')
-        ));
-        Response::asJson($match);
-    } catch(\Exception $e) {
-        Response::asJson([ 'error' => $e->getMessage() ]);
-    }
-}));
-
-
-$router->add(Route::get('matches', function($request) use ($container) {
-    $get_match_serv = $container->get('GetMatchesService');
-    try {
-        $matches = $get_match_serv->execute(new GetMatchesRequest($request->retrive('user_id')));
-        Response::asJson($matches);
-    } catch(\Exception $e) {
-        Response::asJson([ 'error' => $e->getMessage() ]);
-    }
-}));
+$router->add(Route::get('matches', 'Controllers\MatchController@getUserMatches'));
 
 
 $router->add(Route::post('message', function($request) use ($container) {

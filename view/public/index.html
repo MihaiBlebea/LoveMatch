@@ -10,16 +10,28 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css">
     <style>
-        html, body {margin: 0; height: 100%; overflow: hidden}
+        html, body {
+            margin: 0;
+            height: 100%;
+            overflow: hidden
+        }
+
+        .background-upper {
+            background-color: #FF6E68;
+        }
+
+        .background-lower {
+            background-color: #FFEEAD;
+        }
     </style>
 
     <title>React App</title>
 </head>
-<body class="bg-secondary">
+<body class="background-lower">
     <noscript>
         You need to enable JavaScript to run this app.
     </noscript>
-    <div class="bg-primary" style="height: 200px;"></div>
+    <div class="background-upper" style="height: 200px;"></div>
     <div id="root" style="margin-top: -200px;"></div>
 
 </body>

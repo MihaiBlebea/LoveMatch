@@ -72,6 +72,8 @@ interface UserInterface
 
     public function getPasses();
 
+    public function getActionsUserIds() : Array;
+
     public function getImages();
 
     public function addImage(ImageInterface $image);

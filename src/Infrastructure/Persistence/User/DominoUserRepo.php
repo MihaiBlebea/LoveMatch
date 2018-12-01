@@ -214,17 +214,12 @@ class DominoUserRepo implements UserRepoInterface
         String $min_latitude,
         String $max_latitude,
         Int $distance,
-        Int $min_age,
-        Int $max_age)
+        String $min_year,
+        String $max_year,
+        Array $exclude_ids)
     {
-        // Calculate years from age
-        // $min_year = \App\Domain\User\BirthDate\CalculateYearFromAgeService::execute($min_age);
-        // $max_year = \App\Domain\User\BirthDate\CalculateYearFromAgeService::execute($max_age);
-        $min_year = (string) \App\Domain\User\BirthDate\BirthDate::createFromAge($min_age);
-        $max_year = (string) \App\Domain\User\BirthDate\BirthDate::createFromAge($max_age);
-
-
-        $users = $this->persist->table('users')
+        // Construct query
+        $query = $this->persist->table('users')
                                ->where('gender', $gender)
                                ->where('id', '!=', $user_id)
                                ->where('longitude', '>', $min_longitude)
@@ -232,9 +227,17 @@ class DominoUserRepo implements UserRepoInterface
                                ->where('latitude', '>', $min_latitude)
                                ->where('latitude', '<', $max_latitude)
                                ->where('birth_date', '>', $max_year)
-                               ->where('birth_date', '<', $min_year)
-                               ->limit($count)
-                               ->select();
+                               ->where('birth_date', '<', $min_year);
+
+        // Remove excluded ids
+        foreach($exclude_ids as $exclude_id)
+        {
+            $query->where('id', '!=', $exclude_id);
+        }
+
+        // Get users
+        $users = $query->limit($count)->select();
+
         if($users)
         {
             foreach($users as $user)
