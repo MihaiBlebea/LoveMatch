@@ -30,6 +30,7 @@
         "docker-start": "docker-compose up -d --build",
         "docker-stop": "docker-compose kill",
         "docker-state": "docker-compose ps",
-        "migrate": "php migrate.php"
+        "migrate": "php migrate.php",
+        "seed": "php seed.php"
     }
 }

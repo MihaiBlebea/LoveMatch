@@ -11,17 +11,6 @@ use Interceptor\Response;
 use Interceptor\Middleware;
 
 
-// use App\Application\Match\CreateMatch\CreateMatchRequest;
-// use App\Application\Match\GetMatches\GetMatchesRequest;
-// use App\Application\Message\SendMessageRequest;
-// use App\Application\Action\CreateActionRequest;
-// use App\Application\User\UserLogin\ValidateTokenRequest;
-// use App\Application\User\GetUsers\GetUsersRequest;
-// use App\Application\User\AttachImage\AttachImageRequest;
-// use App\Application\User\AttachDescription\AttachDescriptionRequest;
-// use App\Application\User\GetMe\GetMeRequest;
-
-
 // Init DomainEventPublisher
 // Get the publisher instance
 $publisher = App\Domain\DomainEventPublisher::instance();

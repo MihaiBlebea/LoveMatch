@@ -5,28 +5,32 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-// Implement CORS
-if(isset($_SERVER['HTTP_ORIGIN']))
-{
-    header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");
-    header('Access-Control-Allow-Credentials: true');
-    header('Access-Control-Max-Age: 86400');    // cache for 1 day
-}
 
-// Access-Control headers are received during OPTIONS requests
-if($_SERVER['REQUEST_METHOD'] == 'OPTIONS')
+if(PHP_SAPI !== 'cli')
 {
-    if(isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD']))
+    // Implement CORS
+    if(isset($_SERVER['HTTP_ORIGIN']))
     {
-        header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
+        header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");
+        header('Access-Control-Allow-Credentials: true');
+        header('Access-Control-Max-Age: 86400');    // cache for 1 day
     }
 
-    if(isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']))
+    // Access-Control headers are received during OPTIONS requests
+    if($_SERVER['REQUEST_METHOD'] == 'OPTIONS')
     {
-        header("Access-Control-Allow-Headers: {$_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']}");
-    }
+        if(isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD']))
+        {
+            header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
+        }
 
-    exit(0);
+        if(isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']))
+        {
+            header("Access-Control-Allow-Headers: {$_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']}");
+        }
+
+        exit(0);
+    }
 }
 
 
