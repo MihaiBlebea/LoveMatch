@@ -15,6 +15,7 @@ class Navigation extends React.Component
                 <Link className="nav-link active" to="/me">Profile</Link>
                 <Link className="nav-link active" to="/login">Login</Link>
                 <Link className="nav-link active" to="/logout">Logout</Link>
+                <Link className="nav-link active" to="/messages">Messages</Link>
             </nav>
         )
     }

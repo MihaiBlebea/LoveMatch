@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Redirect, Switch } from 'react-router-d
 import EventBus from 'eventing-bus'
 
 
-import { Home, Profiles, Match, MyProfile, Login, Logout, Register } from './Pages'
+import { Home, Profiles, Match, MyProfile, Messages, Login, Logout, Register } from './Pages'
 import { Container, Alert } from './Components'
 import { isAuth, getToken, getUserId } from './services'
 
@@ -73,6 +73,7 @@ class App extends React.Component
                 <Route exact path="/" component={ Profiles } />
                 <Route exact path="/me" component={ MyProfile } />
                 <Route exact path="/matches" component={ Match } />
+                <Route exact path="/messages" component={ Messages } />
                 <Route exact path="/logout" component={ Logout } />
 
                 <Redirect to='/' />

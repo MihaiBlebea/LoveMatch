@@ -15,7 +15,7 @@ const Container = (props)=> {
                             <Navigation />
                         </div>
 
-                        <div className="card-body py-0">
+                        <div className="card-body py-0 px-3"> 
                             { props.children }
                         </div>
                     </div>

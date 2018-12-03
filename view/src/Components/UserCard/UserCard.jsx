@@ -54,8 +54,7 @@ class UserCard extends React.Component
     {
         return (
             <div>
-                <h4 className="card-title text-center">{ this.props.name }</h4>
-                <p>{ this.props.age } years old</p>
+                <h5 className="card-title text-center">{ this.props.name }</h5>
             </div>
         )
     }
@@ -85,11 +84,11 @@ class UserCard extends React.Component
 
                     <div className="row justify-content-between px-3">
                         <button className="btn btn-danger col-md-3 col-sm-12 mb-2 mb-md-0"
-                                onClick={ ()=> this.handlePass() }><i className="fas fa-angle-double-left"></i> Pass</button>
+                                onClick={ ()=> this.handlePass() }><i className="fas fa-ban"></i></button>
                         <button className="btn btn-primary col-md-5 col-sm-12 mb-2 mb-md-0"
-                                onClick={ ()=> this.changeCardState() }>See Profile <i className="far fa-user"></i></button>
+                                onClick={ ()=> this.changeCardState() }>Profile <i className="far fa-user"></i></button>
                         <button className="btn btn-success col-md-3 col-sm-12 mb-2 mb-md-0"
-                                onClick={ ()=> this.handleLike() }>Like <i className="fas fa-angle-double-right"></i></button>
+                                onClick={ ()=> this.handleLike() }><i className="far fa-heart"></i></button>
                     </div>
                 </div>
             </div>

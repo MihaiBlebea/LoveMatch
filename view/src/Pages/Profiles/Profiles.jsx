@@ -136,11 +136,11 @@ class Profiles extends React.Component
     {
         return (
             <div className="row justify-content-center" style={{ height: '80vh' }}>
-                <div className="col-md-3 col-sm-8 border-right pt-5" style={{ overflowY: 'scroll' }}>
+                <div className="col-md-3 col-sm-8 border-right p-0 pt-5" style={{ overflowY: 'auto' }}>
                     { this.renderUserMatches() }
                 </div>
-                <div className="col-md-9 col-sm-8 pt-5">
-                    <div className="row justify-content-center">
+                <div className="col-md-9 col-sm-8 h-100">
+                    <div className="row justify-content-center align-self-center">
                         <div className="col-md-6">
                             { this.renderUserCard() }
                         </div>

@@ -1,5 +1,7 @@
 import React from 'react'
 
+import './MatchCard.css'
+
 
 const MatchCard = (props)=> {
 
@@ -18,13 +20,11 @@ const MatchCard = (props)=> {
 
 
     return (
-        <div className="media">
-            <div style={{ width: '70px' }}>
-                <img className="align-self-start mr-3 w-100" src={ getImage() } alt="Generic" />
-            </div>
-            <div className="media-body ml-3">
-                <h5 className="mt-0">{ props.name }</h5>
-                <p>{ props.age } years old</p>
+        <div className="media p-2">
+            <img className="align-self-center mr-3 w-25" src={ getImage() } alt="Generic" />
+            <div className="media-body align-self-center">
+                <h5 className="my-0">{ props.name }</h5>
+                <p className="my-0 text-muted">{ props.age } years old</p>
             </div>
         </div>
     )

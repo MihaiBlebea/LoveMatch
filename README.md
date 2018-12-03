@@ -20,3 +20,8 @@
 - DDD in PHP repository example, User Wishes app: "https://github.com/dddinphp/ddd"
 
 - Create a React toolchain from scratch: "https://blog.usejournal.com/creating-a-react-app-from-scratch-f3c693b84658"
+
+
+- Creating a Socket network between client and server for real time messages: "http://www.devshed.com/c/a/php/socket-programming-with-php/"
+
+- React PHP package to create live messaging system: "https://sergeyzhuk.me/2017/06/22/reactphp-chat-server/"

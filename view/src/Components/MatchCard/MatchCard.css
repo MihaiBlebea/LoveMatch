@@ -1,0 +1,8 @@
+.media {
+    transition: all 0.3s ease-in-out;
+}
+
+.media:hover {
+    background-color: #FF6E68;
+    cursor: pointer;
+}

@@ -1,8 +1,6 @@
 import React from 'react'
-import axios from 'axios'
 
 import { MatchCard } from './../index'
-import { isAuth, getToken, getUserId } from './../../services'
 
 
 
@@ -34,7 +32,7 @@ class UserMatches extends React.Component
                     if(user.id !== this.state.userId)
                     {
                         return (
-                            <div className="mb-2" key={ index }>
+                            <div className="border-bottom" key={ index }>
                                 <MatchCard name={ user.name }
                                            gender={ user.gender }
                                            age={ user.birth_date.age }
@@ -42,6 +40,7 @@ class UserMatches extends React.Component
                             </div>
                         )
                     }
+                    return null
                 })
             })
         }
