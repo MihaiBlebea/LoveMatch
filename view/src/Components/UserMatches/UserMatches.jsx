@@ -1,4 +1,7 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
+import { withRouter } from "react-router"
+
 
 import { MatchCard } from './../index'
 
@@ -33,10 +36,12 @@ class UserMatches extends React.Component
                     {
                         return (
                             <div className="border-bottom" key={ index }>
-                                <MatchCard name={ user.name }
-                                           gender={ user.gender }
-                                           age={ user.birth_date.age }
-                                           image={ user.images[0] ? user.images[0].path : null}/>
+                                <Link to={ this.props.match.path + '/messages/' + user.id }>
+                                    <MatchCard name={ user.name }
+                                               gender={ user.gender }
+                                               age={ user.birth_date.age }
+                                               image={ user.images[0] ? user.images[0].path : null}/>
+                                </Link>
                             </div>
                         )
                     }
@@ -44,7 +49,11 @@ class UserMatches extends React.Component
                 })
             })
         }
-        return null
+        return (
+            <div className="w-75 mx-auto">
+                <p className="text-muted text-center">You don't have any matches yet</p>
+            </div>
+        )
     }
 
     render()
@@ -59,4 +68,4 @@ class UserMatches extends React.Component
     }
 }
 
-export default UserMatches
+export default withRouter(UserMatches)

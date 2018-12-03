@@ -2,7 +2,8 @@ import React from 'react'
 import axios from 'axios'
 import EventBus from 'eventing-bus'
 
-import { UserCard, UserMatches } from './../../Components'
+
+import { UserCard, Loading } from './../../Components'
 import { isAuth, getToken, getUserId } from './../../services'
 
 
@@ -13,7 +14,6 @@ class Profiles extends React.Component
         super()
         this.state = {
             profiles: [],
-            matches: [],
             userId: null,
             token: null,
             cardIndex: 0
@@ -29,7 +29,6 @@ class Profiles extends React.Component
                 userId: getUserId()
             }, ()=> {
                 this.getProfiles()
-                this.getMatches()
             })
         }
     }
@@ -42,20 +41,6 @@ class Profiles extends React.Component
                 this.setState({
                     ...this.state,
                     profiles: profiles.data
-                })
-            }
-        }).catch((error)=> {
-            console.log(error)
-        })
-    }
-
-    getMatches()
-    {
-        axios.get('/matches?user_id=' + this.state.userId).then((matches)=> {
-            if(matches.status === 200)
-            {
-                this.setState({
-                    matches: matches.data
                 })
             }
         }).catch((error)=> {
@@ -76,7 +61,8 @@ class Profiles extends React.Component
 
     handleAction(profile, type)
     {
-        console.log(profile)
+        EventBus.publish('toggleLoading')
+
         axios.post('/action', {
             type: type,
 	        sender_id: this.state.userId,
@@ -87,6 +73,8 @@ class Profiles extends React.Component
                 // Increment card index
                 this.nextProfile()
 
+                EventBus.publish('toggleLoading')
+                
                 // See if the like spawned a match and trigger the alert event if so
                 if(result.data.result !== undefined && result.data.result === 'Match found')
                 {
@@ -94,6 +82,7 @@ class Profiles extends React.Component
                     EventBus.publish('triggerAlert', { message: 'You have a new match', type: 'success' })
                     // Refresh the matches from the db
                     this.getMatches()
+
                 }
             }
         }).catch((error)=> {
@@ -120,32 +109,11 @@ class Profiles extends React.Component
         return null
     }
 
-    renderUserMatches()
-    {
-        if(this.state.matches.length > 0)
-        {
-            return (
-                <UserMatches matches={ this.state.matches }
-                             userId={ this.state.userId }/>
-            )
-        }
-        return null
-    }
-
     render()
     {
         return (
-            <div className="row justify-content-center" style={{ height: '80vh' }}>
-                <div className="col-md-3 col-sm-8 border-right p-0 pt-5" style={{ overflowY: 'auto' }}>
-                    { this.renderUserMatches() }
-                </div>
-                <div className="col-md-9 col-sm-8 h-100">
-                    <div className="row justify-content-center align-self-center">
-                        <div className="col-md-6">
-                            { this.renderUserCard() }
-                        </div>
-                    </div>
-                </div>
+            <div>
+                { this.renderUserCard() }
             </div>
         )
     }

@@ -3,8 +3,14 @@ import { BrowserRouter as Router, Route, Redirect, Switch } from 'react-router-d
 import EventBus from 'eventing-bus'
 
 
-import { Home, Profiles, Match, MyProfile, Messages, Login, Logout, Register } from './Pages'
-import { Container, Alert } from './Components'
+import { Home,
+         Match,
+         MyProfile,
+         Login,
+         Logout,
+         Register,
+         PrivateInterface } from './Pages'
+import { Container, Alert, Loading } from './Components'
 import { isAuth, getToken, getUserId } from './services'
 
 
@@ -15,6 +21,7 @@ class App extends React.Component
         super()
         this.state = {
             alert: false,
+            loading: false,
             type: null,
             message: null,
             token: null,
@@ -37,6 +44,12 @@ class App extends React.Component
                     message: null
                 })
             }, 5000)
+        })
+
+        EventBus.on('toggleLoading', ()=> {
+            this.setState({
+                loading: !this.state.loading
+            })
         })
 
         EventBus.on('saveToken', (payload)=> {
@@ -70,13 +83,12 @@ class App extends React.Component
     {
         return (
             <Switch>
-                <Route exact path="/" component={ Profiles } />
+                <Route path="/main" component={ PrivateInterface } />
                 <Route exact path="/me" component={ MyProfile } />
                 <Route exact path="/matches" component={ Match } />
-                <Route exact path="/messages" component={ Messages } />
                 <Route exact path="/logout" component={ Logout } />
 
-                <Redirect to='/' />
+                <Redirect to='/main' />
             </Switch>
         )
     }
@@ -85,7 +97,7 @@ class App extends React.Component
     {
         return (
             <Switch>
-                <Route exact path="/" component={ Home } />
+                <Route exact path="/home" component={ Home } />
                 <Route exact path="/login" component={ Login } />
                 <Route exact path="/register" component={ Register } />
 
@@ -107,6 +119,8 @@ class App extends React.Component
                 <Alert show={ this.state.alert } type={ this.state.type }>
                     { this.state.message }
                 </Alert>
+
+                <Loading show={ this.state.loading }/>
             </div>
         )
     }

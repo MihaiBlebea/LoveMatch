@@ -8,8 +8,8 @@ import UserMatches from './UserMatches/UserMatches'
 import MatchCard from './MatchCard/MatchCard'
 import Navigation from './Navigation/Navigation'
 import Alert from './Alert/Alert'
-
-
+import MutedInfo from './MutedInfo/MutedInfo'
+import Loading from './Loading/Loading'
 
 export {
     UserCard,
@@ -21,5 +21,7 @@ export {
     UserMatches,
     MatchCard,
     Navigation,
-    Alert
+    Alert,
+    MutedInfo,
+    Loading
 }

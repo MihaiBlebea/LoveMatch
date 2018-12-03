@@ -6,7 +6,7 @@ import Messages from'./Messages/Messages'
 import Login from './Login/Login'
 import Logout from './Logout/Logout'
 import Register from './Register/Register'
-
+import PrivateInterface from './PrivateInterface/PrivateInterface'
 
 export {
     Home,
@@ -16,5 +16,6 @@ export {
     Messages,
     Login,
     Logout,
-    Register
+    Register,
+    PrivateInterface
 }
